@@ -47,7 +47,7 @@ public class TaskListFragment extends Fragment {
     }
 
     private void initTasks() {
-        int count = 20;
+        int count = 40;
         mTasks = new Task[count];
         for (int i = 0; i < count; i++) {
             mTasks[i] = new Task("Test task #" + i);
