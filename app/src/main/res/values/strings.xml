@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Recurring Tasks</string>
     <string name="action_settings">Settings</string>
+    <string name="repeatsLabel">Repeats</string>
+    <string name="durationLabel">Due in:</string>
+    <string name="taskNameHint">Task name</string>
 </resources>
