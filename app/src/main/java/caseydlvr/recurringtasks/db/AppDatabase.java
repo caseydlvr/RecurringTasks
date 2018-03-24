@@ -6,6 +6,6 @@ import android.arch.persistence.room.TypeConverters;
 
 @Database(entities = {Task.class}, version = 1)
 @TypeConverters({Converters.class})
-public abstract class TaskDatabase extends RoomDatabase {
+public abstract class AppDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
 }
