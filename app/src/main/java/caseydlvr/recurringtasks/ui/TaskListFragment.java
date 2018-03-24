@@ -10,15 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.adapters.TaskAdapter;
+import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.models.Task;
 
 public class TaskListFragment extends Fragment {
 
-    private Task[] mTasks;
+    private List<Task> mTasks = new ArrayList<>();
+    private AppDatabase mDb;
 
     private TaskAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -28,7 +33,9 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initTasks();
+        mDb = AppDatabase.getAppDatabase(getContext());
+        getTasks();
+//        initTasks();
     }
 
     @Nullable
@@ -40,17 +47,22 @@ public class TaskListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new TaskAdapter(mTasks);
+        Task[] temp = mTasks.toArray(new Task[mTasks.size()]);
+        mAdapter = new TaskAdapter(temp);
         mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
     }
 
-    private void initTasks() {
-        int count = 40;
-        mTasks = new Task[count];
-        for (int i = 0; i < count; i++) {
-            mTasks[i] = new Task("Test task #" + i);
-        }
+    private void getTasks() {
+        mTasks = mDb.taskDao().loadAll();
     }
+
+//    private void initTasks() {
+//        int count = 40;
+//        mTasks = new Task[count];
+//        for (int i = 0; i < count; i++) {
+//            mTasks[i] = new Task("Test task #" + i);
+//        }
+//    }
 }
