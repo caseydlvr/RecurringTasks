@@ -1,10 +1,14 @@
 package caseydlvr.recurringtasks.ui;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -13,20 +17,47 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.models.DurationUnit;
+import caseydlvr.recurringtasks.models.Task;
 
 
 public class TaskActivity extends AppCompatActivity {
 
+    private AppDatabase mDb;
+    private Task mTask;
+
+    @BindView(R.id.taskName) EditText mTaskName;
+    @BindView(R.id.duration) EditText mDuration;
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
+    @BindView(R.id.repeats) Switch mRepeats;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task);
+        mDb = AppDatabase.getAppDatabase(this);
         ButterKnife.bind(this);
         populateSpinner();
+        mTask = new Task();
+    }
+
+    @OnClick(R.id.saveButton)
+    public void saveButtonClick() {
+        mTask.setName(mTaskName.getText().toString());
+        mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
+        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getId());
+        mTask.setRepeats(mRepeats.isChecked());
+
+        AsyncTask.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                mDb.taskDao().insert(mTask);
+            }
+        });
     }
 
     private void populateSpinner() {
