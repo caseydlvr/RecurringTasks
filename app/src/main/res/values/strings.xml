@@ -5,4 +5,9 @@
     <string name="durationLabel">Due in:</string>
     <string name="taskNameHint">Task name</string>
     <string name="saveLabel">Save</string>
+    <string name="hours">Hours</string>
+    <string name="days">Days</string>
+    <string name="weeks">Weeks</string>
+    <string name="months">Months</string>
+    <string name="years">Years</string>
 </resources>

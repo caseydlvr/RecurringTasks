@@ -31,7 +31,7 @@
 
     <EditText
         android:id="@+id/duration"
-        android:layout_width="wrap_content"
+        android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -41,11 +41,11 @@
         app:layout_constraintTop_toBottomOf="@+id/taskName"/>
 
     <Spinner
-        android:id="@+id/durationUnits"
+        android:id="@+id/durationUnitSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@+id/duration"
         app:layout_constraintTop_toBottomOf="@+id/taskName"/>
 

@@ -6,7 +6,7 @@ public class Task {
     private int mId;
     private String mName;
     private int mDuration;
-    private String mDurationUnits;
+    private DurationUnit mDurationUnit;
     private Date mDueDate;
     private Date mStartDate;
     private Date mEndDate;
@@ -44,12 +44,12 @@ public class Task {
         mDuration = duration;
     }
 
-    public String getDurationUnits() {
-        return mDurationUnits;
+    public DurationUnit getDurationUnit() {
+        return mDurationUnit;
     }
 
-    public void setDurationUnits(String durationUnits) {
-        mDurationUnits = durationUnits;
+    public void setDurationUnit(DurationUnit durationUnit) {
+        mDurationUnit = durationUnit;
     }
 
     public Date getDueDate() {
