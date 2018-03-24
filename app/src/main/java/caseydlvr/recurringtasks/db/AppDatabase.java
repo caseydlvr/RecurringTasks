@@ -8,7 +8,7 @@ import android.content.Context;
 
 import caseydlvr.recurringtasks.models.*;
 
-@Database(entities = {caseydlvr.recurringtasks.models.Task.class}, version = 1)
+@Database(entities = {Task.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 

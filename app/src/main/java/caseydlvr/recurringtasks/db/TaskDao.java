@@ -12,14 +12,14 @@ import caseydlvr.recurringtasks.models.*;
 @Dao
 public interface TaskDao {
     @Query("SELECT * FROM tasks")
-    List<caseydlvr.recurringtasks.models.Task> loadAll();
+    List<Task> loadAll();
 
     @Query("SELECT * FROM tasks WHERE end_date IS NULL")
-    List<caseydlvr.recurringtasks.models.Task> loadAllOutstanding();
+    List<Task> loadAllOutstanding();
 
     @Insert
-    void insert(caseydlvr.recurringtasks.models.Task... tasks);
+    void insert(Task... tasks);
 
     @Update
-    void update(caseydlvr.recurringtasks.models.Task... tasks);
+    void update(Task... tasks);
 }
