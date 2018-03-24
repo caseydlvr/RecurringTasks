@@ -4,4 +4,5 @@
     <string name="repeatsLabel">Repeats</string>
     <string name="durationLabel">Due in:</string>
     <string name="taskNameHint">Task name</string>
+    <string name="saveLabel">Save</string>
 </resources>

@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:text="@string/durationLabel"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,23 +34,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
         app:layout_constraintStart_toEndOf="@+id/durationLabel"
-        tools:layout_editor_absoluteY="54dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/taskName"/>
 
     <Spinner
         android:id="@+id/durationUnits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toEndOf="@+id/duration"
-        tools:layout_editor_absoluteY="62dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/taskName"/>
 
     <Switch
         android:id="@+id/repeats"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
@@ -63,5 +65,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/durationLabel"
         tools:checked="false"/>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/saveLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repeats"/>
 
 </android.support.constraint.ConstraintLayout>
