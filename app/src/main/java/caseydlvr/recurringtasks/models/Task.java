@@ -1,19 +1,40 @@
 package caseydlvr.recurringtasks.models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.util.Date;
 
+@Entity(tableName = "tasks")
 public class Task {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private int mId;
+
+    @ColumnInfo(name = "name")
     private String mName;
+
+    @ColumnInfo(name = "duration")
     private int mDuration;
-    private DurationUnit mDurationUnit;
-    private Date mDueDate;
+
+    @ColumnInfo(name = "duration_unit")
+    private String mDurationUnit;
+
+    private transient Date mDueDate;
+
+    @ColumnInfo(name = "start_date")
     private Date mStartDate;
+
+    @ColumnInfo(name = "end_date")
     private Date mEndDate;
+
+    @ColumnInfo(name = "repeats")
     private boolean mRepeats;
 
-    public Task(String name) {
-        mName = name;
+    public Task() {
+
     }
 
     public enum DurationUnits {
@@ -44,11 +65,11 @@ public class Task {
         mDuration = duration;
     }
 
-    public DurationUnit getDurationUnit() {
+    public String getDurationUnit() {
         return mDurationUnit;
     }
 
-    public void setDurationUnit(DurationUnit durationUnit) {
+    public void setDurationUnit(String durationUnit) {
         mDurationUnit = durationUnit;
     }
 

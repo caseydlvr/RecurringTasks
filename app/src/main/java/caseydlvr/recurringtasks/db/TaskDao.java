@@ -7,17 +7,19 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import caseydlvr.recurringtasks.models.*;
+
 @Dao
 public interface TaskDao {
     @Query("SELECT * FROM tasks")
-    List<Task> loadAll();
+    List<caseydlvr.recurringtasks.models.Task> loadAll();
 
     @Query("SELECT * FROM tasks WHERE end_date IS NULL")
-    List<Task> loadAllOutstanding();
+    List<caseydlvr.recurringtasks.models.Task> loadAllOutstanding();
 
     @Insert
-    void insert(Task... tasks);
+    void insert(caseydlvr.recurringtasks.models.Task... tasks);
 
     @Update
-    void update(Task... tasks);
+    void update(caseydlvr.recurringtasks.models.Task... tasks);
 }

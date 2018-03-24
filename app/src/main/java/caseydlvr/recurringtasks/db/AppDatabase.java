@@ -6,7 +6,9 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-@Database(entities = {Task.class}, version = 1)
+import caseydlvr.recurringtasks.models.*;
+
+@Database(entities = {caseydlvr.recurringtasks.models.Task.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -21,6 +23,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             AppDatabase.class,
                             "task-database")
+                    .allowMainThreadQueries() // TODO remove this!
                     .build();
         }
 
