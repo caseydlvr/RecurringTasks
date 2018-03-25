@@ -3,17 +3,16 @@ package caseydlvr.recurringtasks.ui;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +32,7 @@ public class TaskActivity extends AppCompatActivity {
     @BindView(R.id.duration) EditText mDuration;
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
     @BindView(R.id.repeats) Switch mRepeats;
+    @BindView(R.id.taskViewLayout) ConstraintLayout mLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,13 +51,8 @@ public class TaskActivity extends AppCompatActivity {
         mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getId());
         mTask.setRepeats(mRepeats.isChecked());
 
-        AsyncTask.execute(new Runnable() {
-
-            @Override
-            public void run() {
-                mDb.taskDao().insert(mTask);
-            }
-        });
+        PersistTask persistTask = new PersistTask();
+        persistTask.execute(mTask);
     }
 
     private void populateSpinner() {
@@ -78,5 +73,31 @@ public class TaskActivity extends AppCompatActivity {
         durationUnits.add(new DurationUnit("year", getString(R.string.years)));
 
         return durationUnits;
+    }
+
+    private void showResultMessage(int stringId) {
+        Snackbar.make(mLayout, stringId, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private class PersistTask extends AsyncTask<Task, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Task... tasks) {
+            boolean success = true;
+
+            try {
+                mDb.taskDao().insert(tasks[0]);
+            } catch (Exception e) {
+                success = false;
+            }
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if (success) showResultMessage(R.string.taskSaveSuccess);
+            else         showResultMessage(R.string.taskSaveFail);
+        }
     }
 }
