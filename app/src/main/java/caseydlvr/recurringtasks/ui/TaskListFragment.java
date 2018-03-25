@@ -1,6 +1,7 @@
 package caseydlvr.recurringtasks.ui;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,7 +23,7 @@ import caseydlvr.recurringtasks.models.Task;
 
 public class TaskListFragment extends Fragment {
 
-    private List<Task> mTasks = new ArrayList<>();
+    private List<Task> mTasks;
     private AppDatabase mDb;
 
     private TaskAdapter mAdapter;
@@ -34,7 +35,6 @@ public class TaskListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDb = AppDatabase.getAppDatabase(getContext());
-        getTasks();
 //        initTasks();
     }
 
@@ -47,15 +47,20 @@ public class TaskListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        Task[] temp = mTasks.toArray(new Task[mTasks.size()]);
-        mAdapter = new TaskAdapter(temp);
-        mRecyclerView.setAdapter(mAdapter);
+        loadTasks();
 
         return rootView;
     }
 
-    private void getTasks() {
-        mTasks = mDb.taskDao().loadAll();
+    private void loadTasks() {
+        LoadTask loadTask = new LoadTask();
+        loadTask.execute();
+    }
+
+    private void populateTaskList() {
+        Task[] temp = mTasks.toArray(new Task[mTasks.size()]);
+        mAdapter = new TaskAdapter(temp);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 //    private void initTasks() {
@@ -65,4 +70,26 @@ public class TaskListFragment extends Fragment {
 //            mTasks[i] = new Task("Test task #" + i);
 //        }
 //    }
+
+    private class LoadTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            boolean success = true;
+
+            try {
+                mTasks = mDb.taskDao().loadAll();
+            } catch (Exception e) {
+                success = false;
+                mTasks = new ArrayList<>();
+            }
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            populateTaskList();
+        }
+    }
 }

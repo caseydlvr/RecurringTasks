@@ -23,7 +23,6 @@ public abstract class AppDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             AppDatabase.class,
                             "task-database")
-                    .allowMainThreadQueries() // TODO remove this!
                     .build();
         }
 
