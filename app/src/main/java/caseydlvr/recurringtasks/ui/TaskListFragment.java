@@ -35,7 +35,6 @@ public class TaskListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDb = AppDatabase.getAppDatabase(getContext());
-//        initTasks();
     }
 
     @Nullable
@@ -62,14 +61,6 @@ public class TaskListFragment extends Fragment {
         mAdapter = new TaskAdapter(temp);
         mRecyclerView.setAdapter(mAdapter);
     }
-
-//    private void initTasks() {
-//        int count = 40;
-//        mTasks = new Task[count];
-//        for (int i = 0; i < count; i++) {
-//            mTasks[i] = new Task("Test task #" + i);
-//        }
-//    }
 
     private class LoadTask extends AsyncTask<Void, Void, Boolean> {
 
