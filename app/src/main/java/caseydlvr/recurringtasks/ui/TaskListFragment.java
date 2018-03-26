@@ -46,9 +46,13 @@ public class TaskListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        loadTasks();
-
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadTasks();
     }
 
     private void loadTasks() {
@@ -57,9 +61,12 @@ public class TaskListFragment extends Fragment {
     }
 
     private void populateTaskList() {
-        Task[] temp = mTasks.toArray(new Task[mTasks.size()]);
-        mAdapter = new TaskAdapter(temp);
-        mRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new TaskAdapter(mTasks);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.swap(mTasks);
+        }
     }
 
     private class LoadTask extends AsyncTask<Void, Void, Boolean> {

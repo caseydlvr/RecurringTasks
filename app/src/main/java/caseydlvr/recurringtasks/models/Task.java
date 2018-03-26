@@ -103,4 +103,18 @@ public class Task {
     public void setRepeats(boolean repeats) {
         mRepeats = repeats;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!Task.class.isAssignableFrom(obj.getClass())) return false;
+
+        final Task other = (Task) obj;
+
+        return !(other.getId() != mId
+                || other.getName().equals(mName)
+                || other.getDuration() != mDuration
+                || other.getDurationUnit().equals(mDurationUnit)
+                || other.isRepeats() != mRepeats);
+    }
 }
