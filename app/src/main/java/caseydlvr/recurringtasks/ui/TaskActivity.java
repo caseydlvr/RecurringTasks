@@ -27,6 +27,7 @@ public class TaskActivity extends AppCompatActivity {
 
     public static final String EXTRA_TASK_ID = "extra_task_id";
 
+    private boolean mIsNew = false;
     private AppDatabase mDb;
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
@@ -49,6 +50,7 @@ public class TaskActivity extends AppCompatActivity {
 
         if (taskId > 0) loadTask(taskId);
         else {
+            mIsNew = true;
             mTask = new Task();
             populateViews();
         }
@@ -121,7 +123,10 @@ public class TaskActivity extends AppCompatActivity {
                 success = false;
             }
 
-            if (mTask == null) mTask = new Task();
+            if (mTask == null) {
+                mIsNew = true;
+                mTask = new Task();
+            }
 
             return success;
         }
@@ -139,10 +144,14 @@ public class TaskActivity extends AppCompatActivity {
             boolean success = true;
 
             try {
-                mDb.taskDao().insert(tasks[0]);
+                if (mIsNew) mDb.taskDao().insert(tasks[0]);
+                else        mDb.taskDao().update(tasks[0]);
+
             } catch (Exception e) {
                 success = false;
             }
+
+            if (mIsNew && success) mIsNew = false;
 
             return success;
         }
