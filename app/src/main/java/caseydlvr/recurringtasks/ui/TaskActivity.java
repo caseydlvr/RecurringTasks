@@ -25,8 +25,11 @@ import caseydlvr.recurringtasks.models.Task;
 
 public class TaskActivity extends AppCompatActivity {
 
+    public static final String EXTRA_TASK_ID = "extra_task_id";
+
     private AppDatabase mDb;
     private Task mTask;
+    private List<DurationUnit> mDurationUnits;
 
     @BindView(R.id.taskName) EditText mTaskName;
     @BindView(R.id.duration) EditText mDuration;
@@ -40,8 +43,15 @@ public class TaskActivity extends AppCompatActivity {
         setContentView(R.layout.task);
         mDb = AppDatabase.getAppDatabase(this);
         ButterKnife.bind(this);
+        buildDurationUnits();
         populateSpinner();
-        mTask = new Task();
+        int taskId = getIntent().getIntExtra(EXTRA_TASK_ID, -1);
+
+        if (taskId > 0) loadTask(taskId);
+        else {
+            mTask = new Task();
+            populateViews();
+        }
     }
 
     @OnClick(R.id.saveButton)
@@ -59,24 +69,67 @@ public class TaskActivity extends AppCompatActivity {
         ArrayAdapter<DurationUnit> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
-                buildDurationUnits());
+                mDurationUnits);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDurationUnitSpinner.setAdapter(adapter);
     }
 
-    private List<DurationUnit> buildDurationUnits() {
-        List<DurationUnit> durationUnits = new ArrayList<>();
-        durationUnits.add(new DurationUnit("hour", getString(R.string.hours)));
-        durationUnits.add(new DurationUnit("day", getString(R.string.days)));
-        durationUnits.add(new DurationUnit("week", getString(R.string.weeks)));
-        durationUnits.add(new DurationUnit("month", getString(R.string.months)));
-        durationUnits.add(new DurationUnit("year", getString(R.string.years)));
+    private void buildDurationUnits() {
+        mDurationUnits = new ArrayList<>();
+        mDurationUnits.add(new DurationUnit("hour", getString(R.string.hours)));
+        mDurationUnits.add(new DurationUnit("day", getString(R.string.days)));
+        mDurationUnits.add(new DurationUnit("week", getString(R.string.weeks)));
+        mDurationUnits.add(new DurationUnit("month", getString(R.string.months)));
+        mDurationUnits.add(new DurationUnit("year", getString(R.string.years)));
+    }
 
-        return durationUnits;
+    private void loadTask(int id) {
+        LoadTask loadTask = new LoadTask();
+        loadTask.execute(id);
+    }
+
+    private void populateViews() {
+        mTaskName.setText(mTask.getName());
+        if (mTask.getDuration() > 0) {
+            mDuration.setText(String.valueOf(mTask.getDuration()));
+        }
+        mDurationUnitSpinner.setSelection(getDurationUnitsIndex(mTask.getDurationUnit()));
+        mRepeats.setChecked(mTask.isRepeats());
+    }
+
+    private int getDurationUnitsIndex(String id) {
+        for (int i = 0; i < mDurationUnits.size(); i++) {
+            if (mDurationUnits.get(i).getId().equals(id)) return i;
+        }
+
+        return 0; // default to first position
     }
 
     private void showResultMessage(int stringId) {
         Snackbar.make(mLayout, stringId, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private class LoadTask extends AsyncTask<Integer, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            boolean success = true;
+
+            try {
+                mTask = mDb.taskDao().loadById(integers[0]);
+            } catch (Exception e) {
+                success = false;
+            }
+
+            if (mTask == null) mTask = new Task();
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            populateViews();
+        }
     }
 
     private class PersistTask extends AsyncTask<Task, Void, Boolean> {

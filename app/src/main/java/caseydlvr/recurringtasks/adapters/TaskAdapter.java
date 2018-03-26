@@ -43,6 +43,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private int taskId;
+
         @BindView(R.id.taskName) TextView mTaskName;
 
         public TaskViewHolder(View itemView) {
@@ -53,6 +55,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
 
         public void bindTask(Task task) {
+            taskId = task.getId();
             mTaskName.setText(task.getName());
         }
 
@@ -61,6 +64,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void onClick(View v) {
             Context context = v.getContext();
             Intent intent = new Intent(context, TaskActivity.class);
+            intent.putExtra(TaskActivity.EXTRA_TASK_ID, taskId);
             context.startActivity(intent);
         }
     }

@@ -17,6 +17,9 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks WHERE end_date IS NULL")
     List<Task> loadAllOutstanding();
 
+    @Query("SELECT * FROM tasks WHERE id = :id")
+    Task loadById(int id);
+
     @Insert
     void insert(Task... tasks);
 
