@@ -1,11 +1,13 @@
 package caseydlvr.recurringtasks.ui;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -58,6 +60,11 @@ public class TaskActivity extends AppCompatActivity {
 
     @OnClick(R.id.saveButton)
     public void saveButtonClick() {
+        saveTask();
+        hideKeyboard();
+    }
+
+    private void saveTask() {
         mTask.setName(mTaskName.getText().toString());
         mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
         mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getId());
@@ -109,6 +116,14 @@ public class TaskActivity extends AppCompatActivity {
 
     private void showResultMessage(int stringId) {
         Snackbar.make(mLayout, stringId, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (getCurrentFocus() != null && imm != null) {
+            imm.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private class LoadTask extends AsyncTask<Integer, Void, Boolean> {
