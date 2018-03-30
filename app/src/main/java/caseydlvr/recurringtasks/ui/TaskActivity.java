@@ -50,9 +50,10 @@ public class TaskActivity extends AppCompatActivity {
         setContentView(R.layout.task);
         mDb = AppDatabase.getAppDatabase(this);
         ButterKnife.bind(this);
-        buildDurationUnits();
+        buildDurationUnits(this);
         populateSpinner();
         int taskId = getIntent().getIntExtra(EXTRA_TASK_ID, -1);
+        mDurationUnits = buildDurationUnits(this);
 
         if (taskId > 0) loadTask(taskId);
         else {
@@ -85,15 +86,6 @@ public class TaskActivity extends AppCompatActivity {
                 mDurationUnits);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDurationUnitSpinner.setAdapter(adapter);
-    }
-
-    private void buildDurationUnits() {
-        mDurationUnits = new ArrayList<>();
-        mDurationUnits.add(new DurationUnit("hour", getString(R.string.hours)));
-        mDurationUnits.add(new DurationUnit("day", getString(R.string.days)));
-        mDurationUnits.add(new DurationUnit("week", getString(R.string.weeks)));
-        mDurationUnits.add(new DurationUnit("month", getString(R.string.months)));
-        mDurationUnits.add(new DurationUnit("year", getString(R.string.years)));
     }
 
     private void loadTask(int id) {
@@ -131,6 +123,17 @@ public class TaskActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public static List<DurationUnit> buildDurationUnits(Context context) {
+        List<DurationUnit> durationUnits = new ArrayList<>();
+        durationUnits.add(new DurationUnit("hour", context.getString(R.string.hours)));
+        durationUnits.add(new DurationUnit("day", context.getString(R.string.days)));
+        durationUnits.add(new DurationUnit("week", context.getString(R.string.weeks)));
+        durationUnits.add(new DurationUnit("month", context.getString(R.string.months)));
+        durationUnits.add(new DurationUnit("year", context.getString(R.string.years)));
+
+        return durationUnits;
     }
 
     private class LoadTask extends AsyncTask<Integer, Void, Boolean> {

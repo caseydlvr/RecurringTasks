@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.models.DurationUnit;
 import caseydlvr.recurringtasks.models.Task;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 
@@ -57,6 +58,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private int taskId;
+        private Context mContext;
 
         @BindView(R.id.taskName) TextView mTaskName;
         @BindView(R.id.dueDate) TextView mDueDate;
@@ -66,16 +68,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public TaskViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mContext = itemView.getContext();
 
 //            itemView.setOnClickListener(this);
         }
 
         public void bindTask(Task task) {
+            List<DurationUnit> durationUnits = TaskActivity.buildDurationUnits(mContext);
+
             taskId = task.getId();
             mTaskName.setText(task.getName());
             mDueDate.setText("4/18/2018");
             mDuration.setText(String.valueOf(task.getDuration()));
-            mDurationUnit.setText(task.getDurationUnit());
+
+            String durationUnit = task.getDurationUnit();
+            for (DurationUnit du : durationUnits) {
+                if (durationUnit.equals(du.getId())) {
+                    mDurationUnit.setText(du.getName().toLowerCase());
+                    break;
+                }
+            }
         }
 
         @Override
