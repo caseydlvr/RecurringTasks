@@ -34,6 +34,7 @@ public class Task {
 
     public Task() {
         mStartDate = new Date();
+        mRepeats = true;
     }
 
     public enum DurationUnits {
