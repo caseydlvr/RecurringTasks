@@ -50,10 +50,9 @@ public class TaskActivity extends AppCompatActivity {
         setContentView(R.layout.task);
         mDb = AppDatabase.getAppDatabase(this);
         ButterKnife.bind(this);
-        buildDurationUnits(this);
+        mDurationUnits = buildDurationUnits(this);
         populateSpinner();
         int taskId = getIntent().getIntExtra(EXTRA_TASK_ID, -1);
-        mDurationUnits = buildDurationUnits(this);
 
         if (taskId > 0) loadTask(taskId);
         else {
