@@ -59,6 +59,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private int taskId;
 
         @BindView(R.id.taskName) TextView mTaskName;
+        @BindView(R.id.dueDate) TextView mDueDate;
+        @BindView(R.id.duration) TextView mDuration;
+        @BindView(R.id.durationUnit) TextView mDurationUnit;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -70,6 +73,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void bindTask(Task task) {
             taskId = task.getId();
             mTaskName.setText(task.getName());
+            mDueDate.setText("4/18/2018");
+            mDuration.setText(String.valueOf(task.getDuration()));
+            mDurationUnit.setText(task.getDurationUnit());
         }
 
         @Override

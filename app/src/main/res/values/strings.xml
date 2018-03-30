@@ -2,7 +2,7 @@
     <string name="app_name">Recurring Tasks</string>
     <string name="action_settings">Settings</string>
     <string name="repeatsLabel">Repeats</string>
-    <string name="durationLabel">Repeats every</string>
+    <string name="durationLabel">Every</string>
     <string name="taskNameHint">Task name</string>
     <string name="saveLabel">Save</string>
     <string name="hours">Hours</string>
@@ -13,4 +13,6 @@
     <string name="taskSaveSuccess">Task saved!</string>
     <string name="taskSaveFail">Save failed! Please try again</string>
     <string name="startDateLabel">Starting from</string>
+    <string name="dueDateLabel">Due:</string>
+    <string name="complete_task">complete task</string>
 </resources>
