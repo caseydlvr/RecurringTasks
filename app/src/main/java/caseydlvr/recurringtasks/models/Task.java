@@ -33,7 +33,7 @@ public class Task {
     private boolean mRepeats;
 
     public Task() {
-
+        mStartDate = new Date();
     }
 
     public enum DurationUnits {

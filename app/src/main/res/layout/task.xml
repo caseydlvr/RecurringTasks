@@ -50,13 +50,36 @@
         app:layout_constraintStart_toEndOf="@+id/duration"
         app:layout_constraintTop_toBottomOf="@+id/taskName"/>
 
+    <TextView
+        android:id="@+id/startDateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/startDateLabel"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/durationLabel"/>
+
+    <TextView
+        android:id="@+id/startDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/startDateLabel"
+        app:layout_constraintTop_toBottomOf="@+id/durationLabel"
+        tools:text="Mar 29, 2018"/>
+
+
     <Switch
         android:id="@+id/repeats"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:checked="true"
         android:splitTrack="false"
         android:switchPadding="8dp"
@@ -64,14 +87,15 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/durationLabel"
+        app:layout_constraintTop_toBottomOf="@+id/startDateLabel"
         tools:checked="false"/>
+
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:text="@string/saveLabel"
         app:layout_constraintStart_toStartOf="parent"

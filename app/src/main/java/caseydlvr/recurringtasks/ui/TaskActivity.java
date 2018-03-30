@@ -12,8 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,6 +40,7 @@ public class TaskActivity extends AppCompatActivity {
     @BindView(R.id.taskName) EditText mTaskName;
     @BindView(R.id.duration) EditText mDuration;
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
+    @BindView(R.id.startDate) TextView mStartDate;
     @BindView(R.id.repeats) Switch mRepeats;
     @BindView(R.id.taskViewLayout) ConstraintLayout mLayout;
 
@@ -104,6 +108,9 @@ public class TaskActivity extends AppCompatActivity {
         }
         mDurationUnitSpinner.setSelection(getDurationUnitsIndex(mTask.getDurationUnit()));
         mRepeats.setChecked(mTask.isRepeats());
+
+        if (mTask.getStartDate() == null) mTask.setStartDate(new Date());
+        mStartDate.setText(DateFormat.getDateInstance().format(mTask.getStartDate()));
     }
 
     private int getDurationUnitsIndex(String id) {

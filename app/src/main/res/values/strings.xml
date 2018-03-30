@@ -12,4 +12,5 @@
     <string name="years">Years</string>
     <string name="taskSaveSuccess">Task saved!</string>
     <string name="taskSaveFail">Save failed! Please try again</string>
+    <string name="startDateLabel">Starting from</string>
 </resources>
