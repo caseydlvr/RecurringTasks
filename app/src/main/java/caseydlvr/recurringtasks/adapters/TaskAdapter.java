@@ -25,7 +25,7 @@ import caseydlvr.recurringtasks.ui.TaskActivity;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private List<Task> mTasks;
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
 
     public TaskAdapter(List<Task> tasks) {
         mTasks = tasks;
@@ -112,7 +112,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void onCompleteImageClick(View v) {
             CompleteTask completeTask = new CompleteTask();
             completeTask.execute(mTask);
-
         }
 
         private class CompleteTask extends AsyncTask<Task, Void, Boolean> {
@@ -151,6 +150,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             protected void onPostExecute(Boolean success) {
                 if (success) {
                     Snackbar.make(mRecyclerView, "Task completed!", Snackbar.LENGTH_SHORT).show();
+
                 } else {
                     Snackbar.make(mRecyclerView, "Complete failed! Please try again", Snackbar.LENGTH_SHORT).show();
                 }
