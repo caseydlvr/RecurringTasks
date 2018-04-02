@@ -125,6 +125,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 try {
                     db.beginTransaction();
                     db.taskDao().delete(tasks[0]);
+                    mTasks.remove(getAdapterPosition());
 
                     if (tasks[0].isRepeats()) {
                         Task newTask = new Task();
@@ -134,6 +135,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                         newTask.setRepeats(mTask.isRepeats());
 
                         db.taskDao().insert(newTask);
+                        mTasks.add(newTask);
                     }
 
                     db.setTransactionSuccessful();
@@ -151,6 +153,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 if (success) {
                     Snackbar.make(mRecyclerView, "Task completed!", Snackbar.LENGTH_SHORT).show();
 
+                    // TODO: notify removed, and if repeating, the new insert
+                    notifyItemRangeChanged(getAdapterPosition(), mTasks.size() - 1);
                 } else {
                     Snackbar.make(mRecyclerView, "Complete failed! Please try again", Snackbar.LENGTH_SHORT).show();
                 }
