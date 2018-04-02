@@ -2,6 +2,8 @@ package caseydlvr.recurringtasks.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.models.DurationUnit;
 import caseydlvr.recurringtasks.models.Task;
 import caseydlvr.recurringtasks.ui.TaskActivity;
@@ -22,6 +25,7 @@ import caseydlvr.recurringtasks.ui.TaskActivity;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private List<Task> mTasks;
+    RecyclerView mRecyclerView;
 
     public TaskAdapter(List<Task> tasks) {
         mTasks = tasks;
@@ -38,6 +42,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onBindViewHolder(TaskViewHolder holder, int position) {
         holder.bindTask(mTasks.get(position));
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+
+        mRecyclerView = recyclerView;
     }
 
     public void swap(List<Task> tasks) {
@@ -57,7 +68,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private int taskId;
+        private Task mTask;
         private Context mContext;
 
         @BindView(R.id.taskName) TextView mTaskName;
@@ -69,14 +80,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
             mContext = itemView.getContext();
-
-//            itemView.setOnClickListener(this);
         }
 
         public void bindTask(Task task) {
             List<DurationUnit> durationUnits = TaskActivity.buildDurationUnits(mContext);
+            mTask = task;
 
-            taskId = task.getId();
             mTaskName.setText(task.getName());
             mDueDate.setText("4/18/2018");
             mDuration.setText(String.valueOf(task.getDuration()));
@@ -95,8 +104,57 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void onClick(View v) {
             Context context = v.getContext();
             Intent intent = new Intent(context, TaskActivity.class);
-            intent.putExtra(TaskActivity.EXTRA_TASK_ID, taskId);
+            intent.putExtra(TaskActivity.EXTRA_TASK_ID, mTask.getId());
             context.startActivity(intent);
+        }
+
+        @OnClick(R.id.completeImageView)
+        public void onCompleteImageClick(View v) {
+            CompleteTask completeTask = new CompleteTask();
+            completeTask.execute(mTask);
+
+        }
+
+        private class CompleteTask extends AsyncTask<Task, Void, Boolean> {
+
+            @Override
+            protected Boolean doInBackground(Task... tasks) {
+                boolean success = true;
+
+                AppDatabase db = AppDatabase.getAppDatabase(mContext);
+
+                try {
+                    db.beginTransaction();
+                    db.taskDao().delete(tasks[0]);
+
+                    if (tasks[0].isRepeats()) {
+                        Task newTask = new Task();
+                        newTask.setName(mTask.getName());
+                        newTask.setDuration(mTask.getDuration());
+                        newTask.setDurationUnit(mTask.getDurationUnit());
+                        newTask.setRepeats(mTask.isRepeats());
+
+                        db.taskDao().insert(newTask);
+                    }
+
+                    db.setTransactionSuccessful();
+                } catch (Exception e) {
+                    success = false;
+                } finally {
+                    db.endTransaction();
+                }
+
+                return success;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (success) {
+                    Snackbar.make(mRecyclerView, "Task completed!", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(mRecyclerView, "Complete failed! Please try again", Snackbar.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
