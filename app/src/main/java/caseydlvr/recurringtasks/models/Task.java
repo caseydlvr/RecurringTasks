@@ -4,7 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.Date;
+import org.threeten.bp.LocalDate;
 
 @Entity(tableName = "tasks")
 public class Task {
@@ -21,19 +21,19 @@ public class Task {
     @ColumnInfo(name = "duration_unit")
     private String mDurationUnit;
 
-    private transient Date mDueDate;
+    private transient LocalDate mDueDate;
 
     @ColumnInfo(name = "start_date")
-    private Date mStartDate;
+    private LocalDate mStartDate;
 
     @ColumnInfo(name = "end_date")
-    private Date mEndDate;
+    private LocalDate mEndDate;
 
     @ColumnInfo(name = "repeats")
     private boolean mRepeats;
 
     public Task() {
-        mStartDate = new Date();
+        mStartDate = LocalDate.now();
         mRepeats = true;
     }
 
@@ -73,27 +73,27 @@ public class Task {
         mDurationUnit = durationUnit;
     }
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return mDueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         mDueDate = dueDate;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return mStartDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         mStartDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return mEndDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         mEndDate = endDate;
     }
 

@@ -14,9 +14,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.text.DateFormat;
+import org.threeten.bp.LocalDate;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -100,8 +100,8 @@ public class TaskActivity extends AppCompatActivity {
         mDurationUnitSpinner.setSelection(getDurationUnitsIndex(mTask.getDurationUnit()));
         mRepeats.setChecked(mTask.isRepeats());
 
-        if (mTask.getStartDate() == null) mTask.setStartDate(new Date());
-        mStartDate.setText(DateFormat.getDateInstance().format(mTask.getStartDate()));
+        if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
+        mStartDate.setText(mTask.getStartDate().toString());
     }
 
     private int getDurationUnitsIndex(String id) {
