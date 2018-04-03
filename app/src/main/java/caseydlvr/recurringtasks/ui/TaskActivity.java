@@ -126,7 +126,6 @@ public class TaskActivity extends AppCompatActivity {
 
     public static List<DurationUnit> buildDurationUnits(Context context) {
         List<DurationUnit> durationUnits = new ArrayList<>();
-        durationUnits.add(new DurationUnit("hour", context.getString(R.string.hours)));
         durationUnits.add(new DurationUnit("day", context.getString(R.string.days)));
         durationUnits.add(new DurationUnit("week", context.getString(R.string.weeks)));
         durationUnits.add(new DurationUnit("month", context.getString(R.string.months)));
