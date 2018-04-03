@@ -36,4 +36,7 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     // Test helpers for Room
     testImplementation "android.arch.persistence.room:testing:1.0.0"
+
+    //ThreeTen Android Backport
+    compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 }
