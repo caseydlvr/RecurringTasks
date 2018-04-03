@@ -87,7 +87,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             mTask = task;
 
             mTaskName.setText(task.getName());
-            mDueDate.setText("4/18/2018");
+            mDueDate.setText(task.getDueDate().toString());
             mDuration.setText(String.valueOf(task.getDuration()));
 
             String durationUnit = task.getDurationUnit();

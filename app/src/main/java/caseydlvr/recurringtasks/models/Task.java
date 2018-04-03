@@ -21,8 +21,6 @@ public class Task {
     @ColumnInfo(name = "duration_unit")
     private String mDurationUnit;
 
-    private transient LocalDate mDueDate;
-
     @ColumnInfo(name = "start_date")
     private LocalDate mStartDate;
 
@@ -74,11 +72,27 @@ public class Task {
     }
 
     public LocalDate getDueDate() {
-        return mDueDate;
-    }
+        LocalDate dueDate;
 
-    public void setDueDate(LocalDate dueDate) {
-        mDueDate = dueDate;
+        switch (mDurationUnit) {
+            case "day":
+                dueDate = mStartDate.plusDays(mDuration);
+                break;
+            case "week":
+                dueDate = mStartDate.plusWeeks(mDuration);
+                break;
+            case "month":
+                dueDate = mStartDate.plusMonths(mDuration);
+                break;
+            case "year":
+                dueDate = mStartDate.plusYears(mDuration);
+                break;
+            default:
+                dueDate = LocalDate.now();
+                break;
+        }
+
+        return dueDate;
     }
 
     public LocalDate getStartDate() {
