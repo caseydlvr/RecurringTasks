@@ -17,7 +17,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
-import caseydlvr.recurringtasks.adapters.TaskAdapter;
 import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Task;
 
