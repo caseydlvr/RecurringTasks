@@ -15,6 +15,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.FormatStyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +103,8 @@ public class TaskActivity extends AppCompatActivity {
         mRepeats.setChecked(mTask.isRepeats());
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
-        mStartDate.setText(mTask.getStartDate().toString());
+        mStartDate.setText(mTask.getStartDate()
+                .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
     }
 
     private int getDurationUnitsIndex(String id) {

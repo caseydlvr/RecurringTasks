@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.FormatStyle;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,7 +90,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             mTask = task;
 
             mTaskName.setText(task.getName());
-            mDueDate.setText(task.getDueDate().toString());
+            mDueDate.setText(task.getDueDate()
+                    .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
             mDuration.setText(String.valueOf(task.getDuration()));
 
             String durationUnit = task.getDurationUnit();
