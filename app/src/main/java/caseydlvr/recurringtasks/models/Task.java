@@ -35,10 +35,6 @@ public class Task {
         mRepeats = true;
     }
 
-    public enum DurationUnits {
-        HOUR, DAY, WEEK, MONTH, YEAR
-    }
-
     public int getId() {
         return mId;
     }
