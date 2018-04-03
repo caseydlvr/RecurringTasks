@@ -6,6 +6,7 @@
 /.idea/misc.xml
 /.idea/dictionaries
 /.idea/libraries
+/.idea/caches
 /build
 /captures
 /gradle.properties
