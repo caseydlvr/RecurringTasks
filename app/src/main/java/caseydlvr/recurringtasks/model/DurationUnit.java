@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.models;
+package caseydlvr.recurringtasks.model;
 
 public class DurationUnit {
     private String mId;

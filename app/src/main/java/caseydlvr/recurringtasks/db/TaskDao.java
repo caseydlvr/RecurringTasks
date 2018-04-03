@@ -8,7 +8,7 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
-import caseydlvr.recurringtasks.models.*;
+import caseydlvr.recurringtasks.model.*;
 
 @Dao
 public interface TaskDao {

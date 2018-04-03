@@ -26,8 +26,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.db.AppDatabase;
-import caseydlvr.recurringtasks.models.DurationUnit;
-import caseydlvr.recurringtasks.models.Task;
+import caseydlvr.recurringtasks.model.DurationUnit;
+import caseydlvr.recurringtasks.model.Task;
 
 
 public class TaskActivity extends AppCompatActivity {

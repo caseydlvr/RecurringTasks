@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.adapters.TaskAdapter;
 import caseydlvr.recurringtasks.db.AppDatabase;
-import caseydlvr.recurringtasks.models.Task;
+import caseydlvr.recurringtasks.model.Task;
 
 public class TaskListFragment extends Fragment {
 
