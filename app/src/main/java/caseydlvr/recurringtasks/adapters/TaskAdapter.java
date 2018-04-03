@@ -138,7 +138,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                         newTask.setDurationUnit(mTask.getDurationUnit());
                         newTask.setRepeats(mTask.isRepeats());
 
-                        db.taskDao().insert(newTask);
+                        long insertId = db.taskDao().insert(newTask);
+                        newTask.setId(insertId);
                         mTasks.add(newTask);
                     }
 

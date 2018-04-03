@@ -19,10 +19,10 @@ public interface TaskDao {
     List<Task> loadAllOutstanding();
 
     @Query("SELECT * FROM tasks WHERE id = :id")
-    Task loadById(int id);
+    Task loadById(long id);
 
     @Insert
-    void insert(Task... tasks);
+    long insert(Task task);
 
     @Update
     void update(Task... tasks);

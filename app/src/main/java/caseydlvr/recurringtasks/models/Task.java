@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDate;
 public class Task {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private int mId;
+    private long mId;
 
     @ColumnInfo(name = "name")
     private String mName;
@@ -35,11 +35,11 @@ public class Task {
         mRepeats = true;
     }
 
-    public int getId() {
+    public long getId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         mId = id;
     }
 

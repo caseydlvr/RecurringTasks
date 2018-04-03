@@ -54,7 +54,8 @@ public class TaskActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mDurationUnits = buildDurationUnits(this);
         populateSpinner();
-        int taskId = getIntent().getIntExtra(EXTRA_TASK_ID, -1);
+        long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
+
 
         if (taskId > 0) loadTask(taskId);
         else {
@@ -89,7 +90,7 @@ public class TaskActivity extends AppCompatActivity {
         mDurationUnitSpinner.setAdapter(adapter);
     }
 
-    private void loadTask(int id) {
+    private void loadTask(long id) {
         LoadTask loadTask = new LoadTask();
         loadTask.execute(id);
     }
@@ -137,14 +138,14 @@ public class TaskActivity extends AppCompatActivity {
         return durationUnits;
     }
 
-    private class LoadTask extends AsyncTask<Integer, Void, Boolean> {
+    private class LoadTask extends AsyncTask<Long, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Integer... integers) {
+        protected Boolean doInBackground(Long... ids) {
             boolean success = true;
 
             try {
-                mTask = mDb.taskDao().loadById(integers[0]);
+                mTask = mDb.taskDao().loadById(ids[0]);
             } catch (Exception e) {
                 success = false;
             }
