@@ -2,8 +2,6 @@ package caseydlvr.recurringtasks.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,18 +18,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
-import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private List<Task> mTasks;
-    private RecyclerView mRecyclerView;
+    private TaskListViewModel mViewModel;
 
-    public TaskAdapter(List<Task> tasks) {
-        mTasks = tasks;
-    }
+    TaskAdapter() {}
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,25 +43,33 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
+    public int getItemCount() {
+        return mTasks != null ? mTasks.size() : 0;
+    }
 
-        mRecyclerView = recyclerView;
+    void setTasks(List<Task> tasks) {
+        if (mTasks == null) {
+            mTasks = tasks;
+            notifyItemRangeChanged(0, tasks.size());
+        } else {
+            swap(tasks);
+        }
+
+        mTasks = tasks;
+        notifyDataSetChanged();
+    }
+
+    void setViewModel(TaskListViewModel viewModel) {
+        mViewModel = viewModel;
     }
 
     public void swap(List<Task> tasks) {
         final TaskListDiffCallback diffCallback = new TaskListDiffCallback(mTasks, tasks);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        mTasks.clear();
-        mTasks.addAll(tasks);
+        mTasks = tasks;
 
         diffResult.dispatchUpdatesTo(this);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mTasks.size();
     }
 
     public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -113,56 +117,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         @OnClick(R.id.completeImageView)
         public void onCompleteImageClick(View v) {
-            CompleteTask completeTask = new CompleteTask();
-            completeTask.execute(mTask);
-        }
-
-        private class CompleteTask extends AsyncTask<Task, Void, Boolean> {
-
-            @Override
-            protected Boolean doInBackground(Task... tasks) {
-                boolean success = true;
-
-                AppDatabase db = AppDatabase.getAppDatabase(mContext);
-
-                try {
-                    db.beginTransaction();
-                    db.taskDao().delete(tasks[0]);
-                    mTasks.remove(getAdapterPosition());
-
-                    if (tasks[0].isRepeats()) {
-                        Task newTask = new Task();
-                        newTask.setName(mTask.getName());
-                        newTask.setDuration(mTask.getDuration());
-                        newTask.setDurationUnit(mTask.getDurationUnit());
-                        newTask.setRepeats(mTask.isRepeats());
-
-                        long insertId = db.taskDao().insert(newTask);
-                        newTask.setId(insertId);
-                        mTasks.add(newTask);
-                    }
-
-                    db.setTransactionSuccessful();
-                } catch (Exception e) {
-                    success = false;
-                } finally {
-                    db.endTransaction();
-                }
-
-                return success;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean success) {
-                if (success) {
-                    Snackbar.make(mRecyclerView, "Task completed!", Snackbar.LENGTH_SHORT).show();
-
-                    // TODO: notify removed, and if repeating, the new insert
-                    notifyItemRangeChanged(getAdapterPosition(), mTasks.size() - 1);
-                } else {
-                    Snackbar.make(mRecyclerView, "Complete failed! Please try again", Snackbar.LENGTH_SHORT).show();
-                }
-            }
+            mViewModel.complete(mTask);
         }
     }
 

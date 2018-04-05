@@ -1,7 +1,8 @@
 package caseydlvr.recurringtasks.ui;
 
 
-import android.os.AsyncTask;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,30 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
-import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskListFragment extends Fragment {
 
-    private List<Task> mTasks;
-    private AppDatabase mDb;
-
-    private TaskAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private TaskAdapter mTaskAdapter;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mDb = AppDatabase.getAppDatabase(getContext());
-    }
 
     @Nullable
     @Override
@@ -42,51 +32,29 @@ public class TaskListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.task_list, container, false);
         ButterKnife.bind(this, rootView);
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mTaskAdapter = new TaskAdapter();
+        mRecyclerView.setAdapter(mTaskAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        loadTasks();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final TaskListViewModel viewModel =
+                ViewModelProviders.of(this).get(TaskListViewModel.class);
+        mTaskAdapter.setViewModel(viewModel);
+
+        subscribeUi(viewModel);
     }
 
-    private void loadTasks() {
-        LoadTask loadTask = new LoadTask();
-        loadTask.execute();
-    }
-
-    private void populateTaskList() {
-        if (mAdapter == null) {
-            mAdapter = new TaskAdapter(mTasks);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.swap(mTasks);
-        }
-    }
-
-    private class LoadTask extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            boolean success = true;
-
-            try {
-                mTasks = mDb.taskDao().loadAll();
-            } catch (Exception e) {
-                success = false;
-                mTasks = new ArrayList<>();
+    private void subscribeUi(TaskListViewModel viewModel) {
+        viewModel.getOutstandingTasks().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(@Nullable List<Task> tasks) {
+                mTaskAdapter.setTasks(tasks);
             }
-
-            return success;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            populateTaskList();
-        }
+        });
     }
 }

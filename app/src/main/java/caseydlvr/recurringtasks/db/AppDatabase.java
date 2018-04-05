@@ -12,13 +12,13 @@ import caseydlvr.recurringtasks.model.*;
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static AppDatabase sInstant;
+    private static AppDatabase sInstance;
 
     public abstract TaskDao taskDao();
 
-    public static AppDatabase getAppDatabase(Context context) {
-        if (sInstant == null) {
-            sInstant = Room
+    public static AppDatabase getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = Room
                     .databaseBuilder(
                             context.getApplicationContext(),
                             AppDatabase.class,
@@ -26,6 +26,6 @@ public abstract class AppDatabase extends RoomDatabase {
                     .build();
         }
 
-        return sInstant;
+        return sInstance;
     }
 }

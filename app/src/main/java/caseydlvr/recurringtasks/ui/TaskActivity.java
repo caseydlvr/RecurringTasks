@@ -1,12 +1,14 @@
 package caseydlvr.recurringtasks.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -25,19 +27,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
-import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 
 
 public class TaskActivity extends AppCompatActivity {
 
     public static final String EXTRA_TASK_ID = "extra_task_id";
 
-    private boolean mIsNew = false;
-    private AppDatabase mDb;
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
+    private TaskViewModel mViewModel;
 
     @BindView(R.id.taskName) EditText mTaskName;
     @BindView(R.id.duration) EditText mDuration;
@@ -50,19 +51,23 @@ public class TaskActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task);
-        mDb = AppDatabase.getAppDatabase(this);
         ButterKnife.bind(this);
         mDurationUnits = buildDurationUnits(this);
         populateSpinner();
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
 
+        mViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        mViewModel.setTaskId(taskId);
 
-        if (taskId > 0) loadTask(taskId);
-        else {
-            mIsNew = true;
-            mTask = new Task();
-            populateViews();
-        }
+        mViewModel.getObservableTask().observe(this, new Observer<Task>() {
+            @Override
+            public void onChanged(@Nullable Task task) {
+                Log.d("TaskActivity", task == null ? "null" : task.getId() + "");
+                if (task == null) task = new Task();
+                mTask = task;
+                populateViews();
+            }
+        });
     }
 
     @OnClick(R.id.saveButton)
@@ -77,8 +82,7 @@ public class TaskActivity extends AppCompatActivity {
         mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getId());
         mTask.setRepeats(mRepeats.isChecked());
 
-        PersistTask persistTask = new PersistTask();
-        persistTask.execute(mTask);
+        mViewModel.persist(mTask);
     }
 
     private void populateSpinner() {
@@ -88,11 +92,6 @@ public class TaskActivity extends AppCompatActivity {
                 mDurationUnits);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDurationUnitSpinner.setAdapter(adapter);
-    }
-
-    private void loadTask(long id) {
-        LoadTask loadTask = new LoadTask();
-        loadTask.execute(id);
     }
 
     private void populateViews() {
@@ -136,57 +135,5 @@ public class TaskActivity extends AppCompatActivity {
         durationUnits.add(new DurationUnit("year", context.getString(R.string.years)));
 
         return durationUnits;
-    }
-
-    private class LoadTask extends AsyncTask<Long, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Long... ids) {
-            boolean success = true;
-
-            try {
-                mTask = mDb.taskDao().loadById(ids[0]);
-            } catch (Exception e) {
-                success = false;
-            }
-
-            if (mTask == null) {
-                mIsNew = true;
-                mTask = new Task();
-            }
-
-            return success;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            populateViews();
-        }
-    }
-
-    private class PersistTask extends AsyncTask<Task, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Task... tasks) {
-            boolean success = true;
-
-            try {
-                if (mIsNew) mDb.taskDao().insert(tasks[0]);
-                else        mDb.taskDao().update(tasks[0]);
-
-            } catch (Exception e) {
-                success = false;
-            }
-
-            if (mIsNew && success) mIsNew = false;
-
-            return success;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            if (success) showResultMessage(R.string.taskSaveSuccess);
-            else         showResultMessage(R.string.taskSaveFail);
-        }
     }
 }
