@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,6 +54,7 @@ public class TaskListFragment extends Fragment {
         viewModel.getOutstandingTasks().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
+                if (tasks != null) Collections.sort(tasks, new Task.DueDateComparator());
                 mTaskAdapter.setTasks(tasks);
             }
         });

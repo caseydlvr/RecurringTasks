@@ -6,6 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 
 import org.threeten.bp.LocalDate;
 
+import java.util.Comparator;
+
 @Entity(tableName = "tasks")
 public class Task {
     @PrimaryKey(autoGenerate = true)
@@ -127,5 +129,13 @@ public class Task {
                 || other.getDuration() != mDuration
                 || other.getDurationUnit().equals(mDurationUnit)
                 || other.isRepeats() != mRepeats);
+    }
+
+    public static class DueDateComparator implements Comparator<Task> {
+
+        @Override
+        public int compare(Task o1, Task o2) {
+            return o1.getDueDate().isBefore(o2.getDueDate()) ? -1 : o1.getDueDate().isEqual(o2.getDueDate()) ? 0 : 1;
+        }
     }
 }
