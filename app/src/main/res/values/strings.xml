@@ -11,6 +11,7 @@
     <string name="years">Years</string>
     <string name="taskSaveSuccess">Task saved!</string>
     <string name="taskSaveFail">Save failed! Please try again</string>
+    <string name="taskNotFound">Task not found! Refresh the task list</string>
     <string name="startDateLabel">Starting from</string>
     <string name="dueDateLabel">Due:</string>
     <string name="complete_task">complete task</string>

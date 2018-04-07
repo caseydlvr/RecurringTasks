@@ -8,13 +8,13 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -57,23 +57,32 @@ public class TaskActivity extends AppCompatActivity {
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
 
         mViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        mViewModel.init(taskId);
 
-        mViewModel.getObservableTask().observe(this, new Observer<Task>() {
-            @Override
-            public void onChanged(@Nullable Task task) {
-                Log.d("TaskActivity", task == null ? "null" : task.getId() + "");
-                if (task == null) task = new Task();
-                mTask = task;
-                populateViews();
-            }
-        });
+        if (taskId < 1) {
+            mTask = new Task();
+            populateViews();
+        } else {
+            mViewModel.init(taskId);
+            mViewModel.getObservableTask().observe(this, new Observer<Task>() {
+                @Override
+                public void onChanged(@Nullable Task task) {
+                    if (task == null) {
+                        Toast.makeText(getBaseContext(), R.string.taskNotFound, Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        mTask = task;
+                        populateViews();
+                    }
+                }
+            });
+        }
     }
 
     @OnClick(R.id.saveButton)
     public void saveButtonClick() {
         saveTask();
         hideKeyboard();
+        finish();
     }
 
     private void saveTask() {
