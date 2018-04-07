@@ -43,6 +43,10 @@ public class DataRepository {
         new CompleteTask(mDb).execute(task);
     }
 
+    public void delete(Task task) {
+        new DeleteTask(mDb).execute(task);
+    }
+
     private static class PersistTask extends AsyncTask<Task, Void, Void> {
         AppDatabase mDb;
 
@@ -80,6 +84,21 @@ public class DataRepository {
                     mDb.taskDao().insert(newTask);
                 }
             });
+
+            return null;
+        }
+    }
+
+    private static class DeleteTask extends AsyncTask<Task, Void, Void> {
+        AppDatabase mDb;
+
+        DeleteTask(AppDatabase db) {
+            mDb = db;
+        }
+
+        @Override
+        protected Void doInBackground(Task... tasks) {
+            mDb.taskDao().delete(tasks[0]);
 
             return null;
         }

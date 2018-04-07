@@ -119,6 +119,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void onCompleteImageClick(View v) {
             mViewModel.complete(mTask);
         }
+
+        @OnClick(R.id.deleteImageView)
+        public void onDeleteImageClick() {
+            mViewModel.delete(mTask);
+        }
     }
 
     public class TaskListDiffCallback extends DiffUtil.Callback {
