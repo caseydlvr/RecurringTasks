@@ -63,7 +63,7 @@ public class TaskActivity extends AppCompatActivity {
             populateViews();
         } else {
             mViewModel.init(taskId);
-            mViewModel.getObservableTask().observe(this, new Observer<Task>() {
+            mViewModel.getTask().observe(this, new Observer<Task>() {
                 @Override
                 public void onChanged(@Nullable Task task) {
                     if (task == null) {

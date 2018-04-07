@@ -6,21 +6,21 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import caseydlvr.recurringtasks.DataRepository;
-import caseydlvr.recurringtasks.MyApplication;
+import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.model.Task;
 
 public class TaskViewModel extends AndroidViewModel {
 
-    private LiveData<Task> mObservableTask;
+    private LiveData<Task> mTask;
     private DataRepository mDataRepository;
 
     public TaskViewModel(@NonNull Application app) {
         super(app);
-        mDataRepository = ((MyApplication) app).getRepository();
+        mDataRepository = ((RecurringTaskApp) app).getRepository();
     }
 
-    public LiveData<Task> getObservableTask() {
-        return mObservableTask;
+    public LiveData<Task> getTask() {
+        return mTask;
     }
 
     public void persist(Task task) {
@@ -28,6 +28,6 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void init(long taskId) {
-        mObservableTask = mDataRepository.loadTaskById(taskId);
+        mTask = mDataRepository.loadTaskById(taskId);
     }
 }

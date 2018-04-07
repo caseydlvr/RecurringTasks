@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import caseydlvr.recurringtasks.DataRepository;
-import caseydlvr.recurringtasks.MyApplication;
+import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.model.Task;
 
 public class TaskListViewModel extends AndroidViewModel {
@@ -18,7 +18,7 @@ public class TaskListViewModel extends AndroidViewModel {
 
     public TaskListViewModel(@NonNull Application app) {
         super(app);
-        mRepository = ((MyApplication) app).getRepository();
+        mRepository = ((RecurringTaskApp) app).getRepository();
         mObservableTasks = mRepository.loadOutstandingTasks();
     }
 

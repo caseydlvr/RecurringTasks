@@ -7,7 +7,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 import caseydlvr.recurringtasks.db.AppDatabase;
 
 
-public class MyApplication extends Application {
+public class RecurringTaskApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
