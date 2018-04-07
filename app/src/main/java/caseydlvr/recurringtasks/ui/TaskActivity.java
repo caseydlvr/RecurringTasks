@@ -57,7 +57,7 @@ public class TaskActivity extends AppCompatActivity {
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
 
         mViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        mViewModel.setTaskId(taskId);
+        mViewModel.init(taskId);
 
         mViewModel.getObservableTask().observe(this, new Observer<Task>() {
             @Override

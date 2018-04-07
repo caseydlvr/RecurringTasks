@@ -27,7 +27,7 @@ public class TaskViewModel extends AndroidViewModel {
         mDataRepository.persist(task);
     }
 
-    public void setTaskId(long taskId) {
+    public void init(long taskId) {
         mObservableTask = mDataRepository.loadTaskById(taskId);
     }
 }
