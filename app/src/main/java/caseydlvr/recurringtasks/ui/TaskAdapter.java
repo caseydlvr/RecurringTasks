@@ -1,6 +1,8 @@
 package caseydlvr.recurringtasks.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -122,7 +124,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         @OnClick(R.id.deleteImageView)
         public void onDeleteImageClick() {
-            mViewModel.delete(mTask);
+            new AlertDialog.Builder(mContext)
+                .setMessage(R.string.deleteTaskMessage)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mViewModel.delete(mTask);
+                    }
+                })
+                .setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
         }
     }
 

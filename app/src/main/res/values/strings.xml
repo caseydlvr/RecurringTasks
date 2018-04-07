@@ -15,4 +15,7 @@
     <string name="startDateLabel">Starting from</string>
     <string name="dueDateLabel">Due:</string>
     <string name="complete_task">complete task</string>
+    <string name="dialogCancel">Cancel</string>
+    <string name="deleteTaskMessage">Delete task?</string>
+    <string name="delete">Delete</string>
 </resources>
