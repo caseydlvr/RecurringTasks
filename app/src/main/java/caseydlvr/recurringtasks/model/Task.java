@@ -33,6 +33,8 @@ public class Task {
     private boolean mRepeats;
 
     public Task() {
+        mDuration = 1;
+        mDurationUnit = "day";
         mStartDate = LocalDate.now();
         mRepeats = true;
     }
