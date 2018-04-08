@@ -1,5 +1,7 @@
 package caseydlvr.recurringtasks.ui;
 
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -10,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -32,7 +35,7 @@ import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 
 
-public class TaskActivity extends AppCompatActivity {
+public class TaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     public static final String EXTRA_TASK_ID = "extra_task_id";
 
@@ -85,6 +88,15 @@ public class TaskActivity extends AppCompatActivity {
         finish();
     }
 
+    @OnClick(R.id.startDate)
+    public void startDateClick() {
+        DialogFragment dateFragment = new DatePickerDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(DatePickerDialogFragment.KEY_LOCAL_DATE, mTask.getStartDate().toString());
+        dateFragment.setArguments(args);
+        dateFragment.show(getFragmentManager(), "start_date_picker");
+    }
+
     private void saveTask() {
         mTask.setName(mTaskName.getText().toString());
         mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
@@ -112,8 +124,7 @@ public class TaskActivity extends AppCompatActivity {
         mRepeats.setChecked(mTask.isRepeats());
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
-        mStartDate.setText(mTask.getStartDate()
-                .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+        mStartDate.setText(formatDate(mTask.getStartDate()));
     }
 
     private int getDurationUnitsIndex(String id) {
@@ -136,6 +147,10 @@ public class TaskActivity extends AppCompatActivity {
         }
     }
 
+    private String formatDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+    }
+
     public static List<DurationUnit> buildDurationUnits(Context context) {
         List<DurationUnit> durationUnits = new ArrayList<>();
         durationUnits.add(new DurationUnit("day", context.getString(R.string.days)));
@@ -144,5 +159,14 @@ public class TaskActivity extends AppCompatActivity {
         durationUnits.add(new DurationUnit("year", context.getString(R.string.years)));
 
         return durationUnits;
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        String dateString = year + "-"
+                + String.format("%02d", month + 1) + "-"
+                + String.format("%02d", dayOfMonth);
+        mTask.setStartDate(LocalDate.parse(dateString));
+        mStartDate.setText(formatDate(mTask.getStartDate()));
     }
 }
