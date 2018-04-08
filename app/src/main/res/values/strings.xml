@@ -18,4 +18,5 @@
     <string name="dialogCancel">Cancel</string>
     <string name="deleteTaskMessage">Delete task?</string>
     <string name="delete">Delete</string>
+    <string name="dueDateDetailLabel">Due around (calculated)</string>
 </resources>
