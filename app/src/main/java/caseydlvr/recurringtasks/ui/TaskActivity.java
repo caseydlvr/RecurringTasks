@@ -29,6 +29,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
+import butterknife.OnFocusChange;
+import butterknife.OnItemSelected;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
@@ -49,22 +52,23 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @BindView(R.id.startDate) TextView mStartDate;
     @BindView(R.id.repeats) Switch mRepeats;
     @BindView(R.id.taskViewLayout) ConstraintLayout mLayout;
+    @BindView(R.id.dueDate) TextView mDueDate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task);
         ButterKnife.bind(this);
+
+        mTask = new Task();
         mDurationUnits = buildDurationUnits(this);
         populateSpinner();
-        long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
+        populateViews();
 
+        long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
         mViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
 
-        if (taskId < 1) {
-            mTask = new Task();
-            populateViews();
-        } else {
+        if (taskId > 0) {
             mViewModel.init(taskId);
             mViewModel.getTask().observe(this, new Observer<Task>() {
                 @Override
@@ -97,6 +101,25 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         dateFragment.show(getFragmentManager(), "start_date_picker");
     }
 
+    @OnItemSelected(R.id.durationUnitSpinner)
+    public void durationUnitChange() {
+        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getId());
+        mDueDate.setText(formatDate(mTask.getDueDate()));
+    }
+
+    @OnFocusChange(R.id.duration)
+    public void durationFocus(boolean hasFocus) {
+        if (!hasFocus) durationChange();
+    }
+
+    @OnEditorAction(R.id.duration)
+    public boolean durationChange() {
+        mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
+        mDueDate.setText(formatDate(mTask.getDueDate()));
+
+        return false;
+    }
+
     private void saveTask() {
         mTask.setName(mTaskName.getText().toString());
         mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
@@ -125,6 +148,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
         mStartDate.setText(formatDate(mTask.getStartDate()));
+        mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 
     private int getDurationUnitsIndex(String id) {
@@ -148,7 +172,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
     private String formatDate(LocalDate date) {
-        return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+        return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
 
     public static List<DurationUnit> buildDurationUnits(Context context) {
@@ -168,5 +192,6 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 + String.format("%02d", dayOfMonth);
         mTask.setStartDate(LocalDate.parse(dateString));
         mStartDate.setText(formatDate(mTask.getStartDate()));
+        mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 }
