@@ -19,4 +19,6 @@
     <string name="deleteTaskMessage">Delete task?</string>
     <string name="delete">Delete</string>
     <string name="dueDateDetailLabel">Due around (calculated)</string>
+    <string name="newTask">New task</string>
+    <string name="editTask">Edit task</string>
 </resources>

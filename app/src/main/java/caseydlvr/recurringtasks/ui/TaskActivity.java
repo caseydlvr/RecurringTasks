@@ -9,7 +9,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -53,12 +57,18 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @BindView(R.id.repeats) Switch mRepeats;
     @BindView(R.id.taskViewLayout) ConstraintLayout mLayout;
     @BindView(R.id.dueDate) TextView mDueDate;
+    @BindView(R.id.taskToolbar) Toolbar mToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task);
         ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mTask = new Task();
         mDurationUnits = buildDurationUnits(this);
@@ -82,14 +92,30 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                     }
                 }
             });
+        } else {
+            actionBar.setTitle(R.string.newTask);
         }
     }
 
-    @OnClick(R.id.saveButton)
-    public void saveButtonClick() {
-        saveTask();
-        hideKeyboard();
-        finish();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_task, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                saveTask();
+                finish();
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @OnClick(R.id.startDate)
