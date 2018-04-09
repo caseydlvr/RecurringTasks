@@ -19,8 +19,7 @@
         android:inputType="text"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/durationLabel"
@@ -30,6 +29,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/durationLabel"
         android:textSize="12sp"
+        android:labelFor="@+id/duration"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taskName"/>
 
@@ -122,7 +122,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dueDateLabel"
-        tools:text="Mar 29, 2018"/>
+        tools:text="January 29, 2018"/>
 
     <View
         style="@style/Divider"
@@ -141,18 +141,27 @@
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:checked="true"
         android:splitTrack="false"
         android:switchPadding="8dp"
         android:text="@string/repeatsLabel"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3"
         tools:checked="false"/>
 
+    <View
+        style="@style/Divider"
+        android:id="@+id/divider4"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repeats"/>
 
     <Button
         android:id="@+id/saveButton"
@@ -162,6 +171,6 @@
         android:layout_marginTop="24dp"
         android:text="@string/saveLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repeats"/>
+        app:layout_constraintTop_toBottomOf="@+id/divider4"/>
 
 </android.support.constraint.ConstraintLayout>
