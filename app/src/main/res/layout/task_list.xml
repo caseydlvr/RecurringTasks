@@ -8,5 +8,4 @@
                                         android:paddingBottom="72dp"
                                         android:scrollbars="vertical"
                                         tools:listitem="@layout/task_list_item">
-
 </android.support.v7.widget.RecyclerView>

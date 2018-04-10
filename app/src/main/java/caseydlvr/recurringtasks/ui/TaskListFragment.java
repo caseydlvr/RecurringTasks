@@ -58,5 +58,15 @@ public class TaskListFragment extends Fragment {
                 mTaskAdapter.setTasks(tasks);
             }
         });
+
+        viewModel.isLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isLoading) {
+                if (isLoading != null) {
+                    if (isLoading) ((MainActivity) getActivity()).showLoadingSpinner();
+                    else           ((MainActivity) getActivity()).hideLoadingSpinner();
+                }
+            }
+        });
     }
 }

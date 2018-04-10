@@ -1,6 +1,7 @@
 package caseydlvr.recurringtasks;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class DataRepository {
     private static DataRepository sInstance;
 
     private final AppDatabase mDb;
-
+    private MutableLiveData<Boolean> mIsLoading = new MutableLiveData<>();
 
     private DataRepository(final AppDatabase db) {
         mDb = db;
@@ -28,7 +29,7 @@ public class DataRepository {
     }
 
     public void persist(Task task) {
-        new PersistTask(mDb).execute(task);
+        new PersistTask(this).execute(task);
     }
 
     public LiveData<Task> loadTaskById(final long id) {
@@ -40,39 +41,66 @@ public class DataRepository {
     }
 
     public void complete(Task task) {
-        new CompleteTask(mDb).execute(task);
+        new CompleteTask(this).execute(task);
     }
 
     public void delete(Task task) {
-        new DeleteTask(mDb).execute(task);
+        new DeleteTask(this).execute(task);
+    }
+
+    public MutableLiveData<Boolean> isLoading() {
+        return mIsLoading;
+    }
+
+    public void isLoading(boolean isLoading) {
+        mIsLoading.setValue(isLoading);
+    }
+
+    public AppDatabase getDb() {
+        return mDb;
     }
 
     private static class PersistTask extends AsyncTask<Task, Void, Void> {
-        AppDatabase mDb;
+        DataRepository mDr;
 
-        PersistTask(AppDatabase db) {
-            mDb = db;
+        PersistTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDr.isLoading(true);
         }
 
         @Override
         protected Void doInBackground(Task... tasks) {
-            mDb.taskDao().insert(tasks[0]);
+            mDr.getDb().taskDao().insert(tasks[0]);
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mDr.isLoading(false);
         }
     }
 
     private static class CompleteTask extends AsyncTask<Task, Void, Void> {
-        AppDatabase mDb;
+        DataRepository mDr;
 
-        CompleteTask(AppDatabase db) {
-            mDb = db;
+        CompleteTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDr.isLoading(true);
         }
 
         @Override
         protected Void doInBackground(Task... tasks) {
-            mDb.runInTransaction(() -> {
-                mDb.taskDao().delete(tasks[0]);
+            mDr.getDb().runInTransaction(() -> {
+                mDr.getDb().taskDao().delete(tasks[0]);
 
                 if (tasks[0].isRepeats()) {
                     Task newTask = new Task();
@@ -81,26 +109,41 @@ public class DataRepository {
                     newTask.setDurationUnit(tasks[0].getDurationUnit());
                     newTask.setRepeats(tasks[0].isRepeats());
 
-                    mDb.taskDao().insert(newTask);
+                    mDr.getDb().taskDao().insert(newTask);
                 }
             });
 
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mDr.isLoading(false);
+        }
     }
 
     private static class DeleteTask extends AsyncTask<Task, Void, Void> {
-        AppDatabase mDb;
+        DataRepository mDr;
 
-        DeleteTask(AppDatabase db) {
-            mDb = db;
+        DeleteTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDr.isLoading(true);
         }
 
         @Override
         protected Void doInBackground(Task... tasks) {
-            mDb.taskDao().delete(tasks[0]);
+            mDr.getDb().taskDao().delete(tasks[0]);
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mDr.isLoading(false);
         }
     }
 }

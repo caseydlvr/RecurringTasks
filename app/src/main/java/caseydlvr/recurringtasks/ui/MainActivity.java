@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,6 +17,8 @@ import caseydlvr.recurringtasks.R;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.progressBar)
+    ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,5 +54,13 @@ public class MainActivity extends AppCompatActivity {
     public void fabClick(View view) {
         Intent intent = new Intent(this, TaskActivity.class);
         startActivity(intent);
+    }
+
+    public void showLoadingSpinner() {
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+    }
+
+    public void hideLoadingSpinner() {
+        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 }

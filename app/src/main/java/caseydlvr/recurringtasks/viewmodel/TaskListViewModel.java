@@ -15,15 +15,21 @@ public class TaskListViewModel extends AndroidViewModel {
 
     private final LiveData<List<Task>> mObservableTasks;
     private DataRepository mRepository;
+    private LiveData<Boolean> mIsLoading;
 
     public TaskListViewModel(@NonNull Application app) {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
         mObservableTasks = mRepository.loadOutstandingTasks();
+        mIsLoading = mRepository.isLoading();
     }
 
     public LiveData<List<Task>> getOutstandingTasks() {
         return mObservableTasks;
+    }
+
+    public LiveData<Boolean> isLoading() {
+        return mIsLoading;
     }
 
     public void complete(Task task) {
