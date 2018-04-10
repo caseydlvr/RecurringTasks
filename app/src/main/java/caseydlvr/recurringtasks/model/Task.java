@@ -3,8 +3,10 @@ package caseydlvr.recurringtasks.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.util.Log;
 
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.temporal.ChronoUnit;
 
 import java.util.Comparator;
 
@@ -93,6 +95,24 @@ public class Task {
         }
 
         return dueDate;
+    }
+
+    public int getPriority() {
+        int priority;
+        LocalDate today = LocalDate.now();
+        LocalDate dueDate = getDueDate();
+        int durationDays = (int) ChronoUnit.DAYS.between(mStartDate, dueDate);
+        int daysSinceStartDate = (int) ChronoUnit.DAYS.between(mStartDate, today);
+        double percentOfDuration = ((double) daysSinceStartDate )/ ((double) durationDays);
+        int gracePeriod = (durationDays / 7) > 0 ? (durationDays / 7) : 1;
+        LocalDate dueStart = dueDate.minusDays(gracePeriod);
+        LocalDate dueEnd = dueDate.plusDays(gracePeriod);
+
+        if (today.isAfter(dueEnd)) priority = 0;
+        else if (today.isBefore(dueEnd) && today.isAfter(dueStart)) priority = 1;
+        else priority = 10;
+
+        return priority;
     }
 
     public LocalDate getStartDate() {
