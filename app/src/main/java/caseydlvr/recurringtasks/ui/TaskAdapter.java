@@ -80,9 +80,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private Context mContext;
 
         @BindView(R.id.taskName) TextView mTaskName;
-        @BindView(R.id.dueDate) TextView mDueDate;
-        @BindView(R.id.duration) TextView mDuration;
-        @BindView(R.id.durationUnit) TextView mDurationUnit;
+        @BindView(R.id.dueDateRow) TextView mDueDateRow;
+        @BindView(R.id.durationRow) TextView mDurationRow;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -94,18 +93,23 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             List<DurationUnit> durationUnits = TaskActivity.buildDurationUnits(mContext);
             mTask = task;
 
-            mTaskName.setText(task.getName());
-            mDueDate.setText(task.getDueDate()
-                    .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
-            mDuration.setText(String.valueOf(task.getDuration()));
+            String dueDateRow = mContext.getString(R.string.dueDateLabel)
+                    + " "
+                    + task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
+
+            String durationRow = mContext.getString(R.string.durationLabel) + " " + task.getDuration() + " ";
 
             String durationUnit = task.getDurationUnit();
             for (DurationUnit du : durationUnits) {
                 if (durationUnit.equals(du.getId())) {
-                    mDurationUnit.setText(du.getName().toLowerCase());
+                    durationRow += du.getName().toLowerCase();
                     break;
                 }
             }
+
+            mTaskName.setText(task.getName());
+            mDueDateRow.setText(dueDateRow);
+            mDurationRow.setText(durationRow);
         }
 
         @Override
