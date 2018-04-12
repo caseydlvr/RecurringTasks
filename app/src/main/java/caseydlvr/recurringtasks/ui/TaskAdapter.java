@@ -56,8 +56,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         notifyItemRemoved(position);
     }
 
-
-
     void setTasks(List<Task> tasks) {
         if (mTasks == null) {
             mTasks = tasks;
