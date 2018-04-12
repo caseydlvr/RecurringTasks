@@ -1,8 +1,11 @@
 package caseydlvr.recurringtasks.ui;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
 
 
 public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
@@ -37,7 +40,17 @@ public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        final ColorDrawable background = new ColorDrawable(Color.RED);
+        View itemView = viewHolder.itemView;
+
+        if (dX > 0) { // swiping to the right
+            background.setBounds(0, itemView.getTop(), (int) (itemView.getLeft() + dX), itemView.getBottom());
+        } else { // swiping to the left
+            background.setBounds((int) (itemView.getRight()+dX), itemView.getTop(), itemView.getRight(), itemView.getBottom());
+        }
+
+        background.draw(c);
+
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
-
 }
