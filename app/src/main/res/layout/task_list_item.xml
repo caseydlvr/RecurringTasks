@@ -47,12 +47,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="2dp"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/deleteImageView"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dueStatus"
         app:layout_constraintTop_toBottomOf="@+id/taskName"
+        app:layout_goneMarginLeft="16dp"
         tools:text="Due: 10/18/2018"/>
 
     <TextView
@@ -79,5 +80,20 @@
         app:layout_constraintEnd_toStartOf="@+id/completeImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_delete"/>
+
+    <TextView
+        android:id="@+id/dueStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/overdueColor"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taskName"
+        tools:text="Overdue"/>
 
 </android.support.constraint.ConstraintLayout>

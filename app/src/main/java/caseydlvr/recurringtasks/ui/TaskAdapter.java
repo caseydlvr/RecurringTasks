@@ -82,6 +82,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @BindView(R.id.taskName) TextView mTaskName;
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
         @BindView(R.id.durationRow) TextView mDurationRow;
+        @BindView(R.id.dueStatus) TextView mDueStatus;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -92,6 +93,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void bindTask(Task task) {
             List<DurationUnit> durationUnits = TaskActivity.buildDurationUnits(mContext);
             mTask = task;
+
+            switch (mTask.getDueStatus()) {
+                case 0:
+                    mDueStatus.setText(R.string.overdueStatus);
+                    mDueStatus.setBackgroundColor(mContext.getResources().getColor(R.color.overdueColor));
+                    mDueStatus.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    mDueStatus.setText(R.string.dueStatus);
+                    mDueStatus.setBackgroundColor(mContext.getResources().getColor(R.color.dueColor));
+                    mDueStatus.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    mDueStatus.setVisibility(View.GONE);
+                    break;
+            }
 
             String dueDateRow = mContext.getString(R.string.dueDateLabel)
                     + " "

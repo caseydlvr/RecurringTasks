@@ -21,4 +21,6 @@
     <string name="dueDateDetailLabel">Due around (calculated)</string>
     <string name="newTask">New task</string>
     <string name="editTask">Edit task</string>
+    <string name="overdueStatus">Overdue</string>
+    <string name="dueStatus">Due</string>
 </resources>
