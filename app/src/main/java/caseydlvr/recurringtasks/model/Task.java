@@ -108,7 +108,9 @@ public class Task {
         LocalDate dueEnd = dueDate.plusDays(gracePeriod);
 
         if (today.isAfter(dueEnd)) priority = 0;
-        else if (today.isBefore(dueEnd) && today.isAfter(dueStart)) priority = 1;
+        else if (today.isBefore(dueEnd) && today.isAfter(dueStart)
+                || today.isEqual(dueStart)
+                || today.isEqual(dueEnd)) priority = 1;
         else priority = 10;
 
         return priority;
