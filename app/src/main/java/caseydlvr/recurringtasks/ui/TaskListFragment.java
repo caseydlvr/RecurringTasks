@@ -54,7 +54,7 @@ public class TaskListFragment extends Fragment {
         viewModel.getOutstandingTasks().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
-                if (tasks != null) Collections.sort(tasks, new Task.DueDateComparator());
+                if (tasks != null) Collections.sort(tasks, new Task.TaskComparator());
                 mTaskAdapter.setTasks(tasks);
             }
         });

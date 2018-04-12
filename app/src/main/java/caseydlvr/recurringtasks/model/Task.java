@@ -3,7 +3,6 @@ package caseydlvr.recurringtasks.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.util.Log;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -97,7 +96,7 @@ public class Task {
         return dueDate;
     }
 
-    public int getPriority() {
+    public int getDueStatus() {
         int priority;
         LocalDate today = LocalDate.now();
         LocalDate dueDate = getDueDate();
@@ -153,11 +152,15 @@ public class Task {
                 || other.isRepeats() != mRepeats);
     }
 
-    public static class DueDateComparator implements Comparator<Task> {
+    public static class TaskComparator implements Comparator<Task> {
 
         @Override
         public int compare(Task o1, Task o2) {
-            return o1.getDueDate().isBefore(o2.getDueDate()) ? -1 : o1.getDueDate().isEqual(o2.getDueDate()) ? 0 : 1;
+            if (o1.getDueStatus() < o2.getDueStatus()) return -1;
+            else if (o1.getDueStatus() > o2.getDueStatus()) return 1;
+            else if (o1.getDueDate().isBefore(o2.getDueDate())) return -1;
+            else if (o1.getDueDate().isEqual(o2.getDueDate())) return 0;
+            else return 1;
         }
     }
 }
