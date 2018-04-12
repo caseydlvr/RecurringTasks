@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -36,9 +37,12 @@ public class TaskListFragment extends Fragment {
 
         mTaskAdapter = new TaskAdapter();
         mRecyclerView.setAdapter(mTaskAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(layoutManager);
         ItemTouchHelper touchHelper = new ItemTouchHelper(new SwipeToDismissCallback(mTaskAdapter));
         touchHelper.attachToRecyclerView(mRecyclerView);
+        mRecyclerView.addItemDecoration(
+                new DividerItemDecoration(mRecyclerView.getContext(), layoutManager.getOrientation()));
 
 
         return rootView;
