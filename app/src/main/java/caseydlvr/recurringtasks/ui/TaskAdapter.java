@@ -24,7 +24,8 @@ import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>
+        implements ItemTouchSwipeHandler {
 
     private List<Task> mTasks;
     private TaskListViewModel mViewModel;
@@ -48,6 +49,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public int getItemCount() {
         return mTasks != null ? mTasks.size() : 0;
     }
+
+    @Override
+    public void onItemSwiped(int position) {
+        mTasks.remove(position);
+        notifyItemRemoved(position);
+    }
+
+
 
     void setTasks(List<Task> tasks) {
         if (mTasks == null) {
