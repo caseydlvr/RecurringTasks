@@ -3,6 +3,8 @@ package caseydlvr.recurringtasks.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -37,10 +39,18 @@ public class TaskListFragment extends Fragment {
 
         mTaskAdapter = new TaskAdapter();
         mRecyclerView.setAdapter(mTaskAdapter);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(new SwipeToDismissCallback(mTaskAdapter));
+
+        ColorDrawable swipeBackgroundColor = new ColorDrawable(getResources().getColor(R.color.deleteColor));
+        BitmapDrawable swipeActionIcon = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_delete);
+        SwipeToDismissCallback swipeToDismissCallback =
+                new SwipeToDismissCallback(mTaskAdapter, swipeBackgroundColor, swipeActionIcon);
+
+        ItemTouchHelper touchHelper = new ItemTouchHelper(swipeToDismissCallback);
         touchHelper.attachToRecyclerView(mRecyclerView);
+
         mRecyclerView.addItemDecoration(
                 new DividerItemDecoration(mRecyclerView.getContext(), layoutManager.getOrientation()));
 

@@ -6,4 +6,5 @@
     <color name="primaryTextColor">#ffffff</color>
     <color name="overdueColor">#ff0000</color>
     <color name="dueColor">#007bff</color>
+    <color name="deleteColor">#ff0000</color>
 </resources>
