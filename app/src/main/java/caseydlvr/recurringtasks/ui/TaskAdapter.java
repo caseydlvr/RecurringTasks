@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private List<Task> mTasks;
     private TaskListViewModel mViewModel;
+    private RecyclerView mRecyclerView;
 
     TaskAdapter() {}
 
@@ -52,9 +55,27 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onItemSwiped(int position) {
-        mViewModel.delete(mTasks.get(position));
+        final Task deletedTask = mTasks.get(position);
+        final int deletedIndex = position;
+
         mTasks.remove(position);
         notifyItemRemoved(position);
+
+        Snackbar.make(mRecyclerView, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
+            .setAction(R.string.undo, v -> {
+                mTasks.add(deletedIndex, deletedTask);
+                notifyItemInserted(deletedIndex);
+            }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    if (event != DISMISS_EVENT_ACTION) mViewModel.delete(deletedTask);
+                }
+            }).show();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        mRecyclerView = recyclerView;
     }
 
     void setTasks(List<Task> tasks) {
