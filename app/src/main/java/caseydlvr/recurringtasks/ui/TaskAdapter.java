@@ -52,6 +52,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onItemSwiped(int position) {
+        mViewModel.delete(mTasks.get(position));
         mTasks.remove(position);
         notifyItemRemoved(position);
     }
