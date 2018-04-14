@@ -87,7 +87,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
 
         mTasks = tasks;
-        notifyDataSetChanged();
     }
 
     void setViewModel(TaskListViewModel viewModel) {
