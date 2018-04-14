@@ -25,4 +25,5 @@
     <string name="dueStatus">Due</string>
     <string name="undo">UNDO</string>
     <string name="taskDeleteSuccess">Task deleted!</string>
+    <string name="taskCompleteSuccess">Task completed!</string>
 </resources>

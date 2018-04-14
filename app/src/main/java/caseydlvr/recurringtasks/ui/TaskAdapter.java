@@ -169,7 +169,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         @OnClick(R.id.completeImageView)
         public void onCompleteImageClick(View v) {
-            mViewModel.complete(mTask);
+            final int position = getAdapterPosition();
+
+            mTasks.remove(position);
+            notifyItemRemoved(position);
+
+            Snackbar.make(mRecyclerView, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.undo, l -> {
+                    mTasks.add(position, mTask);
+                    notifyItemInserted(position);
+                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(mTask);
+                    }
+                }).show();
         }
 
         @OnClick(R.id.deleteImageView)
