@@ -1,8 +1,6 @@
 package caseydlvr.recurringtasks.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -11,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import org.threeten.bp.format.DateTimeFormatter;
@@ -138,9 +137,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                     break;
             }
 
-            String dueDateRow = mContext.getString(R.string.dueDateLabel)
-                    + " "
-                    + task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
+            String dueDateRow = task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
 
             String durationRow = mContext.getString(R.string.durationLabel) + " " + task.getDuration() + " ";
 
@@ -166,12 +163,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             context.startActivity(intent);
         }
 
-        @OnClick(R.id.completeImageView)
-        public void onCompleteImageClick(View v) {
+        @OnClick(R.id.completeCheckBox)
+        public void onCompleteCheckBoxClick(View v) {
             final int position = getAdapterPosition();
 
             mTasks.remove(position);
             notifyItemRemoved(position);
+            ((CheckBox) v).setChecked(false);
 
             Snackbar.make(mRecyclerView, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.undo, l -> {
@@ -183,25 +181,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                         if (event != DISMISS_EVENT_ACTION) mViewModel.complete(mTask);
                     }
                 }).show();
-        }
-
-        @OnClick(R.id.deleteImageView)
-        public void onDeleteImageClick() {
-            new AlertDialog.Builder(mContext)
-                .setMessage(R.string.deleteTaskMessage)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mViewModel.delete(mTask);
-                    }
-                })
-                .setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .show();
         }
     }
 
