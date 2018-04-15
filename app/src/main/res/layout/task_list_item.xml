@@ -39,7 +39,7 @@
         android:id="@+id/listItemLayout"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:background="@android:color/white">
+        android:background="?android:colorBackground">
 
         <TextView
             android:id="@+id/taskName"
