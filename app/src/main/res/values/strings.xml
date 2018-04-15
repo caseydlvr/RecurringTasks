@@ -26,4 +26,5 @@
     <string name="undo">UNDO</string>
     <string name="taskDeleteSuccess">Task deleted</string>
     <string name="taskCompleteSuccess">Task completed</string>
+    <string name="deleteIconContentDescription">Delete icon</string>
 </resources>
