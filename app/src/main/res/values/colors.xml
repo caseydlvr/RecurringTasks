@@ -1,9 +1,9 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-    <color name="primaryColor">#1976d2</color>
-    <color name="primaryLightColor">#63a4ff</color>
-    <color name="primaryDarkColor">#004ba0</color>
-    <color name="primaryTextColor">#ffffff</color>
+    <color name="primaryColor">#3F51B5</color>
+    <color name="primaryLightColor">#C5CAE8</color>
+    <color name="primaryDarkColor">#303F9F</color>
+    <color name="secondaryColor">#FF4081</color>
     <color name="overdueColor">#ff0000</color>
     <color name="dueColor">#007bff</color>
     <color name="deleteColor">#ff0000</color>
