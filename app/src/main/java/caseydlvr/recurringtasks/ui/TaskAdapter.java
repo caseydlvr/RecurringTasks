@@ -2,6 +2,7 @@ package caseydlvr.recurringtasks.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.util.DiffUtil;
@@ -106,6 +107,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private Task mTask;
         private Context mContext;
 
+        @BindView(R.id.listItemLayout) ConstraintLayout mListItemLayout;
         @BindView(R.id.taskName) TextView mTaskName;
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
         @BindView(R.id.durationRow) TextView mDurationRow;
@@ -181,6 +183,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                         if (event != DISMISS_EVENT_ACTION) mViewModel.complete(mTask);
                     }
                 }).show();
+        }
+
+        public ConstraintLayout getListItemLayout() {
+            return mListItemLayout;
         }
     }
 

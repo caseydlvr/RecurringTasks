@@ -43,12 +43,7 @@ public class TaskListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
-        ColorDrawable swipeBackgroundColor = new ColorDrawable(getResources().getColor(R.color.deleteColor));
-        BitmapDrawable swipeActionIcon = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_delete_white);
-        SwipeToDismissCallback swipeToDismissCallback =
-                new SwipeToDismissCallback(mTaskAdapter, swipeBackgroundColor, swipeActionIcon);
-
-        ItemTouchHelper touchHelper = new ItemTouchHelper(swipeToDismissCallback);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(new SwipeToDismissCallback(mTaskAdapter));
         touchHelper.attachToRecyclerView(mRecyclerView);
 
         mRecyclerView.addItemDecoration(

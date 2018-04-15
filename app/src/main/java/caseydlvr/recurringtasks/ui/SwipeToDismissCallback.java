@@ -13,23 +13,9 @@ import android.view.View;
 public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
 
     private ItemTouchSwipeHandler mHandler;
-    private ColorDrawable mBackground;
-    private BitmapDrawable mIcon;
-//    private Paint mClearPaint = new Paint(); // for clearCanvas
 
     SwipeToDismissCallback(ItemTouchSwipeHandler handler) {
         mHandler = handler;
-//        mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-    }
-
-    SwipeToDismissCallback(ItemTouchSwipeHandler handler, ColorDrawable background) {
-        this(handler);
-        mBackground = background;
-    }
-
-    SwipeToDismissCallback(ItemTouchSwipeHandler handler, ColorDrawable background, BitmapDrawable icon) {
-        this(handler, background);
-        mIcon = icon;
     }
 
     @Override
@@ -55,43 +41,34 @@ public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
     }
 
     @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        final View foregroundView = ((TaskAdapter.TaskViewHolder) viewHolder).getListItemLayout();
 
-        if (mBackground == null && mIcon == null) return;
-
-//        boolean isCanceled = dX == 0f && !isCurrentlyActive;
-//
-//        if (isCanceled) {
-//            clearCanvas(c, itemView.getRight() + dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-//            return;
-//        }
-
-        boolean swipeRight = dX > 0;
-        Rect bounds;
-        View itemView = viewHolder.itemView;
-
-        if (swipeRight) {
-            bounds = new Rect(itemView.getLeft(), itemView.getTop(), (int) (itemView.getLeft() + dX), itemView.getBottom());
-        } else {
-            bounds = new Rect((int) (itemView.getRight()+dX), itemView.getTop(), itemView.getRight(), itemView.getBottom());
-        }
-
-        if (mBackground != null) {
-            mBackground.setBounds(bounds);
-            mBackground.draw(c);
-        }
-
-        if (mIcon != null) {
-            if (swipeRight) mIcon.setGravity(Gravity.LEFT | Gravity.CLIP_HORIZONTAL);
-            else            mIcon.setGravity(Gravity.RIGHT | Gravity.CLIP_HORIZONTAL);
-
-            mIcon.setBounds(bounds);
-            mIcon.draw(c);
-        }
+        getDefaultUIUtil().clearView(foregroundView);
     }
 
-//    private void clearCanvas(Canvas c, float left, float top, float right, float bottom) {
-//        c.drawRect(left, top, right, bottom, mClearPaint);
-//    }
+    @Override
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        final View foregroundView = ((TaskAdapter.TaskViewHolder) viewHolder).getListItemLayout();
+
+        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
+                actionState, isCurrentlyActive);
+    }
+
+    @Override
+    public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        final View foregroundView = ((TaskAdapter.TaskViewHolder) viewHolder).getListItemLayout();
+
+        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
+                actionState, isCurrentlyActive);
+    }
+
+    @Override
+    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+        if (viewHolder != null) {
+            final View foregroundView = ((TaskAdapter.TaskViewHolder) viewHolder).getListItemLayout();
+
+            getDefaultUIUtil().onSelected(foregroundView);
+        }
+    }
 }
