@@ -4,5 +4,5 @@ import android.view.View;
 
 public interface ItemTouchSwipeTarget {
     View getSwipeForeground();
-    void prepareSwipeBackground(int swipeDirection);
+    void prepareSwipeBackground(int direction);
 }

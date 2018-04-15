@@ -56,23 +56,40 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     @Override
-    public void onItemSwiped(int position) {
-        final Task deletedTask = mTasks.get(position);
-        final int deletedIndex = position;
+    public void onItemSwiped(int position, int direction) {
+        final Task task = mTasks.get(position);
+        final int index = position;
 
-        mTasks.remove(position);
-        notifyItemRemoved(position);
+        if (direction == ItemTouchHelper.LEFT) {
 
-        Snackbar.make(mRecyclerView, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
-            .setAction(R.string.undo, v -> {
-                mTasks.add(deletedIndex, deletedTask);
-                notifyItemInserted(deletedIndex);
-            }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                @Override
-                public void onDismissed(Snackbar transientBottomBar, int event) {
-                    if (event != DISMISS_EVENT_ACTION) mViewModel.delete(deletedTask);
-                }
-            }).show();
+            mTasks.remove(index);
+            notifyItemRemoved(index);
+
+            Snackbar.make(mRecyclerView, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, v -> {
+                    mTasks.add(index, task);
+                    notifyItemInserted(index);
+                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        if (event != DISMISS_EVENT_ACTION) mViewModel.delete(task);
+                    }
+                }).show();
+        } else {
+            mTasks.remove(index);
+            notifyItemRemoved(index);
+
+            Snackbar.make(mRecyclerView, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.undo, l -> {
+                    mTasks.add(index, task);
+                    notifyItemInserted(index);
+                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(task);
+                    }
+                }).show();
+        }
     }
 
     @Override
@@ -111,12 +128,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private Context mContext;
 
         @BindView(R.id.listItemLayout) ConstraintLayout mListItemLayout;
+        @BindView(R.id.swipeBackgroundLayout) ConstraintLayout mSwipeBackgroundLayout;
         @BindView(R.id.taskName) TextView mTaskName;
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
         @BindView(R.id.durationRow) TextView mDurationRow;
         @BindView(R.id.dueStatus) TextView mDueStatus;
-        @BindView(R.id.deleteIconLeft) ImageView mDeleteIconLeft;
-        @BindView(R.id.deleteIconRight) ImageView mDeleteIconRight;
+        @BindView(R.id.swipeIconLeft) ImageView mSwipeIconLeft;
+        @BindView(R.id.swipeIconRight) ImageView mSwipeIconRight;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -196,13 +214,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
 
         @Override
-        public void prepareSwipeBackground(int swipeDirection) {
-            if (swipeDirection == ItemTouchHelper.LEFT) {
-                mDeleteIconRight.setVisibility(View.VISIBLE);
-                mDeleteIconLeft.setVisibility(View.INVISIBLE);
+        public void prepareSwipeBackground(int direction) {
+            if (direction == ItemTouchHelper.LEFT) {
+                mSwipeBackgroundLayout.setBackgroundColor(
+                        mContext.getResources().getColor(R.color.deleteColor));
+                mSwipeIconRight.setVisibility(View.VISIBLE);
+                mSwipeIconLeft.setVisibility(View.INVISIBLE);
             } else {
-                mDeleteIconLeft.setVisibility(View.VISIBLE);
-                mDeleteIconRight.setVisibility(View.INVISIBLE);
+                mSwipeBackgroundLayout.setBackgroundColor(
+                        mContext.getResources().getColor(R.color.completeColor));
+                mSwipeIconLeft.setVisibility(View.VISIBLE);
+                mSwipeIconRight.setVisibility(View.INVISIBLE);
             }
         }
     }
