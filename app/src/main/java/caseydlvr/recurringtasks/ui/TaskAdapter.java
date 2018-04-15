@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.threeten.bp.format.DateTimeFormatter;
@@ -112,6 +113,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
         @BindView(R.id.durationRow) TextView mDurationRow;
         @BindView(R.id.dueStatus) TextView mDueStatus;
+        @BindView(R.id.deleteIconLeft) ImageView mDeleteIconLeft;
+        @BindView(R.id.deleteIconRight) ImageView mDeleteIconRight;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -188,6 +191,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public ConstraintLayout getListItemLayout() {
             return mListItemLayout;
         }
+
+        public void swipeRight() {
+            mDeleteIconLeft.setVisibility(View.VISIBLE);
+            mDeleteIconRight.setVisibility(View.INVISIBLE);
+        }
+
+        public void swipeLeft() {
+            mDeleteIconRight.setVisibility(View.VISIBLE);
+            mDeleteIconLeft.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     public class TaskListDiffCallback extends DiffUtil.Callback {

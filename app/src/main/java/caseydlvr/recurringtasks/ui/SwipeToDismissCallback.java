@@ -51,6 +51,11 @@ public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         final View foregroundView = ((TaskAdapter.TaskViewHolder) viewHolder).getListItemLayout();
 
+        boolean swipeRight = dX > 0;
+
+        if (swipeRight) ((TaskAdapter.TaskViewHolder) viewHolder).swipeRight();
+        else            ((TaskAdapter.TaskViewHolder) viewHolder).swipeLeft();
+
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);
     }
