@@ -7,6 +7,7 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +104,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class TaskViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, ItemTouchSwipeTarget {
 
         private Task mTask;
         private Context mContext;
@@ -188,20 +190,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 }).show();
         }
 
-        public ConstraintLayout getListItemLayout() {
+        @Override
+        public View getSwipeForeground() {
             return mListItemLayout;
         }
 
-        public void swipeRight() {
-            mDeleteIconLeft.setVisibility(View.VISIBLE);
-            mDeleteIconRight.setVisibility(View.INVISIBLE);
+        @Override
+        public void prepareSwipeBackground(int swipeDirection) {
+            if (swipeDirection == ItemTouchHelper.LEFT) {
+                mDeleteIconRight.setVisibility(View.VISIBLE);
+                mDeleteIconLeft.setVisibility(View.INVISIBLE);
+            } else {
+                mDeleteIconLeft.setVisibility(View.VISIBLE);
+                mDeleteIconRight.setVisibility(View.INVISIBLE);
+            }
         }
-
-        public void swipeLeft() {
-            mDeleteIconRight.setVisibility(View.VISIBLE);
-            mDeleteIconLeft.setVisibility(View.INVISIBLE);
-        }
-
     }
 
     public class TaskListDiffCallback extends DiffUtil.Callback {
