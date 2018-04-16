@@ -35,12 +35,13 @@ public class Task {
 
     // cache for calculated fields
     private transient LocalDate mDueDate;
+    private transient int mDueStatus;
 
     public Task() {
         mDuration = 1;
         mDurationUnit = "day";
         mStartDate = LocalDate.now();
-        calculateDueDate();
+        setDueDateFields();
         mRepeats = true;
     }
 
@@ -66,7 +67,7 @@ public class Task {
 
     public void setDuration(int duration) {
         mDuration = duration;
-        calculateDueDate();
+        setDueDateFields();
     }
 
     public String getDurationUnit() {
@@ -75,7 +76,7 @@ public class Task {
 
     public void setDurationUnit(String durationUnit) {
         mDurationUnit = durationUnit;
-        calculateDueDate();
+        setDueDateFields();
     }
 
     public LocalDate getDueDate() {
@@ -83,23 +84,7 @@ public class Task {
     }
 
     public int getDueStatus() {
-        int priority;
-        LocalDate today = LocalDate.now();
-        LocalDate dueDate = getDueDate();
-        int durationDays = (int) ChronoUnit.DAYS.between(mStartDate, dueDate);
-        int daysSinceStartDate = (int) ChronoUnit.DAYS.between(mStartDate, today);
-        double percentOfDuration = ((double) daysSinceStartDate )/ ((double) durationDays);
-        int gracePeriod = (durationDays / 7) > 0 ? (durationDays / 7) : 1;
-        LocalDate dueStart = dueDate.minusDays(gracePeriod);
-        LocalDate dueEnd = dueDate.plusDays(gracePeriod);
-
-        if (today.isAfter(dueEnd)) priority = 0;
-        else if (today.isBefore(dueEnd) && today.isAfter(dueStart)
-                || today.isEqual(dueStart)
-                || today.isEqual(dueEnd)) priority = 1;
-        else priority = 10;
-
-        return priority;
+        return mDueStatus;
     }
 
     public LocalDate getStartDate() {
@@ -108,7 +93,7 @@ public class Task {
 
     public void setStartDate(LocalDate startDate) {
         mStartDate = startDate;
-        calculateDueDate();
+        setDueDateFields();
     }
 
     public LocalDate getEndDate() {
@@ -141,6 +126,11 @@ public class Task {
                 || other.isRepeats() != mRepeats);
     }
 
+    private void setDueDateFields() {
+        calculateDueDate();
+        calculateDueStatus();
+    }
+
     private void calculateDueDate() {
         LocalDate dueDate;
 
@@ -163,6 +153,25 @@ public class Task {
         }
 
         mDueDate = dueDate;
+    }
+
+    private void calculateDueStatus() {
+        int priority;
+        LocalDate today = LocalDate.now();
+        int durationDays = (int) ChronoUnit.DAYS.between(mStartDate, mDueDate);
+        int daysSinceStartDate = (int) ChronoUnit.DAYS.between(mStartDate, today);
+        double percentOfDuration = ((double) daysSinceStartDate )/ ((double) durationDays);
+        int gracePeriod = (durationDays / 7) > 0 ? (durationDays / 7) : 1;
+        LocalDate dueStart = mDueDate.minusDays(gracePeriod);
+        LocalDate dueEnd = mDueDate.plusDays(gracePeriod);
+
+        if (today.isAfter(dueEnd)) priority = 0;
+        else if (today.isBefore(dueEnd) && today.isAfter(dueStart)
+                || today.isEqual(dueStart)
+                || today.isEqual(dueEnd)) priority = 1;
+        else priority = 10;
+
+        mDueStatus = priority;
     }
 
     public static class TaskComparator implements Comparator<Task> {
