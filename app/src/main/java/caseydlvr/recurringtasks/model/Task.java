@@ -33,10 +33,14 @@ public class Task {
     @ColumnInfo(name = "repeats")
     private boolean mRepeats;
 
+    // cache for calculated fields
+    private transient LocalDate mDueDate;
+
     public Task() {
         mDuration = 1;
         mDurationUnit = "day";
         mStartDate = LocalDate.now();
+        calculateDueDate();
         mRepeats = true;
     }
 
@@ -62,6 +66,7 @@ public class Task {
 
     public void setDuration(int duration) {
         mDuration = duration;
+        calculateDueDate();
     }
 
     public String getDurationUnit() {
@@ -70,30 +75,11 @@ public class Task {
 
     public void setDurationUnit(String durationUnit) {
         mDurationUnit = durationUnit;
+        calculateDueDate();
     }
 
     public LocalDate getDueDate() {
-        LocalDate dueDate;
-
-        switch (mDurationUnit) {
-            case "day":
-                dueDate = mStartDate.plusDays(mDuration);
-                break;
-            case "week":
-                dueDate = mStartDate.plusWeeks(mDuration);
-                break;
-            case "month":
-                dueDate = mStartDate.plusMonths(mDuration);
-                break;
-            case "year":
-                dueDate = mStartDate.plusYears(mDuration);
-                break;
-            default:
-                dueDate = LocalDate.now();
-                break;
-        }
-
-        return dueDate;
+        return mDueDate;
     }
 
     public int getDueStatus() {
@@ -122,6 +108,7 @@ public class Task {
 
     public void setStartDate(LocalDate startDate) {
         mStartDate = startDate;
+        calculateDueDate();
     }
 
     public LocalDate getEndDate() {
@@ -152,6 +139,30 @@ public class Task {
                 || other.getDuration() != mDuration
                 || other.getDurationUnit().equals(mDurationUnit)
                 || other.isRepeats() != mRepeats);
+    }
+
+    private void calculateDueDate() {
+        LocalDate dueDate;
+
+        switch (mDurationUnit) {
+            case "day":
+                dueDate = mStartDate.plusDays(mDuration);
+                break;
+            case "week":
+                dueDate = mStartDate.plusWeeks(mDuration);
+                break;
+            case "month":
+                dueDate = mStartDate.plusMonths(mDuration);
+                break;
+            case "year":
+                dueDate = mStartDate.plusYears(mDuration);
+                break;
+            default:
+                dueDate = LocalDate.now();
+                break;
+        }
+
+        mDueDate = dueDate;
     }
 
     public static class TaskComparator implements Comparator<Task> {
