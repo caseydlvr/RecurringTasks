@@ -24,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
-import caseydlvr.recurringtasks.model.DurationUnit;
+import caseydlvr.recurringtasks.model.DurationUnits;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
@@ -146,7 +146,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
 
         void bindTask(Task task) {
-            List<DurationUnit> durationUnits = TaskActivity.buildDurationUnits(mContext);
             mTask = task;
 
             switch (mTask.getDueStatus()) {
@@ -168,14 +167,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             String dueDateRow = task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
 
             String durationRow = mContext.getString(R.string.durationLabel) + " " + task.getDuration() + " ";
-
-            String durationUnit = task.getDurationUnit();
-            for (DurationUnit du : durationUnits) {
-                if (durationUnit.equals(du.getId())) {
-                    durationRow += du.getName().toLowerCase();
-                    break;
-                }
-            }
+            durationRow += DurationUnits.getDurationUnit(mContext, task.getDurationUnit()).getName().toLowerCase();
 
             mTaskName.setText(task.getName());
             mDueDateRow.setText(dueDateRow);

@@ -27,7 +27,6 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,6 +37,7 @@ import butterknife.OnFocusChange;
 import butterknife.OnItemSelected;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DurationUnit;
+import caseydlvr.recurringtasks.model.DurationUnits;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 
@@ -71,7 +71,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mTask = new Task();
-        mDurationUnits = buildDurationUnits(this);
+        mDurationUnits = DurationUnits.getList(this);
         populateSpinner();
         populateViews();
 
@@ -169,20 +169,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         if (mTask.getDuration() > 0) {
             mDuration.setText(String.valueOf(mTask.getDuration()));
         }
-        mDurationUnitSpinner.setSelection(getDurationUnitsIndex(mTask.getDurationUnit()));
+        mDurationUnitSpinner.setSelection(DurationUnits.getIndex(mTask.getDurationUnit()));
         mRepeats.setChecked(mTask.isRepeats());
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
         mStartDate.setText(formatDate(mTask.getStartDate()));
         mDueDate.setText(formatDate(mTask.getDueDate()));
-    }
-
-    private int getDurationUnitsIndex(String id) {
-        for (int i = 0; i < mDurationUnits.size(); i++) {
-            if (mDurationUnits.get(i).getId().equals(id)) return i;
-        }
-
-        return 0; // default to first position
     }
 
     private void showResultMessage(int stringId) {
@@ -199,16 +191,6 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     private String formatDate(LocalDate date) {
         return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
-    }
-
-    public static List<DurationUnit> buildDurationUnits(Context context) {
-        List<DurationUnit> durationUnits = new ArrayList<>();
-        durationUnits.add(new DurationUnit("day", context.getString(R.string.days)));
-        durationUnits.add(new DurationUnit("week", context.getString(R.string.weeks)));
-        durationUnits.add(new DurationUnit("month", context.getString(R.string.months)));
-        durationUnits.add(new DurationUnit("year", context.getString(R.string.years)));
-
-        return durationUnits;
     }
 
     @Override
