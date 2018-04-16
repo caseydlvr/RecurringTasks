@@ -35,8 +35,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private TaskListViewModel mViewModel;
     private RecyclerView mRecyclerView;
 
-    TaskAdapter() {}
-
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -58,37 +56,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onItemSwiped(int position, int direction) {
         final Task task = mTasks.get(position);
-        final int index = position;
 
         if (direction == ItemTouchHelper.LEFT) {
-
-            mTasks.remove(index);
-            notifyItemRemoved(index);
-
-            Snackbar.make(mRecyclerView, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo, v -> {
-                    mTasks.add(index, task);
-                    notifyItemInserted(index);
-                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        if (event != DISMISS_EVENT_ACTION) mViewModel.delete(task);
-                    }
-                }).show();
+            delete(task, position);
         } else {
-            mTasks.remove(index);
-            notifyItemRemoved(index);
-
-            Snackbar.make(mRecyclerView, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.undo, l -> {
-                    mTasks.add(index, task);
-                    notifyItemInserted(index);
-                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(task);
-                    }
-                }).show();
+            complete(task, position);
         }
     }
 
@@ -97,7 +69,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         mRecyclerView = recyclerView;
     }
 
-    void setTasks(List<Task> tasks) {
+    public void setTasks(List<Task> tasks) {
         if (mTasks == null) {
             mTasks = tasks;
             notifyItemRangeChanged(0, tasks.size());
@@ -108,17 +80,49 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         mTasks = tasks;
     }
 
-    void setViewModel(TaskListViewModel viewModel) {
+    public void setViewModel(TaskListViewModel viewModel) {
         mViewModel = viewModel;
     }
 
-    public void swap(List<Task> tasks) {
+    private void swap(List<Task> tasks) {
         final TaskListDiffCallback diffCallback = new TaskListDiffCallback(mTasks, tasks);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
         mTasks = tasks;
 
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    private void complete(Task task, int position) {
+        mTasks.remove(position);
+        notifyItemRemoved(position);
+
+        Snackbar.make(mRecyclerView, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.undo, l -> {
+                    mTasks.add(position, task);
+                    notifyItemInserted(position);
+                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                if (event != DISMISS_EVENT_ACTION) mViewModel.complete(task);
+            }
+        }).show();
+    }
+
+    private void delete(Task task, int position) {
+        mTasks.remove(position);
+        notifyItemRemoved(position);
+
+        Snackbar.make(mRecyclerView, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, v -> {
+                    mTasks.add(position, task);
+                    notifyItemInserted(position);
+                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                if (event != DISMISS_EVENT_ACTION) mViewModel.delete(task);
+            }
+        }).show();
     }
 
     public class TaskViewHolder extends RecyclerView.ViewHolder
@@ -136,13 +140,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @BindView(R.id.swipeIconLeft) ImageView mSwipeIconLeft;
         @BindView(R.id.swipeIconRight) ImageView mSwipeIconRight;
 
-        public TaskViewHolder(View itemView) {
+        TaskViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mContext = itemView.getContext();
         }
 
-        public void bindTask(Task task) {
+        void bindTask(Task task) {
             List<DurationUnit> durationUnits = TaskActivity.buildDurationUnits(mContext);
             mTask = task;
 
@@ -182,30 +186,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @Override
         @OnClick
         public void onClick(View v) {
-            Context context = v.getContext();
-            Intent intent = new Intent(context, TaskActivity.class);
+            Intent intent = new Intent(mContext, TaskActivity.class);
             intent.putExtra(TaskActivity.EXTRA_TASK_ID, mTask.getId());
-            context.startActivity(intent);
+            mContext.startActivity(intent);
         }
 
         @OnClick(R.id.completeCheckBox)
         public void onCompleteCheckBoxClick(View v) {
             final int position = getAdapterPosition();
 
-            mTasks.remove(position);
-            notifyItemRemoved(position);
+            complete(mTask, position);
             ((CheckBox) v).setChecked(false);
-
-            Snackbar.make(mRecyclerView, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.undo, l -> {
-                    mTasks.add(position, mTask);
-                    notifyItemInserted(position);
-                }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(mTask);
-                    }
-                }).show();
         }
 
         @Override
@@ -234,7 +225,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private final List<Task> mOldTaskList;
         private final List<Task> mNewTaskList;
 
-        public TaskListDiffCallback(List<Task> oldTaskList, List<Task> newTaskList) {
+        TaskListDiffCallback(List<Task> oldTaskList, List<Task> newTaskList) {
             mOldTaskList = oldTaskList;
             mNewTaskList = newTaskList;
         }
