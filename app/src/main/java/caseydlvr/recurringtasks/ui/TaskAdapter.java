@@ -29,7 +29,7 @@ import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>
-        implements ItemTouchSwipeHandler {
+        implements ItemTouchSwipeListener {
 
     private List<Task> mTasks;
     private TaskListViewModel mViewModel;

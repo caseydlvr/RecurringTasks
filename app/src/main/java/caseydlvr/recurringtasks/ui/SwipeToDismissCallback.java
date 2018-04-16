@@ -8,10 +8,10 @@ import android.view.View;
 
 public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
 
-    private ItemTouchSwipeHandler mHandler;
+    private ItemTouchSwipeListener mListener;
 
-    SwipeToDismissCallback(ItemTouchSwipeHandler handler) {
-        mHandler = handler;
+    SwipeToDismissCallback(ItemTouchSwipeListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        mHandler.onItemSwiped(viewHolder, direction);
+        mListener.onItemSwiped(viewHolder, direction);
     }
 
     @Override
