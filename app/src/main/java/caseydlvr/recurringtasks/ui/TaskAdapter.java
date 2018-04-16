@@ -33,7 +33,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private List<Task> mTasks;
     private TaskListViewModel mViewModel;
-    private RecyclerView mRecyclerView;
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -54,19 +53,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     @Override
-    public void onItemSwiped(int position, int direction) {
+    public void onItemSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+        final int position = viewHolder.getAdapterPosition();
         final Task task = mTasks.get(position);
 
         if (direction == ItemTouchHelper.LEFT) {
-            delete(task, position);
+            delete(task, position, viewHolder.itemView);
         } else {
-            complete(task, position);
+            complete(task, position, viewHolder.itemView);
         }
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        mRecyclerView = recyclerView;
     }
 
     public void setTasks(List<Task> tasks) {
@@ -103,10 +98,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         diffResult.dispatchUpdatesTo(this);
     }
 
-    private void complete(Task task, int position) {
+    private void complete(Task task, int position, View v) {
         removeItem(position);
 
-        Snackbar.make(mRecyclerView, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
+        Snackbar.make(v, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.undo, l -> { addItem(position, task); })
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
@@ -116,11 +111,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 }).show();
     }
 
-    private void delete(Task task, int position) {
+    private void delete(Task task, int position, View v) {
         removeItem(position);
 
-        Snackbar.make(mRecyclerView, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo, v -> { addItem(position, task); })
+        Snackbar.make(v, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, l -> { addItem(position, task); })
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
@@ -199,7 +194,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void onCompleteCheckBoxClick(View v) {
             final int position = getAdapterPosition();
 
-            complete(mTask, position);
+            complete(mTask, position, v);
             ((CheckBox) v).setChecked(false);
         }
 

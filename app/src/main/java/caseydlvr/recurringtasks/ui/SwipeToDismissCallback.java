@@ -33,7 +33,7 @@ public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        mHandler.onItemSwiped(viewHolder.getAdapterPosition(), direction);
+        mHandler.onItemSwiped(viewHolder, direction);
     }
 
     @Override
