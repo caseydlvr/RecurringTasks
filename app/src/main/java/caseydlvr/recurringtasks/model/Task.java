@@ -35,7 +35,7 @@ public class Task {
 
     // cache for calculated fields
     private transient LocalDate mDueDate;
-    private transient int mDueStatus;
+    private transient int mDuePriority;
 
     public Task() {
         mDuration = 1;
@@ -83,8 +83,8 @@ public class Task {
         return mDueDate;
     }
 
-    public int getDueStatus() {
-        return mDueStatus;
+    public int getDuePriority() {
+        return mDuePriority;
     }
 
     public LocalDate getStartDate() {
@@ -128,7 +128,7 @@ public class Task {
 
     private void setDueDateFields() {
         calculateDueDate();
-        calculateDueStatus();
+        calculateDuePriority();
     }
 
     private void calculateDueDate() {
@@ -155,8 +155,7 @@ public class Task {
         mDueDate = dueDate;
     }
 
-    private void calculateDueStatus() {
-        int priority;
+    private void calculateDuePriority() {
         LocalDate today = LocalDate.now();
         int durationDays = (int) ChronoUnit.DAYS.between(mStartDate, mDueDate);
         int daysSinceStartDate = (int) ChronoUnit.DAYS.between(mStartDate, today);
@@ -165,21 +164,25 @@ public class Task {
         LocalDate dueStart = mDueDate.minusDays(gracePeriod);
         LocalDate dueEnd = mDueDate.plusDays(gracePeriod);
 
-        if (today.isAfter(dueEnd)) priority = 0;
+        if (today.isAfter(dueEnd)) {
+            mDuePriority = DueStatus.PRIORITY_OVERDUE;
+        }
         else if (today.isBefore(dueEnd) && today.isAfter(dueStart)
                 || today.isEqual(dueStart)
-                || today.isEqual(dueEnd)) priority = 1;
-        else priority = 10;
-
-        mDueStatus = priority;
+                || today.isEqual(dueEnd)) {
+            mDuePriority = DueStatus.PRIORITY_DUE;
+        }
+        else {
+            mDuePriority = DueStatus.PRIORITY_DEFAULT;
+        }
     }
 
     public static class TaskComparator implements Comparator<Task> {
 
         @Override
         public int compare(Task o1, Task o2) {
-            if (o1.getDueStatus() < o2.getDueStatus()) return -1;
-            else if (o1.getDueStatus() > o2.getDueStatus()) return 1;
+            if (o1.getDuePriority() < o2.getDuePriority()) return -1;
+            else if (o1.getDuePriority() > o2.getDuePriority()) return 1;
             else if (o1.getDueDate().isBefore(o2.getDueDate())) return -1;
             else if (o1.getDueDate().isEqual(o2.getDueDate())) return 0;
             else return 1;

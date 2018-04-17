@@ -24,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnits;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
@@ -147,21 +148,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         void bindTask(Task task) {
             mTask = task;
+            DueStatus dueStatus = new DueStatus(mContext, mTask.getDuePriority());
 
-            switch (mTask.getDueStatus()) {
-                case 0:
-                    mDueStatus.setText(R.string.overdueStatus);
-                    mDueStatus.setBackgroundColor(mContext.getResources().getColor(R.color.overdueColor));
-                    mDueStatus.setVisibility(View.VISIBLE);
-                    break;
-                case 1:
-                    mDueStatus.setText(R.string.dueStatus);
-                    mDueStatus.setBackgroundColor(mContext.getResources().getColor(R.color.dueColor));
-                    mDueStatus.setVisibility(View.VISIBLE);
-                    break;
-                default:
-                    mDueStatus.setVisibility(View.GONE);
-                    break;
+            if (dueStatus.isDefault()) {
+                mDueStatus.setVisibility(View.GONE);
+            } else {
+                mDueStatus.setText(dueStatus.getName());
+                mDueStatus.setBackgroundColor(dueStatus.getColor());
+                mDueStatus.setVisibility(View.VISIBLE);
             }
 
             String dueDateRow = task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
