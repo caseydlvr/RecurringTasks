@@ -36,7 +36,7 @@ public class DurationUnit {
         return mName;
     }
 
-    public String getNameSignular() {
+    public String getNameSingular() {
         return mNameSingular;
     }
 

@@ -165,7 +165,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             if (task.getDuration() == 1) {
                 durationRow += DurationUnit.build(mContext, task.getDurationUnit())
-                        .getNameSignular().toLowerCase();
+                        .getNameSingular().toLowerCase();
             } else {
                 durationRow += task.getDuration() + " "
                         + DurationUnit.build(mContext, task.getDurationUnit())
