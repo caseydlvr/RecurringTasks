@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -131,7 +132,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private Task mTask;
         private Context mContext;
 
-        @BindView(R.id.listItemLayout) ConstraintLayout mListItemLayout;
+        @BindView(R.id.listItemLayout) FrameLayout mListItemLayout;
         @BindView(R.id.swipeBackgroundLayout) ConstraintLayout mSwipeBackgroundLayout;
         @BindView(R.id.taskName) TextView mTaskName;
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
