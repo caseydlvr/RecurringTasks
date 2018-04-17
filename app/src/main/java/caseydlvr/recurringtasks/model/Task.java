@@ -39,7 +39,7 @@ public class Task {
 
     public Task() {
         mDuration = 1;
-        mDurationUnit = "day";
+        mDurationUnit = DurationUnits.KEY_DAY;
         mStartDate = LocalDate.now();
         setDueDateFields();
         mRepeats = true;
@@ -135,16 +135,16 @@ public class Task {
         LocalDate dueDate;
 
         switch (mDurationUnit) {
-            case "day":
+            case DurationUnits.KEY_DAY:
                 dueDate = mStartDate.plusDays(mDuration);
                 break;
-            case "week":
+            case DurationUnits.KEY_WEEK:
                 dueDate = mStartDate.plusWeeks(mDuration);
                 break;
-            case "month":
+            case DurationUnits.KEY_MONTH:
                 dueDate = mStartDate.plusMonths(mDuration);
                 break;
-            case "year":
+            case DurationUnits.KEY_YEAR:
                 dueDate = mStartDate.plusYears(mDuration);
                 break;
             default:

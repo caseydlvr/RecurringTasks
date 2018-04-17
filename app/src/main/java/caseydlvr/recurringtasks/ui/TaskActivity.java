@@ -129,7 +129,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     @OnItemSelected(R.id.durationUnitSpinner)
     public void durationUnitChange() {
-        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getId());
+        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey());
         mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 
@@ -149,7 +149,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private void saveTask() {
         mTask.setName(mTaskName.getText().toString());
         mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
-        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getId());
+        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey());
         mTask.setRepeats(mRepeats.isChecked());
 
         mViewModel.persist(mTask);

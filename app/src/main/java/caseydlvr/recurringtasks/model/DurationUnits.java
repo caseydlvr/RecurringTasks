@@ -8,11 +8,11 @@ import java.util.List;
 import caseydlvr.recurringtasks.R;
 
 public class DurationUnits {
+    public static final String KEY_DAY = "day";
+    public static final String KEY_WEEK = "week";
+    public static final String KEY_MONTH = "month";
+    public static final String KEY_YEAR = "year";
     private static final int COUNT = 4;
-    private static final String ID_DAY = "day";
-    private static final String ID_WEEK = "week";
-    private static final String ID_MONTH = "month";
-    private static final String ID_YEAR = "year";
     private static final int INDEX_DAY = 0;
     private static final int INDEX_WEEK = 1;
     private static final int INDEX_MONTH = 2;
@@ -20,10 +20,10 @@ public class DurationUnits {
 
     public static List<DurationUnit> getList(Context context) {
         ArrayList<DurationUnit> durationUnits = new ArrayList<>(COUNT);
-        durationUnits.add(INDEX_DAY, new DurationUnit(ID_DAY, context.getString(R.string.days)));
-        durationUnits.add(INDEX_WEEK, new DurationUnit(ID_WEEK, context.getString(R.string.weeks)));
-        durationUnits.add(INDEX_MONTH, new DurationUnit(ID_MONTH, context.getString(R.string.months)));
-        durationUnits.add(INDEX_YEAR, new DurationUnit(ID_YEAR, context.getString(R.string.years)));
+        durationUnits.add(INDEX_DAY, new DurationUnit(KEY_DAY, context.getString(R.string.days)));
+        durationUnits.add(INDEX_WEEK, new DurationUnit(KEY_WEEK, context.getString(R.string.weeks)));
+        durationUnits.add(INDEX_MONTH, new DurationUnit(KEY_MONTH, context.getString(R.string.months)));
+        durationUnits.add(INDEX_YEAR, new DurationUnit(KEY_YEAR, context.getString(R.string.years)));
 
         return durationUnits;
     }
@@ -32,20 +32,20 @@ public class DurationUnits {
         DurationUnit durationUnit;
 
         switch (key) {
-            case ID_DAY:
-                durationUnit = new DurationUnit(ID_DAY, context.getString(R.string.days));
+            case KEY_DAY:
+                durationUnit = new DurationUnit(KEY_DAY, context.getString(R.string.days));
                 break;
-            case ID_WEEK:
-                durationUnit = new DurationUnit(ID_WEEK, context.getString(R.string.weeks));
+            case KEY_WEEK:
+                durationUnit = new DurationUnit(KEY_WEEK, context.getString(R.string.weeks));
                 break;
-            case ID_MONTH:
-                durationUnit = new DurationUnit(ID_MONTH, context.getString(R.string.months));
+            case KEY_MONTH:
+                durationUnit = new DurationUnit(KEY_MONTH, context.getString(R.string.months));
                 break;
-            case ID_YEAR:
-                durationUnit = new DurationUnit(ID_YEAR, context.getString(R.string.years));
+            case KEY_YEAR:
+                durationUnit = new DurationUnit(KEY_YEAR, context.getString(R.string.years));
                 break;
             default:
-                durationUnit = new DurationUnit(ID_DAY, context.getString(R.string.days));
+                durationUnit = new DurationUnit(KEY_DAY, context.getString(R.string.days));
         }
 
         return durationUnit;
@@ -55,16 +55,16 @@ public class DurationUnits {
         int index;
 
         switch (key) {
-            case ID_DAY:
+            case KEY_DAY:
                 index = INDEX_DAY;
                 break;
-            case ID_WEEK:
+            case KEY_WEEK:
                 index = INDEX_WEEK;
                 break;
-            case ID_MONTH:
+            case KEY_MONTH:
                 index = INDEX_MONTH;
                 break;
-            case ID_YEAR:
+            case KEY_YEAR:
                 index = INDEX_YEAR;
                 break;
             default:
