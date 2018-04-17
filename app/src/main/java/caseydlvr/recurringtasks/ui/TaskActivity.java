@@ -37,7 +37,6 @@ import butterknife.OnFocusChange;
 import butterknife.OnItemSelected;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DurationUnit;
-import caseydlvr.recurringtasks.model.DurationUnits;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 
@@ -71,7 +70,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mTask = new Task();
-        mDurationUnits = DurationUnits.getList(this);
+        mDurationUnits = DurationUnit.buildList(this);
         populateSpinner();
         populateViews();
 
@@ -169,7 +168,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         if (mTask.getDuration() > 0) {
             mDuration.setText(String.valueOf(mTask.getDuration()));
         }
-        mDurationUnitSpinner.setSelection(DurationUnits.getIndex(mTask.getDurationUnit()));
+        mDurationUnitSpinner.setSelection(DurationUnit.getIndex(mTask.getDurationUnit()));
         mRepeats.setChecked(mTask.isRepeats());
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());

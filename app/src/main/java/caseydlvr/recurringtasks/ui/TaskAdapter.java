@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
-import caseydlvr.recurringtasks.model.DurationUnits;
+import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
@@ -164,11 +164,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             String durationRow = mContext.getString(R.string.durationLabel) + " ";
 
             if (task.getDuration() == 1) {
-                durationRow += DurationUnits.getDurationUnit(mContext, task.getDurationUnit())
+                durationRow += DurationUnit.build(mContext, task.getDurationUnit())
                         .getNameSignular().toLowerCase();
             } else {
                 durationRow += task.getDuration() + " "
-                        + DurationUnits.getDurationUnit(mContext, task.getDurationUnit())
+                        + DurationUnit.build(mContext, task.getDurationUnit())
                         .getName().toLowerCase();
             }
 
