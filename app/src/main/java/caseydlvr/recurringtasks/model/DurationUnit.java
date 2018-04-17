@@ -3,10 +3,12 @@ package caseydlvr.recurringtasks.model;
 public class DurationUnit {
     private String mKey;
     private String mName;
+    private String mNameSingular;
 
-    public DurationUnit(String key, String name) {
+    public DurationUnit(String key, String name, String nameSingular) {
         mKey = key;
         mName = name;
+        mNameSingular = nameSingular;
     }
 
     public String getKey() {
@@ -15,6 +17,10 @@ public class DurationUnit {
 
     public String getName() {
         return mName;
+    }
+
+    public String getNameSignular() {
+        return mNameSingular;
     }
 
     @Override

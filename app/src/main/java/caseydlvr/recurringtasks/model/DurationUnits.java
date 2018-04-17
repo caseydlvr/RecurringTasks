@@ -20,10 +20,10 @@ public class DurationUnits {
 
     public static List<DurationUnit> getList(Context context) {
         ArrayList<DurationUnit> durationUnits = new ArrayList<>(COUNT);
-        durationUnits.add(INDEX_DAY, new DurationUnit(KEY_DAY, context.getString(R.string.days)));
-        durationUnits.add(INDEX_WEEK, new DurationUnit(KEY_WEEK, context.getString(R.string.weeks)));
-        durationUnits.add(INDEX_MONTH, new DurationUnit(KEY_MONTH, context.getString(R.string.months)));
-        durationUnits.add(INDEX_YEAR, new DurationUnit(KEY_YEAR, context.getString(R.string.years)));
+        durationUnits.add(INDEX_DAY, buildDay(context));
+        durationUnits.add(INDEX_WEEK, buildWeek(context));
+        durationUnits.add(INDEX_MONTH, buildMonth(context));
+        durationUnits.add(INDEX_YEAR, buildYear(context));
 
         return durationUnits;
     }
@@ -33,19 +33,19 @@ public class DurationUnits {
 
         switch (key) {
             case KEY_DAY:
-                durationUnit = new DurationUnit(KEY_DAY, context.getString(R.string.days));
+                durationUnit = buildDay(context);
                 break;
             case KEY_WEEK:
-                durationUnit = new DurationUnit(KEY_WEEK, context.getString(R.string.weeks));
+                durationUnit = buildWeek(context);
                 break;
             case KEY_MONTH:
-                durationUnit = new DurationUnit(KEY_MONTH, context.getString(R.string.months));
+                durationUnit = buildMonth(context);
                 break;
             case KEY_YEAR:
-                durationUnit = new DurationUnit(KEY_YEAR, context.getString(R.string.years));
+                durationUnit = buildYear(context);
                 break;
             default:
-                durationUnit = new DurationUnit(KEY_DAY, context.getString(R.string.days));
+                durationUnit = buildDay(context);
         }
 
         return durationUnit;
@@ -68,9 +68,33 @@ public class DurationUnits {
                 index = INDEX_YEAR;
                 break;
             default:
-                index = 0;
+                index = INDEX_DAY;
         }
 
         return index;
+    }
+
+    private static DurationUnit buildDay(Context context) {
+        return new DurationUnit(KEY_DAY,
+                context.getString(R.string.days),
+                context.getString(R.string.day));
+    }
+
+    private static DurationUnit buildWeek(Context context) {
+        return new DurationUnit(KEY_WEEK,
+                context.getString(R.string.weeks),
+                context.getString(R.string.week));
+    }
+
+    private static DurationUnit buildMonth(Context context) {
+        return new DurationUnit(KEY_MONTH,
+                context.getString(R.string.months),
+                context.getString(R.string.month));
+    }
+
+    private static DurationUnit buildYear(Context context) {
+        return new DurationUnit(KEY_YEAR,
+                context.getString(R.string.years),
+                context.getString(R.string.year));
     }
 }
