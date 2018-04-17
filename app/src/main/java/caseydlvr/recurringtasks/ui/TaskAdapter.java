@@ -161,8 +161,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             String dueDateRow = task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
 
-            String durationRow = mContext.getString(R.string.durationLabel) + " " + task.getDuration() + " ";
-            durationRow += DurationUnits.getDurationUnit(mContext, task.getDurationUnit()).getName().toLowerCase();
+            String durationRow = mContext.getString(R.string.durationLabel) + " ";
+
+            if (task.getDuration() == 1) {
+                durationRow += DurationUnits.getDurationUnit(mContext, task.getDurationUnit())
+                        .getNameSignular().toLowerCase();
+            } else {
+                durationRow += task.getDuration() + " "
+                        + DurationUnits.getDurationUnit(mContext, task.getDurationUnit())
+                        .getName().toLowerCase();
+            }
 
             mTaskName.setText(task.getName());
             mDueDateRow.setText(dueDateRow);
