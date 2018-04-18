@@ -16,20 +16,30 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-    <EditText
-        android:id="@+id/taskName"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/taskNameLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/taskNameHint"
-        android:inputType="text"
-        android:textSize="36sp"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:errorEnabled="true"
+        app:hintAnimationEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskToolbar"/>
+        app:layout_constraintTop_toBottomOf="@+id/taskToolbar">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/taskName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskNameHint"
+            android:inputType="text"
+            android:textSize="36sp"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:id="@+id/durationLabel"
@@ -41,7 +51,7 @@
         android:textSize="12sp"
         android:labelFor="@+id/duration"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskName"/>
+        app:layout_constraintTop_toBottomOf="@+id/taskNameLayout"/>
 
     <EditText
         android:id="@+id/duration"

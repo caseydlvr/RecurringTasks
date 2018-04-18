@@ -9,9 +9,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
@@ -49,7 +53,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private List<DurationUnit> mDurationUnits;
     private TaskViewModel mViewModel;
 
-    @BindView(R.id.taskName) EditText mTaskName;
+    @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
+    @BindView(R.id.taskName) TextInputEditText mTaskName;
     @BindView(R.id.duration) EditText mDuration;
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
     @BindView(R.id.startDate) TextView mStartDate;
@@ -68,6 +73,28 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mTaskName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > mTaskNameLayout.getCounterMaxLength()) {
+                    mTaskNameLayout.setError(getString(R.string.taskNameErrorPrefix) + " "
+                            + mTaskNameLayout.getCounterMaxLength());
+                } else {
+                    mTaskNameLayout.setError(null);
+                }
+            }
+        });
 
         mTask = new Task();
         mDurationUnits = DurationUnit.buildList(this);

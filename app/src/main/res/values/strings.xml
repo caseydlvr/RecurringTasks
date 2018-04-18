@@ -32,4 +32,5 @@
     <string name="taskCompleteSuccess">Task completed</string>
     <string name="deleteIconContentDescription">Delete icon</string>
     <string name="completeIconContentDescription">Complete icon</string>
+    <string name="taskNameErrorPrefix">Max character length is</string>
 </resources>
