@@ -45,22 +45,31 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <ImageView
+        android:id="@+id/durationImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/screenLeftMargin"
+        app:layout_constraintTop_toTopOf="@+id/durationLayout"
+        app:srcCompat="@drawable/ic_access_time"/>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/durationLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="72dp"
         android:layout_marginTop="16dp"
         app:errorEnabled="true"
         app:layout_constraintEnd_toStartOf="@+id/durationUnitSpinner"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
         app:layout_constraintTop_toBottomOf="@+id/taskNameLayout">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
             android:hint="@string/durationLabel"
             android:inputType="number"/>
 
@@ -70,129 +79,116 @@
         android:id="@+id/durationUnitSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
         app:layout_constraintTop_toBottomOf="@+id/taskNameLayout"/>
 
+    <Switch
+        android:id="@+id/repeats"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:checked="true"
+        android:splitTrack="false"
+        android:switchPadding="8dp"
+        android:text="@string/repeatsLabel"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/durationLayout"
+        tools:checked="false"/>
+
     <View
+        android:id="@+id/durationDivider"
         style="@style/Divider"
-        android:id="@+id/divider"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="0dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/durationLayout"/>
+        app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/repeats"/>
+
+    <ImageView
+        android:id="@+id/dateImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/screenLeftMargin"
+        app:layout_constraintTop_toTopOf="@+id/startDateLabel"
+        app:srcCompat="@drawable/ic_date_range"/>
 
     <TextView
         android:id="@+id/startDateLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/startDateLabel"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"/>
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/durationDivider"/>
 
     <TextView
         android:id="@+id/startDate"
         style="?android:attr/spinnerStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="72dp"
         android:layout_marginTop="8dp"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
         app:layout_constraintTop_toBottomOf="@+id/startDateLabel"
         tools:text="Mar 29, 2018"/>
-
-    <View
-        style="@style/Divider"
-        android:id="@+id/divider2"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startDate"/>
 
     <TextView
         android:id="@+id/dueDateLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/dueDateDetailLabel"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"/>
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/startDate"/>
 
     <TextView
         android:id="@+id/dueDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="72dp"
         android:layout_marginTop="8dp"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
         app:layout_constraintTop_toBottomOf="@+id/dueDateLabel"
         tools:text="January 29, 2018"/>
 
     <View
+        android:id="@+id/datesDivider"
         style="@style/Divider"
-        android:id="@+id/divider3"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
         app:layout_constraintTop_toBottomOf="@+id/dueDate"/>
 
-    <Switch
-        android:id="@+id/repeats"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="16dp"
-        android:checked="true"
-        android:splitTrack="false"
-        android:switchPadding="8dp"
-        android:text="@string/repeatsLabel"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
-        tools:checked="false"/>
-
-    <View
-        style="@style/Divider"
-        android:id="@+id/divider4"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repeats"/>
-
-    <ImageView
-        android:id="@+id/dateRangeImageView"
+    <android.support.constraint.Guideline
+        android:id="@+id/contentLeftMargin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/durationLayout"
-        app:srcCompat="@drawable/ic_date_range"/>
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="72dp"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/screenRightMargin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/screenLeftMargin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp"/>
 
 </android.support.constraint.ConstraintLayout>

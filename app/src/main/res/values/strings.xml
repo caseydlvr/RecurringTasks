@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Recurring Tasks</string>
     <string name="action_settings">Settings</string>
-    <string name="repeatsLabel">Repeats</string>
+    <string name="repeatsLabel">Repeating</string>
     <string name="durationLabel">Every</string>
     <string name="taskNameHint">Task name</string>
     <string name="saveLabel">Save</string>
@@ -22,7 +22,7 @@
     <string name="dialogCancel">Cancel</string>
     <string name="deleteTaskMessage">Delete task?</string>
     <string name="delete">Delete</string>
-    <string name="dueDateDetailLabel">Due around (calculated)</string>
+    <string name="dueDateDetailLabel">Due around</string>
     <string name="newTask">New task</string>
     <string name="editTask">Edit task</string>
     <string name="overdueStatus">Overdue</string>
