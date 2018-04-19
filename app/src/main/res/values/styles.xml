@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/primaryLightColor</item>
         <item name="android:datePickerDialogTheme">@style/DatePicker</item>
         <item name="textColorError">@color/colorError</item>
+        <item name="android:navigationBarColor">@color/primaryColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
