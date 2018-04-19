@@ -33,4 +33,6 @@
     <string name="deleteIconContentDescription">Delete icon</string>
     <string name="completeIconContentDescription">Complete icon</string>
     <string name="taskNameErrorPrefix">Max character length is</string>
+    <string name="durationTooLargeErrorPrefix">Max duration is</string>
+    <string name="durationMustBePositive">Duration must be positive</string>
 </resources>

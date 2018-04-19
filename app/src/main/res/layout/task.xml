@@ -41,48 +41,45 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <TextView
-        android:id="@+id/durationLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/durationLabel"
-        android:textSize="12sp"
-        android:labelFor="@+id/duration"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskNameLayout"/>
-
-    <EditText
-        android:id="@+id/duration"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/durationLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:ems="10"
-        android:inputType="number"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toStartOf="@+id/durationUnitSpinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/durationLabel"/>
+        app:layout_constraintTop_toBottomOf="@+id/taskNameLayout">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/durationLabel"
+            android:inputType="number"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <Spinner
         android:id="@+id/durationUnitSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/durationLabel"/>
+        app:layout_constraintTop_toBottomOf="@+id/taskNameLayout"/>
 
     <View
         style="@style/Divider"
         android:id="@+id/divider"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/duration"/>
+        app:layout_constraintTop_toBottomOf="@+id/durationLayout"/>
 
     <TextView
         android:id="@+id/startDateLabel"

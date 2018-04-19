@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -48,6 +47,7 @@ import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 public class TaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     public static final String EXTRA_TASK_ID = "extra_task_id";
+    private static final int MAX_DURATION = 999;
 
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
@@ -55,7 +55,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
     @BindView(R.id.taskName) TextInputEditText mTaskName;
-    @BindView(R.id.duration) EditText mDuration;
+    @BindView(R.id.durationLayout) TextInputLayout mDurationLayout;
+    @BindView(R.id.duration) TextInputEditText mDuration;
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
     @BindView(R.id.startDate) TextView mStartDate;
     @BindView(R.id.repeats) Switch mRepeats;
@@ -92,6 +93,31 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                             + mTaskNameLayout.getCounterMaxLength());
                 } else {
                     mTaskNameLayout.setError(null);
+                }
+            }
+        });
+
+        mDuration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int duration = durationTextToInt(s);
+                if (duration > MAX_DURATION) {
+                    mDurationLayout.setError(getString(R.string.durationTooLargeErrorPrefix) + " "
+                            + MAX_DURATION);
+                } else if (duration < 1) {
+                    mDurationLayout.setError(getString(R.string.durationMustBePositive));
+                } else {
+                    mDurationLayout.setError(null);
                 }
             }
         });
@@ -166,7 +192,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     @OnEditorAction(R.id.duration)
     public boolean durationChange() {
-        mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
+        mTask.setDuration(durationTextToInt(mDuration.getText()));
         mDueDate.setText(formatDate(mTask.getDueDate()));
 
         return false;
@@ -174,7 +200,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     private void saveTask() {
         mTask.setName(mTaskName.getText().toString());
-        mTask.setDuration(Integer.parseInt(mDuration.getText().toString()));
+        mTask.setDuration(durationTextToInt(mDuration.getText()));
         mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey());
         mTask.setRepeats(mRepeats.isChecked());
 
@@ -217,6 +243,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     private String formatDate(LocalDate date) {
         return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
+    }
+
+    private int durationTextToInt(Editable s) {
+        // Only have to worry about being passed an empty string
+        // Non-numeric and negative input is blocked by EditText.inputType set to "number"
+        return Integer.parseInt("0" + s);
     }
 
     @Override
