@@ -3,7 +3,7 @@
     <color name="primaryColor">#00bc9d</color>
     <color name="primaryLightColor">#5cefce</color>
     <color name="primaryDarkColor">#008b6f</color>
-    <color name="secondaryColor">#b388ff</color>
+    <color name="secondaryColor">#6eb2ff</color>
     <color name="overdueColor">#ff616f</color>
     <color name="dueColor">#ffab40</color>
     <color name="deleteColor">#F44336</color>
