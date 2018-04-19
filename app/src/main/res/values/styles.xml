@@ -5,9 +5,9 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="colorAccent">@color/primaryLightColor</item>
         <item name="android:datePickerDialogTheme">@style/DatePicker</item>
-        <item name="textColorError">?attr/colorError</item>
+        <item name="textColorError">@color/colorError</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -19,10 +19,16 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="AppThemeDark" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/primaryLightColor</item>
+    </style>
+
     <style name="DatePicker" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="colorAccent">@color/primaryLightColor</item>
     </style>
 
     <style name="Divider">

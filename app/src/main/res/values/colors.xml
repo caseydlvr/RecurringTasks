@@ -1,9 +1,9 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-    <color name="primaryColor">#00bc9d</color>
-    <color name="primaryLightColor">#5cefce</color>
-    <color name="primaryDarkColor">#008b6f</color>
-    <color name="secondaryColor">#78d7ff</color>
+    <color name="primaryColor">#006fbc</color>
+    <color name="primaryLightColor">#589def</color>
+    <color name="primaryDarkColor">#00458b</color>
+    <color name="colorError">#ff7976</color>
     <color name="overdueColor">#ff616f</color>
     <color name="dueColor">#ffab40</color>
     <color name="deleteColor">#F44336</color>
