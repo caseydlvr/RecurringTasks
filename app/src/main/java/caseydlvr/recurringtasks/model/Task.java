@@ -129,6 +129,7 @@ public class Task {
                 || other.getName().equals(mName)
                 || other.getDuration() != mDuration
                 || other.getDurationUnit().equals(mDurationUnit)
+                || other.getStartDate().equals(mStartDate)
                 || other.isRepeats() != mRepeats);
     }
 
