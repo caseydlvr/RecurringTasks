@@ -22,6 +22,7 @@
     <string name="dialogCancel">Cancel</string>
     <string name="deleteTaskMessage">Delete task?</string>
     <string name="delete">Delete</string>
+    <string name="complete">Complete</string>
     <string name="dueDateDetailLabel">Due around</string>
     <string name="newTask">New task</string>
     <string name="editTask">Edit task</string>
@@ -30,8 +31,6 @@
     <string name="undo">UNDO</string>
     <string name="taskDeleteSuccess">Task deleted</string>
     <string name="taskCompleteSuccess">Task completed</string>
-    <string name="deleteIconContentDescription">Delete icon</string>
-    <string name="completeIconContentDescription">Complete icon</string>
     <string name="taskNameTooLongErrorPrefix">Max character length is</string>
     <string name="durationTooLargeErrorPrefix">Max duration is</string>
     <string name="durationTooSmallError">Duration must be positive</string>

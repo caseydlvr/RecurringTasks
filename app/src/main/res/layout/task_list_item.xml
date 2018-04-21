@@ -21,7 +21,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/completeIconContentDescription"/>
+            android:contentDescription="@string/complete"/>
 
         <ImageView
             android:id="@+id/swipeIconRight"
@@ -31,7 +31,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/deleteIconContentDescription"/>
+            android:contentDescription="@string/delete"/>
 
     </android.support.constraint.ConstraintLayout>
 
