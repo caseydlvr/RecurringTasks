@@ -234,13 +234,11 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         if (mTask.getId() == 0) message = getString(R.string.areYouSureNew);
         else                    message = getString(R.string.areYouSureChanges);
 
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton(R.string.discard, (dialog, which) -> {
-                    finish();
-                })
-                .setNegativeButton(R.string.keepEditing, null)
-                .show();
+        DialogFragment dirtyFragment = new DirtyDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(DirtyDialogFragment.KEY_MESSAGE, message);
+        dirtyFragment.setArguments(args);
+        dirtyFragment.show(getFragmentManager(), "dirty_dialog");
     }
 
     private void showResultMessage(int stringId) {
