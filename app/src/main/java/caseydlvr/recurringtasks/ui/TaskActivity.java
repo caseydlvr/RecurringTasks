@@ -1,5 +1,6 @@
 package caseydlvr.recurringtasks.ui;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.arch.lifecycle.Observer;
@@ -52,6 +53,11 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
     private TaskViewModel mViewModel;
+    private String mCleanTaskName;
+    private int mCleanDuration;
+    private String mCleanDurationUnit;
+    private LocalDate mCleanStartDate;
+    private boolean mCleanRepeats;
 
     @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
     @BindView(R.id.taskName) TextInputEditText mTaskName;
@@ -78,6 +84,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         initValidation();
 
         mTask = new Task();
+        setCleanValues();
         mDurationUnits = DurationUnit.buildList(this);
         populateSpinner();
         populateViews();
@@ -95,6 +102,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                         finish();
                     } else {
                         mTask = task;
+                        setCleanValues();
                         populateViews();
                     }
                 }
@@ -119,13 +127,29 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                     saveTask();
                     finish();
                 }
-
                 return true;
+
+            case android.R.id.home:
+                if (isDirty()) {
+                    showDirtyAlert();
+                    return true;
+                } else {
+                    return super.onOptionsItemSelected(item);
+                }
 
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isDirty()) {
+            showDirtyAlert();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -160,7 +184,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private void saveTask() {
         mTask.setName(mTaskName.getText().toString());
         mTask.setDuration(getDurationInputAsInt());
-        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey());
+        mTask.setDurationUnit(getDurationUnitInput());
         mTask.setRepeats(mRepeats.isChecked());
 
         mViewModel.persist(mTask);
@@ -188,6 +212,32 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 
+    private void setCleanValues() {
+        mCleanTaskName = mTask.getName();
+        mCleanDuration = mTask.getDuration();
+        mCleanDurationUnit = mTask.getDurationUnit();
+        mCleanStartDate = mTask.getStartDate();
+        mCleanRepeats = mTask.isRepeats();
+    }
+
+    private boolean isDirty() {
+        return !mCleanTaskName.equals(mTaskName.getText().toString())
+                || mCleanDuration != getDurationInputAsInt()
+                || !mCleanDurationUnit.equals(getDurationUnitInput())
+                || !mCleanStartDate.equals(mTask.getStartDate())
+                || mCleanRepeats != mRepeats.isChecked();
+    }
+
+    private void showDirtyAlert() {
+        new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to discard this task")
+                .setPositiveButton("Discard", (dialog, which) -> {
+                    finish();
+                })
+                .setNegativeButton("Keep Editing", null)
+                .show();
+    }
+
     private void showResultMessage(int stringId) {
         Snackbar.make(mLayout, stringId, Snackbar.LENGTH_SHORT).show();
     }
@@ -209,10 +259,14 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
 
+    private String getDurationUnitInput() {
+        return ((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey();
+    }
+
     private int getDurationInputAsInt() {
         // Only have to worry about being passed an empty string
         // Non-numeric and negative input is blocked by EditText.inputType set to "number"
-            return Integer.parseInt("0" + mDuration.getText());
+        return Integer.parseInt("0" + mDuration.getText());
     }
 
     private void initValidation() {

@@ -43,6 +43,7 @@ public class Task {
     private transient int mDuePriority;
 
     public Task() {
+        mName = "";
         mDuration = 1;
         mDurationUnit = DurationUnit.KEY_DAY;
         mStartDate = LocalDate.now();
