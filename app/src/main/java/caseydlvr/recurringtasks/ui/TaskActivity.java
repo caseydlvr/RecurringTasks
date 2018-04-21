@@ -87,7 +87,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         setCleanValues();
         mDurationUnits = DurationUnit.buildList(this);
         populateSpinner();
-        populateViews();
+        if (savedInstanceState == null) populateViews();
 
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
         mViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
@@ -103,7 +103,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                     } else {
                         mTask = task;
                         setCleanValues();
-                        populateViews();
+
+                        if (savedInstanceState == null) populateViews();
                     }
                 }
             });
