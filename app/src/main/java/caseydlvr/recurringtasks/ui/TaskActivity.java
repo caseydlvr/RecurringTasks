@@ -18,6 +18,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -47,7 +48,6 @@ import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 public class TaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     public static final String EXTRA_TASK_ID = "extra_task_id";
-    private static final int MAX_DURATION = 999;
 
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
@@ -75,52 +75,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mTaskName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > mTaskNameLayout.getCounterMaxLength()) {
-                    mTaskNameLayout.setError(getString(R.string.taskNameErrorPrefix) + " "
-                            + mTaskNameLayout.getCounterMaxLength());
-                } else {
-                    mTaskNameLayout.setError(null);
-                }
-            }
-        });
-
-        mDuration.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int duration = durationTextToInt(s);
-                if (duration > MAX_DURATION) {
-                    mDurationLayout.setError(getString(R.string.durationTooLargeErrorPrefix) + " "
-                            + MAX_DURATION);
-                } else if (duration < 1) {
-                    mDurationLayout.setError(getString(R.string.durationMustBePositive));
-                } else {
-                    mDurationLayout.setError(null);
-                }
-            }
-        });
+        initValidation();
 
         mTask = new Task();
         mDurationUnits = DurationUnit.buildList(this);
@@ -159,8 +114,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                saveTask();
-                finish();
+                if (validateInputs()) {
+                    hideKeyboard();
+                    saveTask();
+                    finish();
+                }
+
                 return true;
 
             default:
@@ -192,7 +151,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     @OnEditorAction(R.id.duration)
     public boolean durationChange() {
-        mTask.setDuration(durationTextToInt(mDuration.getText()));
+        mTask.setDuration(getDurationInputAsInt());
         mDueDate.setText(formatDate(mTask.getDueDate()));
 
         return false;
@@ -200,7 +159,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     private void saveTask() {
         mTask.setName(mTaskName.getText().toString());
-        mTask.setDuration(durationTextToInt(mDuration.getText()));
+        mTask.setDuration(getDurationInputAsInt());
         mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey());
         mTask.setRepeats(mRepeats.isChecked());
 
@@ -241,14 +200,124 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         }
     }
 
+    private void showKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+    }
+
     private String formatDate(LocalDate date) {
         return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
 
-    private int durationTextToInt(Editable s) {
+    private int getDurationInputAsInt() {
         // Only have to worry about being passed an empty string
         // Non-numeric and negative input is blocked by EditText.inputType set to "number"
-        return Integer.parseInt("0" + s);
+            return Integer.parseInt("0" + mDuration.getText());
+    }
+
+    private void initValidation() {
+        mTaskNameLayout.setCounterMaxLength(Task.NAME_MAX_LENGTH);
+
+        mTaskName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mTaskNameLayout.setError(validateTaskName());
+            }
+        });
+
+        mDuration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mDurationLayout.setError(validateDuration());
+            }
+        });
+    }
+
+    @Nullable
+    private String validateTaskName() {
+        Editable input = mTaskName.getText();
+        String errorText = null;
+
+        if (input.length() > mTaskNameLayout.getCounterMaxLength()) {
+            errorText = taskNameTooLongMessage();
+        } else if (input.length() < 1) {
+            errorText = taskNameEmptyMessage();
+        }
+
+        return errorText;
+    }
+
+    @Nullable
+    private String validateDuration() {
+        int duration = getDurationInputAsInt();
+        String errorText = null;
+
+        if (duration > Task.DURATION_MAX) {
+            errorText = durationTooLargeMessage();
+        } else if (duration < Task.DURATION_MIN) {
+            errorText = durationTooSmallMessage();
+        }
+
+        return errorText;
+    }
+
+    private boolean validateInputs() {
+        String errorText = validateTaskName();
+        if (errorText != null) {
+            Toast.makeText(this, errorText, Toast.LENGTH_SHORT).show();
+            mTaskName.requestFocus();
+            showKeyboard(mTaskName);
+            return false;
+        }
+
+        errorText = validateDuration();
+        if (errorText != null) {
+            Toast.makeText(this, errorText, Toast.LENGTH_SHORT).show();
+            mDuration.requestFocus();
+            showKeyboard(mDuration);
+            return false;
+        }
+
+        return true;
+
+    }
+
+    private String taskNameEmptyMessage() {
+        return getString(R.string.taskNameEmptyError);
+    }
+
+    private String taskNameTooLongMessage() {
+        return getString(R.string.taskNameTooLongErrorPrefix) + " "
+                + mTaskNameLayout.getCounterMaxLength();
+    }
+
+    private String durationTooSmallMessage() {
+        return getString(R.string.durationTooSmallError);
+    }
+
+    private String durationTooLargeMessage() {
+        return getString(R.string.durationTooLargeErrorPrefix) + " "
+                + Task.DURATION_MAX;
     }
 
     @Override

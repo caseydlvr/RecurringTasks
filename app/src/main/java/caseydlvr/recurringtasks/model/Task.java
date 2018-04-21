@@ -11,6 +11,11 @@ import java.util.Comparator;
 
 @Entity(tableName = "tasks")
 public class Task {
+
+    public static final int DURATION_MAX = 999;
+    public static final int DURATION_MIN = 1;
+    public static final int NAME_MAX_LENGTH = 20;
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long mId;
