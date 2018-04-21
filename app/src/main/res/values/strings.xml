@@ -36,4 +36,8 @@
     <string name="durationTooLargeErrorPrefix">Max duration is</string>
     <string name="durationTooSmallError">Duration must be positive</string>
     <string name="taskNameEmptyError">Task name cannot be blank</string>
+    <string name="keepEditing">Keep Editing</string>
+    <string name="discard">Discard</string>
+    <string name="areYouSureNew">Are you sure you want to discard this task?</string>
+    <string name="areYouSureChanges">Are you sure you want to discard changes to this task?</string>
 </resources>

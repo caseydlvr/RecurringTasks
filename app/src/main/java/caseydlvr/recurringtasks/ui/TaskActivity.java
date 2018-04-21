@@ -229,12 +229,17 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
     private void showDirtyAlert() {
+        String message;
+
+        if (mTask.getId() == 0) message = getString(R.string.areYouSureNew);
+        else                    message = getString(R.string.areYouSureChanges);
+
         new AlertDialog.Builder(this)
-                .setMessage("Are you sure you want to discard this task")
-                .setPositiveButton("Discard", (dialog, which) -> {
+                .setMessage(message)
+                .setPositiveButton(R.string.discard, (dialog, which) -> {
                     finish();
                 })
-                .setNegativeButton("Keep Editing", null)
+                .setNegativeButton(R.string.keepEditing, null)
                 .show();
     }
 
