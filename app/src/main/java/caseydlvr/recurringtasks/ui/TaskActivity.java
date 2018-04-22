@@ -1,6 +1,5 @@
 package caseydlvr.recurringtasks.ui;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.arch.lifecycle.Observer;
@@ -49,7 +48,7 @@ import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 public class TaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     public static final String EXTRA_TASK_ID = "extra_task_id";
-    private static final String STATE_START_DATE = "state_start_date";
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
@@ -84,10 +83,11 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
         initValidation();
 
-        mTask = new Task();
-        setCleanValues();
         mDurationUnits = DurationUnit.buildList(this);
         populateSpinner();
+        mTask = new Task();
+        setCleanValues();
+
         if (savedInstanceState == null) populateViews();
 
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
@@ -114,21 +114,13 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         }
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        outState.putString(STATE_START_DATE, mTask.getStartDate().toString());
-//
-//        super.onSaveInstanceState(outState);
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//        mTask.setDuration(getDurationInputAsInt());
-//        mTask.setDurationUnit(getDurationUnitInput());
-//        updateDates(savedInstanceState.getString(STATE_START_DATE));
-//    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        populateTaskFromInput();
+        mDueDate.setText(formatDate(mTask.getDueDate()));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,19 +185,24 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     @OnEditorAction(R.id.duration)
     public boolean durationChange() {
-        mTask.setDuration(getDurationInputAsInt());
+        mTask.setDuration(getDurationInput());
         mDueDate.setText(formatDate(mTask.getDueDate()));
 
         return false;
     }
 
     private void saveTask() {
-        mTask.setName(mTaskName.getText().toString());
-        mTask.setDuration(getDurationInputAsInt());
-        mTask.setDurationUnit(getDurationUnitInput());
-        mTask.setRepeats(mRepeats.isChecked());
+        populateTaskFromInput();
 
         mViewModel.persist(mTask);
+    }
+
+    private void populateTaskFromInput() {
+        mTask.setName(mTaskName.getText().toString());
+        mTask.setDuration(getDurationInput());
+        mTask.setDurationUnit(getDurationUnitInput());
+        mTask.setStartDate(getStartDateInput());
+        mTask.setRepeats(mRepeats.isChecked());
     }
 
     private void populateSpinner() {
@@ -240,7 +237,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     private boolean isDirty() {
         return !mCleanTaskName.equals(mTaskName.getText().toString())
-                || mCleanDuration != getDurationInputAsInt()
+                || mCleanDuration != getDurationInput()
                 || !mCleanDurationUnit.equals(getDurationUnitInput())
                 || !mCleanStartDate.equals(mTask.getStartDate())
                 || mCleanRepeats != mRepeats.isChecked();
@@ -277,17 +274,21 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
     private String formatDate(LocalDate date) {
-        return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
+        return date.format(DATE_FORMAT);
     }
 
     private String getDurationUnitInput() {
         return ((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey();
     }
 
-    private int getDurationInputAsInt() {
+    private int getDurationInput() {
         // Only have to worry about being passed an empty string
         // Non-numeric and negative input is blocked by EditText.inputType set to "number"
         return Integer.parseInt("0" + mDuration.getText());
+    }
+
+    private LocalDate getStartDateInput() {
+        return LocalDate.parse(mStartDate.getText(), DATE_FORMAT);
     }
 
     private void updateDates(String dateString) {
@@ -350,7 +351,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     @Nullable
     private String validateDuration() {
-        int duration = getDurationInputAsInt();
+        int duration = getDurationInput();
         String errorText = null;
 
         if (duration > Task.DURATION_MAX) {
