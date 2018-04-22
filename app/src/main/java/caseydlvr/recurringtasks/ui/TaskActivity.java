@@ -86,7 +86,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mDurationUnits = DurationUnit.buildList(this);
         populateSpinner();
         mTask = new Task();
-        setCleanValues();
+        setCleanValues(mTask);
 
         if (savedInstanceState == null) populateViews();
 
@@ -102,10 +102,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                         Toast.makeText(getBaseContext(), R.string.taskNotFound, Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        mTask = task;
-                        setCleanValues();
+                        setCleanValues(task);
 
-                        if (savedInstanceState == null) populateViews();
+                        if (savedInstanceState == null) {
+                            mTask = task;
+                            populateViews();
+                        }
                     }
                 }
             });
@@ -227,12 +229,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 
-    private void setCleanValues() {
-        mCleanTaskName = mTask.getName();
-        mCleanDuration = mTask.getDuration();
-        mCleanDurationUnit = mTask.getDurationUnit();
-        mCleanStartDate = mTask.getStartDate();
-        mCleanRepeats = mTask.isRepeats();
+    private void setCleanValues(Task task) {
+        mCleanTaskName = task.getName();
+        mCleanDuration = task.getDuration();
+        mCleanDurationUnit = task.getDurationUnit();
+        mCleanStartDate = task.getStartDate();
+        mCleanRepeats = task.isRepeats();
     }
 
     private boolean isDirty() {
