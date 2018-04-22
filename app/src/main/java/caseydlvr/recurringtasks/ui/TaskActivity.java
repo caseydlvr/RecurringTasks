@@ -49,6 +49,7 @@ import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 public class TaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     public static final String EXTRA_TASK_ID = "extra_task_id";
+    private static final String STATE_START_DATE = "state_start_date";
 
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
@@ -112,6 +113,22 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
             actionBar.setTitle(R.string.newTask);
         }
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        outState.putString(STATE_START_DATE, mTask.getStartDate().toString());
+//
+//        super.onSaveInstanceState(outState);
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//
+//        mTask.setDuration(getDurationInputAsInt());
+//        mTask.setDurationUnit(getDurationUnitInput());
+//        updateDates(savedInstanceState.getString(STATE_START_DATE));
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -273,6 +290,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         return Integer.parseInt("0" + mDuration.getText());
     }
 
+    private void updateDates(String dateString) {
+        mTask.setStartDate(LocalDate.parse(dateString));
+        mStartDate.setText(formatDate(mTask.getStartDate()));
+        mDueDate.setText(formatDate(mTask.getDueDate()));
+    }
+
     private void initValidation() {
         mTaskNameLayout.setCounterMaxLength(Task.NAME_MAX_LENGTH);
 
@@ -383,8 +406,6 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         String dateString = year + "-"
                 + String.format("%02d", month + 1) + "-"
                 + String.format("%02d", dayOfMonth);
-        mTask.setStartDate(LocalDate.parse(dateString));
-        mStartDate.setText(formatDate(mTask.getStartDate()));
-        mDueDate.setText(formatDate(mTask.getDueDate()));
+        updateDates(dateString);
     }
 }
