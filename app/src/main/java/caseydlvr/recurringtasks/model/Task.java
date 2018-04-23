@@ -38,6 +38,9 @@ public class Task {
     @ColumnInfo(name = "repeats")
     private boolean mRepeats;
 
+    @ColumnInfo(name = "uses_notifications")
+    private boolean mUsesNotifications;
+
     // cache for calculated fields
     private transient LocalDate mDueDate;
     private transient int mDuePriority;
@@ -49,6 +52,7 @@ public class Task {
         mStartDate = LocalDate.now();
         setDueDateFields();
         mRepeats = true;
+        mUsesNotifications = true;
     }
 
     public long getId() {
@@ -182,6 +186,14 @@ public class Task {
         else {
             mDuePriority = DueStatus.PRIORITY_DEFAULT;
         }
+    }
+
+    public boolean usesNotifications() {
+        return mUsesNotifications;
+    }
+
+    public void setUsesNotifications(boolean useNotifications) {
+        mUsesNotifications = useNotifications;
     }
 
     public static class TaskComparator implements Comparator<Task> {
