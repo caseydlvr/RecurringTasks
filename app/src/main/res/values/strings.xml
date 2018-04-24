@@ -40,4 +40,5 @@
     <string name="areYouSureNew">Are you sure you want to discard this task?</string>
     <string name="areYouSureChanges">Are you sure you want to discard changes to this task?</string>
     <string name="notificationsLabel">Show notifications</string>
+    <string name="emptyTaskListMessage">No tasks  Press \'+\' to get started</string>
 </resources>

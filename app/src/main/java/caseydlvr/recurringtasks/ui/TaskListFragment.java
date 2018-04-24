@@ -13,6 +13,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ public class TaskListFragment extends Fragment {
     private TaskAdapter mTaskAdapter;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
+    @BindView(R.id.emptyView) TextView mEmptyView;
 
     @Nullable
     @Override
@@ -47,7 +49,6 @@ public class TaskListFragment extends Fragment {
         mRecyclerView.addItemDecoration(
                 new DividerItemDecoration(mRecyclerView.getContext(), layoutManager.getOrientation()));
 
-
         return rootView;
     }
 
@@ -65,7 +66,14 @@ public class TaskListFragment extends Fragment {
         viewModel.getOutstandingTasks().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
-                if (tasks != null) Collections.sort(tasks, new Task.TaskComparator());
+                if (tasks == null || tasks.size() == 0) {
+                    mRecyclerView.setVisibility(View.GONE);
+                    mEmptyView.setVisibility(View.VISIBLE);
+                } else {
+                    Collections.sort(tasks, new Task.TaskComparator());
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mEmptyView.setVisibility(View.GONE);
+                }
                 mTaskAdapter.setTasks(tasks);
             }
         });
