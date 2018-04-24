@@ -102,12 +102,12 @@ public class DataRepository {
             mDr.getDb().runInTransaction(() -> {
                 mDr.getDb().taskDao().delete(tasks[0]);
 
-                if (tasks[0].isRepeats()) {
+                if (tasks[0].isRepeating()) {
                     Task newTask = new Task();
                     newTask.setName(tasks[0].getName());
                     newTask.setDuration(tasks[0].getDuration());
                     newTask.setDurationUnit(tasks[0].getDurationUnit());
-                    newTask.setRepeats(tasks[0].isRepeats());
+                    newTask.setRepeating(tasks[0].isRepeating());
                     newTask.setUsesNotifications(tasks[0].usesNotifications());
 
                     mDr.getDb().taskDao().insert(newTask);

@@ -67,7 +67,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @BindView(R.id.duration) TextInputEditText mDuration;
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
     @BindView(R.id.startDate) TextView mStartDate;
-    @BindView(R.id.repeats) Switch mRepeats;
+    @BindView(R.id.repeating) Switch mRepeating;
     @BindView(R.id.notifications) Switch mNotifications;
     @BindView(R.id.taskViewLayout) ConstraintLayout mLayout;
     @BindView(R.id.dueDate) TextView mDueDate;
@@ -209,7 +209,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mTask.setDuration(getDurationInput());
         mTask.setDurationUnit(getDurationUnitInput());
         mTask.setStartDate(getStartDateInput());
-        mTask.setRepeats(mRepeats.isChecked());
+        mTask.setRepeating(mRepeating.isChecked());
         mTask.setUsesNotifications(mNotifications.isChecked());
     }
 
@@ -228,7 +228,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
             mDuration.setText(String.valueOf(mTask.getDuration()));
         }
         mDurationUnitSpinner.setSelection(DurationUnit.getIndex(mTask.getDurationUnit()));
-        mRepeats.setChecked(mTask.isRepeats());
+        mRepeating.setChecked(mTask.isRepeating());
         mNotifications.setChecked(mTask.usesNotifications());
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
@@ -241,7 +241,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mCleanDuration = task.getDuration();
         mCleanDurationUnit = task.getDurationUnit();
         mCleanStartDate = task.getStartDate();
-        mCleanRepeats = task.isRepeats();
+        mCleanRepeats = task.isRepeating();
         mCleanNotifications = task.usesNotifications();
     }
 
@@ -250,7 +250,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 || mCleanDuration != getDurationInput()
                 || !mCleanDurationUnit.equals(getDurationUnitInput())
                 || !mCleanStartDate.equals(mTask.getStartDate())
-                || mCleanRepeats != mRepeats.isChecked()
+                || mCleanRepeats != mRepeating.isChecked()
                 || mCleanNotifications != mNotifications.isChecked();
     }
 

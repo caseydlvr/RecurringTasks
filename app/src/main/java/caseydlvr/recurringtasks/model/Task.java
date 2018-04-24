@@ -35,8 +35,8 @@ public class Task {
     @ColumnInfo(name = "end_date")
     private LocalDate mEndDate;
 
-    @ColumnInfo(name = "repeats")
-    private boolean mRepeats;
+    @ColumnInfo(name = "repeating")
+    private boolean mRepeating;
 
     @ColumnInfo(name = "uses_notifications")
     private boolean mUsesNotifications;
@@ -51,7 +51,7 @@ public class Task {
         mDurationUnit = DurationUnit.KEY_DAY;
         mStartDate = LocalDate.now();
         setDueDateFields();
-        mRepeats = true;
+        mRepeating = true;
         mUsesNotifications = true;
     }
 
@@ -114,12 +114,20 @@ public class Task {
         mEndDate = endDate;
     }
 
-    public boolean isRepeats() {
-        return mRepeats;
+    public boolean isRepeating() {
+        return mRepeating;
     }
 
-    public void setRepeats(boolean repeats) {
-        mRepeats = repeats;
+    public void setRepeating(boolean repeats) {
+        mRepeating = repeats;
+    }
+
+    public boolean usesNotifications() {
+        return mUsesNotifications;
+    }
+
+    public void setUsesNotifications(boolean usesNotifications) {
+        mUsesNotifications = usesNotifications;
     }
 
     @Override
@@ -134,7 +142,7 @@ public class Task {
                 || other.getDuration() != mDuration
                 || other.getDurationUnit().equals(mDurationUnit)
                 || other.getStartDate().equals(mStartDate)
-                || other.isRepeats() != mRepeats);
+                || other.isRepeating() != mRepeating);
     }
 
     private void setDueDateFields() {
@@ -186,14 +194,6 @@ public class Task {
         else {
             mDuePriority = DueStatus.PRIORITY_DEFAULT;
         }
-    }
-
-    public boolean usesNotifications() {
-        return mUsesNotifications;
-    }
-
-    public void setUsesNotifications(boolean useNotifications) {
-        mUsesNotifications = useNotifications;
     }
 
     public static class TaskComparator implements Comparator<Task> {
