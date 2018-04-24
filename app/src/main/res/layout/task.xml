@@ -97,7 +97,7 @@
         app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
         app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
         app:layout_constraintTop_toBottomOf="@+id/durationLayout"
-        tools:checked="false"/>
+        tools:checked="true"/>
 
     <View
         android:id="@+id/durationDivider"
@@ -171,6 +171,40 @@
         app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
         app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
         app:layout_constraintTop_toBottomOf="@+id/dueDate"/>
+
+    <ImageView
+        android:id="@+id/notificationsImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@id/screenLeftMargin"
+        app:layout_constraintTop_toTopOf="@+id/notifications"
+        app:srcCompat="@drawable/ic_notifications"/>
+
+    <Switch
+        android:id="@+id/notifications"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:checked="true"
+        android:splitTrack="false"
+        android:switchPadding="8dp"
+        android:text="@string/notificationsLabel"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/datesDivider"
+        tools:checked="true"/>
+
+    <View
+        android:id="@+id/notificationsDivider"
+        style="@style/Divider"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/notifications"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/contentLeftMargin"
