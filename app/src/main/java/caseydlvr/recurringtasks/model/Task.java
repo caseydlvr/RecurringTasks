@@ -142,7 +142,8 @@ public class Task {
                 || other.getDuration() != mDuration
                 || other.getDurationUnit().equals(mDurationUnit)
                 || other.getStartDate().equals(mStartDate)
-                || other.isRepeating() != mRepeating);
+                || other.isRepeating() != mRepeating)
+                || other.usesNotifications() != mUsesNotifications;
     }
 
     private void setDueDateFields() {
