@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui;
+package caseydlvr.recurringtasks.ui.tasklist;
 
 import android.view.View;
 

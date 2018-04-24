@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui;
+package caseydlvr.recurringtasks.ui.tasklist;
 
 
 import android.arch.lifecycle.Observer;
@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.ui.MainActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskListFragment extends Fragment {

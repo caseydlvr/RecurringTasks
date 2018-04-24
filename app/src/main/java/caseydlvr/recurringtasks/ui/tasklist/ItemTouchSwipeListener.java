@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui;
+package caseydlvr.recurringtasks.ui.tasklist;
 
 import android.support.v7.widget.RecyclerView;
 

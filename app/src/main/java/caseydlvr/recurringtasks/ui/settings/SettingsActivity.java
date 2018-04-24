@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui;
+package caseydlvr.recurringtasks.ui.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

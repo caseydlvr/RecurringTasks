@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui;
+package caseydlvr.recurringtasks.ui.tasklist;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +28,7 @@ import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>

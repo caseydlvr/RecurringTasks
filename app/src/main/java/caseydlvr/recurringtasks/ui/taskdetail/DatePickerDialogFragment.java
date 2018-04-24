@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui;
+package caseydlvr.recurringtasks.ui.taskdetail;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

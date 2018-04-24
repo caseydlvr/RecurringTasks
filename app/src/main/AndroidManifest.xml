@@ -21,12 +21,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.TaskActivity"
+            android:name=".ui.taskdetail.TaskActivity"
             android:label="@string/editTask"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.MainActivity">
         </activity>
-        <activity android:name=".ui.SettingsActivity"
+        <activity android:name=".ui.settings.SettingsActivity"
                   android:label="@string/settings"
                   android:theme="@style/AppTheme"
                   android:launchMode="singleTask"
