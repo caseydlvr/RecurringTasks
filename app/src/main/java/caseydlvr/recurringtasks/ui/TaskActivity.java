@@ -53,11 +53,13 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
     private TaskViewModel mViewModel;
+
     private String mCleanTaskName;
     private int mCleanDuration;
     private String mCleanDurationUnit;
     private LocalDate mCleanStartDate;
     private boolean mCleanRepeats;
+    private boolean mCleanNotifications;
 
     @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
     @BindView(R.id.taskName) TextInputEditText mTaskName;
@@ -66,6 +68,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
     @BindView(R.id.startDate) TextView mStartDate;
     @BindView(R.id.repeats) Switch mRepeats;
+    @BindView(R.id.notifications) Switch mNotifications;
     @BindView(R.id.taskViewLayout) ConstraintLayout mLayout;
     @BindView(R.id.dueDate) TextView mDueDate;
     @BindView(R.id.taskToolbar) Toolbar mToolbar;
@@ -207,6 +210,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mTask.setDurationUnit(getDurationUnitInput());
         mTask.setStartDate(getStartDateInput());
         mTask.setRepeats(mRepeats.isChecked());
+        mTask.setUsesNotifications(mNotifications.isChecked());
     }
 
     private void populateSpinner() {
@@ -225,6 +229,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         }
         mDurationUnitSpinner.setSelection(DurationUnit.getIndex(mTask.getDurationUnit()));
         mRepeats.setChecked(mTask.isRepeats());
+        mNotifications.setChecked(mTask.usesNotifications());
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
         mStartDate.setText(formatDate(mTask.getStartDate()));
@@ -237,6 +242,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mCleanDurationUnit = task.getDurationUnit();
         mCleanStartDate = task.getStartDate();
         mCleanRepeats = task.isRepeats();
+        mCleanNotifications = task.usesNotifications();
     }
 
     private boolean isDirty() {
@@ -244,7 +250,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 || mCleanDuration != getDurationInput()
                 || !mCleanDurationUnit.equals(getDurationUnitInput())
                 || !mCleanStartDate.equals(mTask.getStartDate())
-                || mCleanRepeats != mRepeats.isChecked();
+                || mCleanRepeats != mRepeats.isChecked()
+                || mCleanNotifications != mNotifications.isChecked();
     }
 
     private void showDirtyAlert() {
