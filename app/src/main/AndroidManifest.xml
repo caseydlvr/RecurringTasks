@@ -26,6 +26,17 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.MainActivity">
         </activity>
+        <activity android:name=".ui.SettingsActivity"
+                  android:label="@string/settings"
+                  android:theme="@style/AppTheme"
+                  android:launchMode="singleTask"
+                  android:parentActivityName=".ui.MainActivity">
+                  <intent-filter>
+                      <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
+
+                      <category android:name="android.intent.category.PREFERENCE"/>
+                  </intent-filter>
+        </activity>
     </application>
 
 </manifest>

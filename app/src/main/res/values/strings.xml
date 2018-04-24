@@ -40,5 +40,8 @@
     <string name="areYouSureNew">Are you sure you want to discard this task?</string>
     <string name="areYouSureChanges">Are you sure you want to discard changes to this task?</string>
     <string name="notificationsLabel">Show notifications</string>
-    <string name="emptyTaskListMessage">No tasks  Press \'+\' to get started</string>
+    <string name="emptyTaskListMessage">No tasks\n\nPress \'+\' to get started</string>
+    <string name="pref_show_notifications_title">Show Notifications</string>
+    <string name="pref_show_notifications_summary">Disabling prevents the app from showing any notificaitons, regardless of individual task notification settings</string>
+    <string name="settings">Settings</string>
 </resources>
