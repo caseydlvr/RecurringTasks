@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="caseydlvr.recurringtasks">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <application
         android:name=".RecurringTaskApp"
         android:allowBackup="true"
@@ -37,6 +39,8 @@
                       <category android:name="android.intent.category.PREFERENCE"/>
                   </intent-filter>
         </activity>
+        <receiver android:name=".notifications.NotificationAlarmReceiver"/>
+        <service android:name=".notifications.NotificationService"/>
     </application>
 
 </manifest>

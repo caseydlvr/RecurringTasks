@@ -40,6 +40,10 @@ public class DataRepository {
         return mDb.taskDao().loadAllOutstanding();
     }
 
+    public LiveData<List<Task>> loadOutstandingTasksWithNotifications() {
+        return mDb.taskDao().loadOutstandingWithNotifications();
+    }
+
     public void complete(Task task) {
         new CompleteTask(this).execute(task);
     }
