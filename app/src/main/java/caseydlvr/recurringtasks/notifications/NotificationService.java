@@ -40,7 +40,9 @@ public class NotificationService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         Log.d(TAG, "in onHandleWork()");
-        LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication()).getRepository().loadOutstandingTasksWithNotifications();
+        LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication())
+                .getRepository()
+                .loadOutstandingTasksWithNotifications();
 
         Observer<List<Task>> observer = new Observer<List<Task>>() {
             @Override
