@@ -86,6 +86,7 @@ public class NotificationService extends JobIntentService {
                 .setContentText("Due around " + task.getDueDate())
                 .setSmallIcon(R.drawable.ic_notification_clock)
                 .setContentIntent(clickPendingIntent)
+                .setCategory(Notification.CATEGORY_REMINDER)
                 .setColor(getResources().getColor(R.color.primaryColor))
                 .build();
 
