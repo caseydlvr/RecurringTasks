@@ -17,7 +17,7 @@ public class RecurringTaskApp extends Application {
     public void onCreate() {
         super.onCreate();
         AndroidThreeTen.init(this);
-        initNotificaitonAlarm();
+        addNotificationAlarm();
     }
 
     public AppDatabase getDb() {
@@ -28,7 +28,7 @@ public class RecurringTaskApp extends Application {
         return DataRepository.getInstance(getDb());
     }
 
-    private void initNotificaitonAlarm() {
+    private void addNotificationAlarm() {
         Calendar cal = Calendar.getInstance();
 //        cal.set(Calendar.HOUR_OF_DAY, 9);
 
