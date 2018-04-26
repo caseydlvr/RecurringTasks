@@ -40,7 +40,8 @@
                   </intent-filter>
         </activity>
         <receiver android:name=".notifications.NotificationAlarmReceiver"/>
-        <service android:name=".notifications.NotificationService"/>
+        <service android:name=".notifications.NotificationService"
+                 android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>
