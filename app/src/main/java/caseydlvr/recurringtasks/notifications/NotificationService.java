@@ -84,7 +84,7 @@ public class NotificationService extends JobIntentService {
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(task.getName())
                 .setContentText("Due around " + task.getDueDate())
-                .setSmallIcon(R.drawable.ic_notification_alarm)
+                .setSmallIcon(R.drawable.ic_notification_clock)
                 .setContentIntent(clickPendingIntent)
                 .build();
 
