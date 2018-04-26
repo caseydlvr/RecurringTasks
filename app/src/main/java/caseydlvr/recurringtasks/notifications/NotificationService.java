@@ -15,6 +15,9 @@ import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.FormatStyle;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -81,9 +84,12 @@ public class NotificationService extends JobIntentService {
                 clickIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+        String notificationContent = "Due around " +
+                task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
+
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(task.getName())
-                .setContentText("Due around " + task.getDueDate())
+                .setContentText(notificationContent)
                 .setSmallIcon(R.drawable.ic_notification_clock)
                 .setContentIntent(clickPendingIntent)
                 .setCategory(Notification.CATEGORY_REMINDER)
