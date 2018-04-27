@@ -39,6 +39,11 @@
                       <category android:name="android.intent.category.PREFERENCE"/>
                   </intent-filter>
         </activity>
+        <receiver android:name=".TaskActionReceiver">
+            <intent-filter>
+                <action android:name="caseydlvr.recurringtasks.TASK_COMPLETE"/>
+            </intent-filter>
+        </receiver>
         <receiver android:name=".notifications.NotificationAlarmReceiver"/>
         <service android:name=".notifications.NotificationService"
                  android:permission="android.permission.BIND_JOB_SERVICE"/>

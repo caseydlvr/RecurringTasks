@@ -23,6 +23,7 @@ import java.util.List;
 
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.RecurringTaskApp;
+import caseydlvr.recurringtasks.TaskActionReceiver;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
@@ -32,7 +33,7 @@ public class NotificationService extends JobIntentService {
     private static final String TAG = NotificationService.class.getSimpleName();
 
     static final int JOB_ID = 999;
-    static final int NOTIFICATION_ID = 1;
+    public static final int NOTIFICATION_ID = 1;
     static final String NOTIFICATION_CHANNEL_ID = "task_channel";
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
 
@@ -84,6 +85,14 @@ public class NotificationService extends JobIntentService {
                 clickIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent completeIntent = new Intent(this, TaskActionReceiver.class);
+        completeIntent.setAction(TaskActionReceiver.ACTION_COMPLETE);
+        completeIntent.putExtra(TaskActionReceiver.EXTRA_TASK_ID, task.getId());
+        PendingIntent completePendingIntent = PendingIntent.getBroadcast(this,
+                0,
+                completeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         String notificationContent = "Due around " +
                 task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
 
@@ -92,6 +101,8 @@ public class NotificationService extends JobIntentService {
                 .setContentText(notificationContent)
                 .setSmallIcon(R.drawable.ic_notification_clock)
                 .setContentIntent(clickPendingIntent)
+                .setAutoCancel(true)
+                .addAction(R.drawable.ic_notification_check, getString(R.string.complete), completePendingIntent)
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setColor(getResources().getColor(R.color.primaryColor))
                 .build();

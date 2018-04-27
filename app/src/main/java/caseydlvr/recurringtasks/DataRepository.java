@@ -3,6 +3,7 @@ package caseydlvr.recurringtasks;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
+import android.support.annotation.WorkerThread;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Task;
 
 public class DataRepository {
+
+    private static final String TAG = DataRepository.class.getSimpleName();
 
     private static DataRepository sInstance;
 
@@ -46,6 +49,10 @@ public class DataRepository {
 
     public void complete(Task task) {
         new CompleteTask(this).execute(task);
+    }
+
+    public void completeById(long id) {
+        new CompleteByIdTask(this).execute(id);
     }
 
     public void delete(Task task) {
@@ -103,20 +110,7 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Task... tasks) {
-            mDr.getDb().runInTransaction(() -> {
-                mDr.getDb().taskDao().delete(tasks[0]);
-
-                if (tasks[0].isRepeating()) {
-                    Task newTask = new Task();
-                    newTask.setName(tasks[0].getName());
-                    newTask.setDuration(tasks[0].getDuration());
-                    newTask.setDurationUnit(tasks[0].getDurationUnit());
-                    newTask.setRepeating(tasks[0].isRepeating());
-                    newTask.setUsesNotifications(tasks[0].usesNotifications());
-
-                    mDr.getDb().taskDao().insert(newTask);
-                }
-            });
+            completeTask(mDr.getDb(), tasks[0]);
 
             return null;
         }
@@ -125,6 +119,41 @@ public class DataRepository {
         protected void onPostExecute(Void aVoid) {
             mDr.isLoading(false);
         }
+    }
+
+    private static class CompleteByIdTask extends AsyncTask<Long, Void, Void> {
+        DataRepository mDr;
+
+        CompleteByIdTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected Void doInBackground(Long... longs) {
+            Task task = mDr.getDb().taskDao().loadByIdTask(longs[0]);
+
+            completeTask(mDr.getDb(), task);
+
+            return null;
+        }
+    }
+
+    @WorkerThread
+    private static void completeTask(AppDatabase db, Task task) {
+        db.runInTransaction(() -> {
+            db.taskDao().delete(task);
+
+            if (task.isRepeating()) {
+                Task newTask = new Task();
+                newTask.setName(task.getName());
+                newTask.setDuration(task.getDuration());
+                newTask.setDurationUnit(task.getDurationUnit());
+                newTask.setRepeating(task.isRepeating());
+                newTask.setUsesNotifications(task.usesNotifications());
+
+                db.taskDao().insert(newTask);
+            }
+        });
     }
 
     private static class DeleteTask extends AsyncTask<Task, Void, Void> {
@@ -151,4 +180,5 @@ public class DataRepository {
             mDr.isLoading(false);
         }
     }
+
 }

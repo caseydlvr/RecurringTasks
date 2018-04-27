@@ -47,7 +47,7 @@ import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
 
 public class TaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-    public static final String EXTRA_TASK_ID = "extra_task_id";
+    public static final String EXTRA_TASK_ID = "TaskActivity_Task_Id";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
     private Task mTask;
