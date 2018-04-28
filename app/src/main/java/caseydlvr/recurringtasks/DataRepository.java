@@ -132,7 +132,7 @@ public class DataRepository {
         protected Void doInBackground(Long... longs) {
             Task task = mDr.getDb().taskDao().loadByIdTask(longs[0]);
 
-            completeTask(mDr.getDb(), task);
+            if (task != null) completeTask(mDr.getDb(), task);
 
             return null;
         }
