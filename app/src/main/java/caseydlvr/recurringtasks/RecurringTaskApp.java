@@ -28,20 +28,28 @@ public class RecurringTaskApp extends Application {
         return DataRepository.getInstance(getDb());
     }
 
-    private void addNotificationAlarm() {
+    public void addNotificationAlarm() {
         Calendar cal = Calendar.getInstance();
 //        cal.set(Calendar.HOUR_OF_DAY, 9);
-
-        Intent intent = new Intent(this, NotificationAlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 cal.getTimeInMillis(),
                 AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                pendingIntent);
+                getAlarmPendingIntent());
+    }
+
+    public void removeNotificationAlarm() {
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.cancel(getAlarmPendingIntent());
+    }
+
+    private PendingIntent getAlarmPendingIntent() {
+        Intent intent = new Intent(this, NotificationAlarmReceiver.class);
+
+        return PendingIntent.getBroadcast(this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

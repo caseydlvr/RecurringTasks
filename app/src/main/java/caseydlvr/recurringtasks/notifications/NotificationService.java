@@ -32,10 +32,10 @@ public class NotificationService extends JobIntentService {
 
     private static final String TAG = NotificationService.class.getSimpleName();
 
-    static final int JOB_ID = 999;
     public static final int NOTIFICATION_ID = 1;
     static final String NOTIFICATION_CHANNEL_ID = "task_channel";
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
+    static final int JOB_ID = 999;
 
     static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, NotificationService.class, JOB_ID, work);
