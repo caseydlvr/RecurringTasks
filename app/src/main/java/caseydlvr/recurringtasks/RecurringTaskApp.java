@@ -4,6 +4,9 @@ import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
@@ -11,13 +14,24 @@ import java.util.Calendar;
 
 import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.notifications.NotificationAlarmReceiver;
+import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 
 public class RecurringTaskApp extends Application {
+
+    private static final String TAG = RecurringTaskApp.class.getSimpleName();
+
     @Override
     public void onCreate() {
         super.onCreate();
         AndroidThreeTen.init(this);
-        addNotificationAlarm();
+
+        SharedPreferences settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean showNotifications = settingsPrefs.getBoolean(SettingsActivity.KEY_SHOW_NOTIFICATIONS, true);
+
+        if (showNotifications) {
+            addNotificationAlarm();
+        }
+
     }
 
     public AppDatabase getDb() {
