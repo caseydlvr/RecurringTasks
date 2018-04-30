@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class NotificationAlarmReceiver extends BroadcastReceiver {
+public class NotificationReceiver extends BroadcastReceiver {
 
-    private static final String TAG = NotificationAlarmReceiver.class.getSimpleName();
+    private static final String TAG = NotificationReceiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {

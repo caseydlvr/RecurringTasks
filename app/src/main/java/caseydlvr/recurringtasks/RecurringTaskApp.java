@@ -6,14 +6,13 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import java.util.Calendar;
 
 import caseydlvr.recurringtasks.db.AppDatabase;
-import caseydlvr.recurringtasks.notifications.NotificationAlarmReceiver;
+import caseydlvr.recurringtasks.notifications.NotificationReceiver;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 
 public class RecurringTaskApp extends Application {
@@ -50,16 +49,16 @@ public class RecurringTaskApp extends Application {
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 cal.getTimeInMillis(),
                 AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                getAlarmPendingIntent());
+                buildAlarmPendingIntent());
     }
 
     public void removeNotificationAlarm() {
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.cancel(getAlarmPendingIntent());
+        am.cancel(buildAlarmPendingIntent());
     }
 
-    private PendingIntent getAlarmPendingIntent() {
-        Intent intent = new Intent(this, NotificationAlarmReceiver.class);
+    private PendingIntent buildAlarmPendingIntent() {
+        Intent intent = new Intent(this, NotificationReceiver.class);
 
         return PendingIntent.getBroadcast(this,
                 0,

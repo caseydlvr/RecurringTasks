@@ -1,6 +1,5 @@
 package caseydlvr.recurringtasks;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +20,7 @@ public class TaskActionReceiver extends BroadcastReceiver {
             switch (intent.getAction()) {
                 case ACTION_COMPLETE:
                     completeTask(context, intent.getLongExtra(EXTRA_TASK_ID, 0));
-                    dismissNotification(context);
+                    NotificationService.dismissNotification(context);
                     break;
             }
         }
@@ -33,10 +32,5 @@ public class TaskActionReceiver extends BroadcastReceiver {
         ((RecurringTaskApp) context.getApplicationContext())
                 .getRepository()
                 .completeById(id);
-    }
-
-    private void dismissNotification(Context context) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(NotificationService.NOTIFICATION_ID);
     }
 }

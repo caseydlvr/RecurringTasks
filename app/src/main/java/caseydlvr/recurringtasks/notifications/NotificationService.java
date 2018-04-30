@@ -109,4 +109,9 @@ public class NotificationService extends JobIntentService {
 
         manager.notify(NOTIFICATION_ID, notification);
     }
+
+    public static void dismissNotification(Context context) {
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(NotificationService.NOTIFICATION_ID);
+    }
 }
