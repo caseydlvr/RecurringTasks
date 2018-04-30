@@ -93,7 +93,7 @@ public class NotificationService extends JobIntentService {
                 completeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        String notificationContent = "Due around " +
+        String notificationContent = getString(R.string.dueDateDetailLabel) + " " +
                 task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
