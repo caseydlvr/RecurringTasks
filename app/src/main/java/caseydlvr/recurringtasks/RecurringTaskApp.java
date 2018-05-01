@@ -23,14 +23,7 @@ public class RecurringTaskApp extends Application {
     public void onCreate() {
         super.onCreate();
         AndroidThreeTen.init(this);
-
-        SharedPreferences settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean showNotifications = settingsPrefs.getBoolean(SettingsActivity.KEY_SHOW_NOTIFICATIONS, true);
-
-        if (showNotifications) {
-            addNotificationAlarm();
-        }
-
+        initNotifications();
     }
 
     public AppDatabase getDb() {
@@ -64,5 +57,14 @@ public class RecurringTaskApp extends Application {
                 0,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void initNotifications() {
+        SharedPreferences settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean showNotifications = settingsPrefs.getBoolean(SettingsActivity.KEY_SHOW_NOTIFICATIONS, true);
+
+        if (showNotifications) {
+            addNotificationAlarm();
+        }
     }
 }

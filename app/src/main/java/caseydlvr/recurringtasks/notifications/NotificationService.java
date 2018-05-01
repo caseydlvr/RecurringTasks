@@ -51,13 +51,10 @@ public class NotificationService extends JobIntentService {
         Observer<List<Task>> observer = new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
-                if (tasks != null) {
-                    if (!tasks.isEmpty()) {
-                        Collections.sort(tasks, new Task.TaskComparator());
-                        Task top = tasks.get(0);
-                        if (top.getDuePriority() <= DueStatus.PRIORITY_DUE) {
-                            sendNotification(top);
-                        }
+                if (tasks != null && !tasks.isEmpty()) {
+                    Task topTask = getHighestPriorityTask(tasks);
+                    if (topTask.getDuePriority() <= DueStatus.PRIORITY_DUE) {
+                        sendNotification(topTask);
                     }
                     observableTasks.removeObserver(this);
                 }
@@ -65,6 +62,12 @@ public class NotificationService extends JobIntentService {
         };
 
         observableTasks.observeForever(observer);
+    }
+
+    private Task getHighestPriorityTask(List<Task> tasks) {
+        Collections.sort(tasks, new Task.TaskComparator());
+
+        return tasks.get(0);
     }
 
     private void sendNotification(Task task) {
@@ -78,36 +81,46 @@ public class NotificationService extends JobIntentService {
             manager.createNotificationChannel(channel);
         }
 
-        Intent clickIntent = new Intent(this, TaskActivity.class);
-        clickIntent.putExtra(TaskActivity.EXTRA_TASK_ID, task.getId());
-        PendingIntent clickPendingIntent = PendingIntent.getActivity(this,
-                0,
-                clickIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        manager.notify(NOTIFICATION_ID, buildTaskNotification(task));
+    }
 
-        Intent completeIntent = new Intent(this, TaskActionReceiver.class);
-        completeIntent.setAction(TaskActionReceiver.ACTION_COMPLETE);
-        completeIntent.putExtra(TaskActionReceiver.EXTRA_TASK_ID, task.getId());
-        PendingIntent completePendingIntent = PendingIntent.getBroadcast(this,
-                0,
-                completeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
+    private Notification buildTaskNotification(Task task) {
         String notificationContent = getString(R.string.dueDateDetailLabel) + " " +
                 task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
 
-        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(task.getName())
                 .setContentText(notificationContent)
                 .setSmallIcon(R.drawable.ic_notification_clock)
-                .setContentIntent(clickPendingIntent)
+                .setContentIntent(buildClickPendingIntent(task.getId()))
                 .setAutoCancel(true)
-                .addAction(R.drawable.ic_notification_check, getString(R.string.complete), completePendingIntent)
+                .addAction(R.drawable.ic_notification_check,
+                        getString(R.string.complete),
+                        buildCompletePendingIntent(task.getId()))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setColor(getResources().getColor(R.color.primaryColor))
                 .build();
+    }
 
-        manager.notify(NOTIFICATION_ID, notification);
+    private PendingIntent buildClickPendingIntent(long id) {
+        Intent clickIntent = new Intent(this, TaskActivity.class);
+        clickIntent.putExtra(TaskActivity.EXTRA_TASK_ID, id);
+
+        return PendingIntent.getActivity(this,
+                0,
+                clickIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private PendingIntent buildCompletePendingIntent(long id) {
+        Intent completeIntent = new Intent(this, TaskActionReceiver.class);
+        completeIntent.setAction(TaskActionReceiver.ACTION_COMPLETE);
+        completeIntent.putExtra(TaskActionReceiver.EXTRA_TASK_ID, id);
+
+        return PendingIntent.getBroadcast(this,
+                0,
+                completeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public static void dismissNotification(Context context) {
