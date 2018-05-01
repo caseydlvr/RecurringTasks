@@ -41,7 +41,7 @@
         </activity>
         <receiver android:name=".TaskActionReceiver">
             <intent-filter>
-                <action android:name="caseydlvr.recurringtasks.TASK_COMPLETE"/>
+                <action android:name="caseydlvr.recurringtasks.action.TASK_COMPLETE"/>
             </intent-filter>
         </receiver>
         <receiver android:name=".notifications.NotificationReceiver"/>

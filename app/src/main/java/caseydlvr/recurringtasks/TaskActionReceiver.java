@@ -11,7 +11,7 @@ public class TaskActionReceiver extends BroadcastReceiver {
 
     private static final String TAG = TaskActionReceiver.class.getSimpleName();
 
-    public static final String ACTION_COMPLETE = "caseydlvr.recurringtasks.TASK_COMPLETE";
+    public static final String ACTION_COMPLETE = "caseydlvr.recurringtasks.action.TASK_COMPLETE";
     public static final String EXTRA_TASK_ID = "TaskActionReceiver_Task_Id";
 
     @Override
