@@ -46,14 +46,14 @@ public class NotificationService extends JobIntentService {
         Log.d(TAG, "in onHandleWork()");
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
-                case NotificationReceiver.ACTION_SEND:
-                    handleSendAction();
+                case NotificationReceiver.ACTION_SEND_TOP:
+                    handleSendTopAction();
                     break;
             }
         }
     }
 
-    private void handleSendAction() {
+    private void handleSendTopAction() {
         // asynchronously get all outstanding tasks with notifications enabled
         LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication())
                 .getRepository()

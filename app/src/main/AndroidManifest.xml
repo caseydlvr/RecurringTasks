@@ -46,7 +46,7 @@
         </receiver>
         <receiver android:name=".notifications.NotificationReceiver">
             <intent-filter>
-                <action android:name="caseydlvr.recurringtasks.action.NOTIFICATION_SEND"/>
+                <action android:name="caseydlvr.recurringtasks.action.NOTIFICATION_SEND_TOP"/>
             </intent-filter>
         </receiver>
         <service android:name=".notifications.NotificationService"
