@@ -47,27 +47,33 @@ public class NotificationService extends JobIntentService {
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
                 case NotificationReceiver.ACTION_SEND:
-                    LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication())
-                            .getRepository()
-                            .loadOutstandingTasksWithNotifications();
-
-                    Observer<List<Task>> observer = new Observer<List<Task>>() {
-                        @Override
-                        public void onChanged(@Nullable List<Task> tasks) {
-                            if (tasks != null && !tasks.isEmpty()) {
-                                Task topTask = getHighestPriorityTask(tasks);
-                                if (topTask.getDuePriority() <= DueStatus.PRIORITY_DUE) {
-                                    sendNotification(topTask);
-                                }
-                                observableTasks.removeObserver(this);
-                            }
-                        }
-                    };
-
-                    observableTasks.observeForever(observer);
+                    handleSendAction();
                     break;
             }
         }
+    }
+
+    private void handleSendAction() {
+        // asynchronously get all outstanding tasks with notifications enabled
+        LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication())
+                .getRepository()
+                .loadOutstandingTasksWithNotifications();
+
+        // when async load completes, send notification for highest priority task returned
+        Observer<List<Task>> observer = new Observer<List<Task>>() {
+            @Override
+            public void onChanged(@Nullable List<Task> tasks) {
+                if (tasks != null && !tasks.isEmpty()) {
+                    Task topTask = getHighestPriorityTask(tasks);
+                    if (topTask.getDuePriority() <= DueStatus.PRIORITY_DUE) {
+                        sendNotification(topTask);
+                    }
+                    observableTasks.removeObserver(this);
+                }
+            }
+        };
+
+        observableTasks.observeForever(observer);
     }
 
     private Task getHighestPriorityTask(List<Task> tasks) {
