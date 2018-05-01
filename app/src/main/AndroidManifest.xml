@@ -44,7 +44,11 @@
                 <action android:name="caseydlvr.recurringtasks.action.TASK_COMPLETE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".notifications.NotificationReceiver"/>
+        <receiver android:name=".notifications.NotificationReceiver">
+            <intent-filter>
+                <action android:name="caseydlvr.recurringtasks.action.NOTIFICATION_SEND"/>
+            </intent-filter>
+        </receiver>
         <service android:name=".notifications.NotificationService"
                  android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
