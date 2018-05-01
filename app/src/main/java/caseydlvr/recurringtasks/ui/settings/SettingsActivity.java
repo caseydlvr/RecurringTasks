@@ -1,5 +1,6 @@
 package caseydlvr.recurringtasks.ui.settings;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -7,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import caseydlvr.recurringtasks.RecurringTaskApp;
+import caseydlvr.recurringtasks.notifications.NotificationReceiver;
+import caseydlvr.recurringtasks.notifications.NotificationService;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String KEY_SHOW_NOTIFICATIONS = "pref_show_notifications";
@@ -18,8 +21,10 @@ public class SettingsActivity extends AppCompatActivity {
                     case KEY_SHOW_NOTIFICATIONS:
                         if (sharedPreferences.getBoolean(key, true)) {
                             ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();
+                            showNotification();
                         } else {
                             ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
+                            NotificationService.dismissNotification(this);
                         }
                 }
             };
@@ -44,5 +49,11 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mSharedPreferences.unregisterOnSharedPreferenceChangeListener(mSharedPreferenceChangeListener);
+    }
+
+    private void showNotification() {
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        intent.setAction(NotificationReceiver.ACTION_SEND_TOP);
+        sendBroadcast(intent);
     }
 }
