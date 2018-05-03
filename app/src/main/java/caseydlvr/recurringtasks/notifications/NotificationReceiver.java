@@ -16,6 +16,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.d(TAG, "in onReceive");
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
+                case Intent.ACTION_BOOT_COMPLETED:
                 case ACTION_SEND_TOP:
                     NotificationService.enqueueWork(context, intent);
                     break;
