@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
@@ -40,6 +41,10 @@ public class RecurringTaskApp extends Application {
         ZonedDateTime notificationTime = ZonedDateTime.now()
                 .truncatedTo(ChronoUnit.DAYS)
                 .plusHours(notificationHour);
+
+        if (notificationTime.isBefore(ZonedDateTime.now())) {
+            notificationTime = notificationTime.plusDays(1);
+        }
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
