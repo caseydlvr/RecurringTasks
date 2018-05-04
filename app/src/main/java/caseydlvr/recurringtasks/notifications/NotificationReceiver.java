@@ -16,9 +16,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.d(TAG, "in onReceive");
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
-                case Intent.ACTION_BOOT_COMPLETED:
-                    // notifications initialized in App onCreate when this receiver runs
-                    break;
                 case ACTION_SEND_TOP:
                     NotificationService.enqueueWork(context, intent);
                     break;

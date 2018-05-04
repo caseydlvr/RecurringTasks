@@ -3,10 +3,11 @@ package caseydlvr.recurringtasks;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
@@ -51,11 +52,15 @@ public class RecurringTaskApp extends Application {
                 notificationTime.toInstant().toEpochMilli(),
                 AlarmManager.INTERVAL_DAY,
                 buildAlarmPendingIntent());
+
+        setBootReceiverEnabled(true);
     }
 
     public void removeNotificationAlarm() {
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.cancel(buildAlarmPendingIntent());
+
+        setBootReceiverEnabled(false);
     }
 
     private PendingIntent buildAlarmPendingIntent() {
@@ -66,6 +71,17 @@ public class RecurringTaskApp extends Application {
                 0,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void setBootReceiverEnabled(boolean enabled) {
+        int enabledState;
+        if (enabled) enabledState = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+        else         enabledState = PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+        getPackageManager().setComponentEnabledSetting(
+                new ComponentName(this, BootReceiver.class),
+                enabledState,
+                PackageManager.DONT_KILL_APP);
     }
 
     private void initNotifications() {
