@@ -9,7 +9,8 @@ import android.preference.PreferenceManager;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
-import java.util.Calendar;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.temporal.ChronoUnit;
 
 import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.notifications.NotificationReceiver;
@@ -35,13 +36,15 @@ public class RecurringTaskApp extends Application {
     }
 
     public void addNotificationAlarm() {
-        Calendar cal = Calendar.getInstance();
-//        cal.set(Calendar.HOUR_OF_DAY, 9);
+        final int notificationHour = 9;
+        ZonedDateTime notificationTime = ZonedDateTime.now()
+                .truncatedTo(ChronoUnit.DAYS)
+                .plusHours(notificationHour);
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                cal.getTimeInMillis(),
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                notificationTime.toInstant().toEpochMilli(),
+                AlarmManager.INTERVAL_DAY,
                 buildAlarmPendingIntent());
     }
 
