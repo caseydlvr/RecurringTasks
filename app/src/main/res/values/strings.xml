@@ -44,4 +44,6 @@
     <string name="pref_show_notifications_title">Show Notifications</string>
     <string name="pref_show_notifications_summary">Disabling prevents the app from showing any notifications, regardless of individual task notification settings</string>
     <string name="settings">Settings</string>
+    <string name="pref_notification_time_title">Notification Time</string>
+    <string name="pref_notification_time_summary">Time of day to show daily notification</string>
 </resources>

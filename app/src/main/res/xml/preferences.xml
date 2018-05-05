@@ -2,9 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:defaultValue="true"
         android:key="pref_show_notifications"
         android:title="@string/pref_show_notifications_title"
-        android:summary="@string/pref_show_notifications_summary"/>
+        android:summary="@string/pref_show_notifications_summary"
+        android:defaultValue="true"/>
+
+    <caseydlvr.recurringtasks.ui.settings.TimePreference
+        android:key="pref_notification_time"
+        android:title="@string/pref_notification_time_title"
+        android:summary="@string/pref_notification_time_summary"
+        android:defaultValue="9:00"/>
 
 </PreferenceScreen>

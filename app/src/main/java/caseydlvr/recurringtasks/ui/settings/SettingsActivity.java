@@ -13,6 +13,7 @@ import caseydlvr.recurringtasks.notifications.NotificationService;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String KEY_SHOW_NOTIFICATIONS = "pref_show_notifications";
+    public static final String KEY_NOTIFICATION_TIME = "pref_notification_time";
 
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
