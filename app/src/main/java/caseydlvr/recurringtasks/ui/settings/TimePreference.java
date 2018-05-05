@@ -12,6 +12,8 @@ public class TimePreference extends DialogPreference {
 
     private static final String TAG = TimePreference.class.getSimpleName();
 
+    public static final String DEFAULT_TIME = "9:00";
+
     private TimePicker mTimePicker;
     private int mHour;
     private int mMinute;
@@ -70,5 +72,15 @@ public class TimePreference extends DialogPreference {
 
     private String getTimeString() {
         return mHour + ":" + mMinute;
+    }
+
+    public static int getHourFromString(String s) {
+        String[] time = s.split(":");
+        return Integer.valueOf(time[0]);
+    }
+
+    public static int getMinuteFromString(String s) {
+        String[] time = s.split(":");
+        return Integer.valueOf(time[1]);
     }
 }
