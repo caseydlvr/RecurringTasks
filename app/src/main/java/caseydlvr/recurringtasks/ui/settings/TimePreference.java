@@ -13,11 +13,12 @@ public class TimePreference extends DialogPreference {
     private static final String TAG = TimePreference.class.getSimpleName();
 
     private TimePicker mTimePicker;
-    private int mHour = 9;
-    private int mMinute = 30;
+    private int mHour;
+    private int mMinute;
 
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setDialogTitle("");
     }
 
     @Override
@@ -42,7 +43,8 @@ public class TimePreference extends DialogPreference {
         if (positiveResult) {
             mHour = mTimePicker.getCurrentHour();
             mMinute = mTimePicker.getCurrentMinute();
-            persistString(getTimeString());
+
+            if (callChangeListener(getTimeString())) persistString(getTimeString());
         }
     }
 
