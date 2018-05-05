@@ -6,7 +6,8 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
-        <item name="android:datePickerDialogTheme">@style/DatePicker</item>
+        <item name="android:datePickerDialogTheme">@style/Dialog</item>
+        <item name="android:alertDialogTheme">@style/Dialog</item>
         <item name="textColorError">@color/colorError</item>
     </style>
 
@@ -25,7 +26,7 @@
         <item name="colorAccent">@color/primaryLightColor</item>
     </style>
 
-    <style name="DatePicker" parent="Theme.AppCompat.Light.Dialog">
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
