@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.notifications.NotificationReceiver;
 import caseydlvr.recurringtasks.notifications.NotificationService;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final String TAG = SettingsActivity.class.getSimpleName();
+
     public static final String KEY_SHOW_NOTIFICATIONS = "pref_show_notifications";
     public static final String KEY_NOTIFICATION_TIME = "pref_notification_time";
 
@@ -27,6 +30,14 @@ public class SettingsActivity extends AppCompatActivity {
                             ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
                             NotificationService.dismissNotification(this);
                         }
+                        break;
+                    case KEY_NOTIFICATION_TIME:
+                        Log.d(TAG, "in notification time pref change listener");
+                        if (sharedPreferences.getBoolean(KEY_SHOW_NOTIFICATIONS, true)) {
+                            ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
+                            ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();
+                        }
+                        break;
                 }
             };
 
