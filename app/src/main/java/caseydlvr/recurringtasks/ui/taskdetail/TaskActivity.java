@@ -103,7 +103,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 @Override
                 public void onChanged(@Nullable Task task) {
                     if (task == null) {
-                        Toast.makeText(getBaseContext(), R.string.taskNotFound, Toast.LENGTH_SHORT).show();
+                        showResultMessage(R.string.taskNotFound);
                         finish();
                     } else {
                         setCleanValues(task);
@@ -142,6 +142,10 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 if (validateInputs()) {
                     hideKeyboard();
                     saveTask();
+
+                    if (mTask.getId() > 0) showResultMessage(R.string.taskSaveSuccess);
+                    else                   showResultMessage(R.string.taskCreateSuccess);
+
                     finish();
                 }
                 return true;
@@ -268,7 +272,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
     private void showResultMessage(int stringId) {
-        Snackbar.make(mLayout, stringId, Snackbar.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), stringId, Toast.LENGTH_SHORT).show();
     }
 
     private void hideKeyboard() {

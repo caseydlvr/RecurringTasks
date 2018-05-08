@@ -13,7 +13,8 @@
     <string name="week">Week</string>
     <string name="month">Month</string>
     <string name="year">Year</string>
-    <string name="taskSaveSuccess">Task saved</string>
+    <string name="taskSaveSuccess">Task updated</string>
+    <string name="taskCreateSuccess">Task created</string>
     <string name="taskSaveFail">Save failed. Please try again.</string>
     <string name="taskNotFound">Task not found. Refresh the task list.</string>
     <string name="startDateLabel">Starting from</string>
