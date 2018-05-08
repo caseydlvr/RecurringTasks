@@ -12,11 +12,11 @@ import caseydlvr.recurringtasks.model.Task;
 public class TaskViewModel extends AndroidViewModel {
 
     private LiveData<Task> mTask;
-    private DataRepository mDataRepository;
+    private DataRepository mRepository;
 
     public TaskViewModel(@NonNull Application app) {
         super(app);
-        mDataRepository = ((RecurringTaskApp) app).getRepository();
+        mRepository = ((RecurringTaskApp) app).getRepository();
     }
 
     public LiveData<Task> getTask() {
@@ -24,10 +24,10 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void persist(Task task) {
-        mDataRepository.persist(task);
+        mRepository.persist(task);
     }
 
     public void init(long taskId) {
-        mTask = mDataRepository.loadTaskById(taskId);
+        mTask = mRepository.loadTaskById(taskId);
     }
 }
