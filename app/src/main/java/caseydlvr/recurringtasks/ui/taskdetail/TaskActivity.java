@@ -150,8 +150,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                     hideKeyboard();
                     saveTask();
 
-                    if (mTask.getId() > 0) showResultMessage(R.string.taskSaveSuccess);
-                    else                   showResultMessage(R.string.taskCreateSuccess);
+                    if (mCreateMode) showResultMessage(R.string.taskCreateSuccess);
+                    else             showResultMessage(R.string.taskSaveSuccess);
 
                     finish();
                 }
