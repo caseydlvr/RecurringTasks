@@ -100,20 +100,17 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         if (taskId > 0) {
             mCreateMode = false;
             mViewModel.init(taskId);
-            mViewModel.getTask().observe(this, new Observer<Task>() {
-                @Override
-                public void onChanged(@Nullable Task task) {
-                    if (task == null) {
-                        showResultMessage(R.string.taskNotFound);
-                        finish();
-                    } else {
-                        setCleanValues(task);
+            mViewModel.getTask().observe(this, task -> {
+                if (task == null) {
+                    showResultMessage(R.string.taskNotFound);
+                    finish();
+                } else {
+                    setCleanValues(task);
 
-                        // rely on onRestoreInstanceState to populate views to preserve unsaved user input
-                        if (savedInstanceState == null) {
-                            mTask = task;
-                            populateViews();
-                        }
+                    // rely on onRestoreInstanceState to populate views to preserve unsaved user input
+                    if (savedInstanceState == null) {
+                        mTask = task;
+                        populateViews();
                     }
                 }
             });
