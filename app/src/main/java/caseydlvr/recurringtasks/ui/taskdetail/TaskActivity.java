@@ -157,6 +157,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 }
                 return true;
 
+            case R.id.action_complete:
+                completeTask();
+                showResultMessage(R.string.taskCompleteSuccess);
+                finish();
+                return true;
+
             case android.R.id.home:
                 if (isDirty()) {
                     showDirtyAlert();
@@ -213,6 +219,10 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         populateTaskFromInput();
 
         mViewModel.persist(mTask);
+    }
+
+    private void completeTask() {
+        mViewModel.complete(mTask);
     }
 
     private void populateTaskFromInput() {
