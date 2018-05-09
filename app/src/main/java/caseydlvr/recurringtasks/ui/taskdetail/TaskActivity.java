@@ -268,8 +268,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private void showDirtyAlert() {
         String message;
 
-        if (mTask.getId() == 0) message = getString(R.string.areYouSureNew);
-        else                    message = getString(R.string.areYouSureChanges);
+        if (mCreateMode) message = getString(R.string.areYouSureNew);
+        else             message = getString(R.string.areYouSureChanges);
 
         DialogFragment dirtyFragment = new DirtyDialogFragment();
         Bundle args = new Bundle();
