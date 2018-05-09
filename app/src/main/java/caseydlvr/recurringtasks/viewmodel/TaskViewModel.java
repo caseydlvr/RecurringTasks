@@ -27,6 +27,10 @@ public class TaskViewModel extends AndroidViewModel {
         mRepository.persist(task);
     }
 
+    public void complete(Task task) {
+        mRepository.complete(task);
+    }
+
     public void init(long taskId) {
         mTask = mRepository.loadTaskById(taskId);
     }

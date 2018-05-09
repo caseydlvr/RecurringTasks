@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -60,6 +59,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private LocalDate mCleanStartDate;
     private boolean mCleanRepeats;
     private boolean mCleanNotifications;
+    private boolean mCreateMode = true;
 
     @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
     @BindView(R.id.taskName) TextInputEditText mTaskName;
@@ -98,6 +98,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
 
         if (taskId > 0) {
+            mCreateMode = false;
             mViewModel.init(taskId);
             mViewModel.getTask().observe(this, new Observer<Task>() {
                 @Override
@@ -131,7 +132,13 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_task, menu);
+        int menuId;
+
+        if (mCreateMode) menuId = R.menu.menu_task_create;
+        else             menuId = R.menu.menu_task_update;
+
+        getMenuInflater().inflate(menuId, menu);
+
         return true;
     }
 
