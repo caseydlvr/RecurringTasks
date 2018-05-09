@@ -160,6 +160,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 finish();
                 return true;
 
+            case R.id.action_delete:
+                deleteTask();
+                showResultMessage(R.string.taskDeleteSuccess);
+                finish();
+                return true;
+
             case android.R.id.home:
                 if (isDirty()) {
                     showDirtyAlert();
@@ -221,8 +227,13 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private void completeTask() {
         // don't want observer's onChanged callback to fire after complete() deletes the task
         mViewModel.getTask().removeObservers(this);
-
         mViewModel.complete(mTask);
+    }
+
+    private void deleteTask() {
+        // don't want observer's onChanged callback to fire after complete() deletes the task
+        mViewModel.getTask().removeObservers(this);
+        mViewModel.delete(mTask);
     }
 
     private void populateTaskFromInput() {
