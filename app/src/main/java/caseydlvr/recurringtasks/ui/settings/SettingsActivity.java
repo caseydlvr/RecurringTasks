@@ -32,7 +32,6 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                         break;
                     case KEY_NOTIFICATION_TIME:
-                        Log.d(TAG, "in notification time pref change listener");
                         if (sharedPreferences.getBoolean(KEY_SHOW_NOTIFICATIONS, true)) {
                             ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
                             ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();

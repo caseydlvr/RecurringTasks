@@ -13,7 +13,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "in onReceive");
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
                 case ACTION_SEND_TOP:

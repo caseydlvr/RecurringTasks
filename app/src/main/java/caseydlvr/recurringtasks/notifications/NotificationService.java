@@ -43,7 +43,6 @@ public class NotificationService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Log.d(TAG, "in onHandleWork()");
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
                 case NotificationReceiver.ACTION_SEND_TOP:

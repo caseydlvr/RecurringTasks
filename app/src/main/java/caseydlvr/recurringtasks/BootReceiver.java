@@ -11,7 +11,6 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "Boot receiver onReceive triggered");
         // notifications initialized in App onCreate when this receiver runs
     }
 }
