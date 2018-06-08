@@ -2,12 +2,10 @@ package caseydlvr.recurringtasks.ui.taskdetail;
 
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -69,7 +67,6 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @BindView(R.id.startDate) TextView mStartDate;
     @BindView(R.id.repeating) Switch mRepeating;
     @BindView(R.id.notifications) Switch mNotifications;
-    @BindView(R.id.taskViewLayout) ConstraintLayout mLayout;
     @BindView(R.id.dueDate) TextView mDueDate;
     @BindView(R.id.taskToolbar) Toolbar mToolbar;
 
