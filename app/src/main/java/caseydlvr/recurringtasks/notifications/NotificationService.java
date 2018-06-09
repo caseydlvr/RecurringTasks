@@ -88,7 +88,8 @@ public class NotificationService extends JobIntentService {
             if (task.getDuePriority() > mMaxPriority) break;
             if (notificationTasks.size() >= mMaxNotifications) break;
 
-            notificationTasks.add(task);
+            // add to front of list so lower priority notifications are sent first
+            notificationTasks.add(0, task);
         }
 
         return notificationTasks;
