@@ -9,13 +9,13 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private static final String TAG = NotificationReceiver.class.getSimpleName();
 
-    public static final String ACTION_SEND_TOP = "caseydlvr.recurringtasks.action.NOTIFICATION_SEND_TOP";
+    public static final String ACTION_SEND_NOTIFICATIONS = "caseydlvr.recurringtasks.action.NOTIFICATION_SEND";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
-                case ACTION_SEND_TOP:
+                case ACTION_SEND_NOTIFICATIONS:
                     NotificationService.enqueueWork(context, intent);
                     break;
             }

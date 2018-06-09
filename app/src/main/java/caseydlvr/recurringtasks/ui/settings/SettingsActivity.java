@@ -28,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
                             showNotification();
                         } else {
                             ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
-                            NotificationService.dismissNotification(this);
+                            NotificationService.dismissNotifications(this);
                         }
                         break;
                     case KEY_NOTIFICATION_TIME:
@@ -64,7 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void showNotification() {
         Intent intent = new Intent(this, NotificationReceiver.class);
-        intent.setAction(NotificationReceiver.ACTION_SEND_TOP);
+        intent.setAction(NotificationReceiver.ACTION_SEND_NOTIFICATIONS);
         sendBroadcast(intent);
     }
 }

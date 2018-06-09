@@ -75,7 +75,7 @@ public class RecurringTaskApp extends Application {
 
     private PendingIntent buildAlarmPendingIntent() {
         Intent intent = new Intent(this, NotificationReceiver.class);
-        intent.setAction(NotificationReceiver.ACTION_SEND_TOP);
+        intent.setAction(NotificationReceiver.ACTION_SEND_NOTIFICATIONS);
 
         return PendingIntent.getBroadcast(this,
                 0,
