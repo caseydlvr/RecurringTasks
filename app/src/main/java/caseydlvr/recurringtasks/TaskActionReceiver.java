@@ -19,8 +19,9 @@ public class TaskActionReceiver extends BroadcastReceiver {
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
                 case ACTION_COMPLETE:
-                    completeTask(context, intent.getLongExtra(EXTRA_TASK_ID, 0));
-                    NotificationService.dismissNotification(context);
+                    long taskId = intent.getLongExtra(EXTRA_TASK_ID, 0);
+                    completeTask(context, taskId);
+                    NotificationService.dismissNotification(context, (int) taskId);
                     break;
             }
         }

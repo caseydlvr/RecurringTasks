@@ -18,6 +18,7 @@ import android.util.Log;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,10 +33,15 @@ public class NotificationService extends JobIntentService {
 
     private static final String TAG = NotificationService.class.getSimpleName();
 
-    public static final int NOTIFICATION_ID = 1;
+    public static final String EXTRA_MAX_PRIORITY = "NotificationService_Max_Priority";
+    public static final String EXTRA_MAX_NOTIFICATIONS = "NotificationService_Max_Notifications";
     static final String NOTIFICATION_CHANNEL_ID = "task_channel";
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
     static final int JOB_ID = 999;
+    static final int DEFAULT_MAX_NOTIFICATIONS = 4;
+
+    private int mMaxPriority;
+    private int mMaxNotifications;
 
     static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, NotificationService.class, JOB_ID, work);
@@ -45,28 +51,27 @@ public class NotificationService extends JobIntentService {
     protected void onHandleWork(@NonNull Intent intent) {
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
-                case NotificationReceiver.ACTION_SEND_TOP:
-                    handleSendTopAction();
+                case NotificationReceiver.ACTION_SEND_NOTIFICATIONS:
+                    mMaxPriority = intent.getIntExtra(EXTRA_MAX_PRIORITY, DueStatus.PRIORITY_DUE);
+                    mMaxNotifications = intent.getIntExtra(EXTRA_MAX_NOTIFICATIONS, DEFAULT_MAX_NOTIFICATIONS);
+                    handleSendNotifications();
                     break;
             }
         }
     }
 
-    private void handleSendTopAction() {
+    private void handleSendNotifications() {
         // asynchronously get all outstanding tasks with notifications enabled
         LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication())
                 .getRepository()
                 .loadOutstandingTasksWithNotifications();
 
-        // when async load completes, send notification for highest priority task returned
+        // when async load completes, send notifications
         Observer<List<Task>> observer = new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
                 if (tasks != null && !tasks.isEmpty()) {
-                    Task topTask = getHighestPriorityTask(tasks);
-                    if (topTask.getDuePriority() <= DueStatus.PRIORITY_DUE) {
-                        sendNotification(topTask);
-                    }
+                    sendNotifications(getNotificationTasks(tasks));
                     observableTasks.removeObserver(this);
                 }
             }
@@ -75,13 +80,21 @@ public class NotificationService extends JobIntentService {
         observableTasks.observeForever(observer);
     }
 
-    private Task getHighestPriorityTask(List<Task> tasks) {
+    private List<Task> getNotificationTasks(List<Task> tasks) {
         Collections.sort(tasks, new Task.TaskComparator());
+        List<Task> notificationTasks = new ArrayList<>();
 
-        return tasks.get(0);
+        for (Task task : tasks) {
+            if (task.getDuePriority() > mMaxPriority) break;
+            if (notificationTasks.size() >= mMaxNotifications) break;
+
+            notificationTasks.add(task);
+        }
+
+        return notificationTasks;
     }
 
-    private void sendNotification(Task task) {
+    private void sendNotifications(List<Task> tasks) {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -92,7 +105,9 @@ public class NotificationService extends JobIntentService {
             manager.createNotificationChannel(channel);
         }
 
-        manager.notify(NOTIFICATION_ID, buildTaskNotification(task));
+        for (Task task : tasks) {
+            manager.notify((int) task.getId(), buildTaskNotification(task));
+        }
     }
 
     private Notification buildTaskNotification(Task task) {
@@ -118,9 +133,9 @@ public class NotificationService extends JobIntentService {
         clickIntent.putExtra(TaskActivity.EXTRA_TASK_ID, id);
 
         return PendingIntent.getActivity(this,
-                0,
+                (int) id, // so intents for other tasks aren't updated
                 clickIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                0);
     }
 
     private PendingIntent buildCompletePendingIntent(long id) {
@@ -129,13 +144,18 @@ public class NotificationService extends JobIntentService {
         completeIntent.putExtra(TaskActionReceiver.EXTRA_TASK_ID, id);
 
         return PendingIntent.getBroadcast(this,
-                0,
+                (int) id, // so intents for other tasks aren't updated
                 completeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                0);
     }
 
-    public static void dismissNotification(Context context) {
+    public static void dismissNotification(Context context, int id) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(NotificationService.NOTIFICATION_ID);
+        manager.cancel(id);
+    }
+
+    public static void dismissNotifications(Context context) {
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll();
     }
 }
