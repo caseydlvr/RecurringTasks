@@ -122,9 +122,7 @@ public class DataRepository {
     }
 
     /**
-     * Getter for mDb.
-     *
-     * @return AppDatabase singleton
+      * @return AppDatabase singleton
      */
     public AppDatabase getDb() {
         return mDb;
