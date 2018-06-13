@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+/**
+ * BroadcastReceiver for handling notification related actions (such as sending notifications).
+ * Allows entities outside of the app's context to trigger notifications.
+ */
 public class NotificationReceiver extends BroadcastReceiver {
 
     private static final String TAG = NotificationReceiver.class.getSimpleName();
