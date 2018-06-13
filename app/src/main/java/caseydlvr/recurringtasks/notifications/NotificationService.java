@@ -35,6 +35,7 @@ public class NotificationService extends JobIntentService {
 
     public static final String EXTRA_MAX_PRIORITY = "NotificationService_Max_Priority";
     public static final String EXTRA_MAX_NOTIFICATIONS = "NotificationService_Max_Notifications";
+    public static final String GROUP_KEY_TASKS = "caseydlvr.recurringtasks.notifications.TASKS";
     static final String NOTIFICATION_CHANNEL_ID = "task_channel";
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
     static final int JOB_ID = 999;
@@ -126,6 +127,7 @@ public class NotificationService extends JobIntentService {
                         buildCompletePendingIntent(task.getId()))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setColor(getResources().getColor(R.color.primaryColor))
+                .setGroup(GROUP_KEY_TASKS)
                 .build();
     }
 
