@@ -29,6 +29,9 @@ import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
 
+/**
+ * JobIntentService for sending notifications for Tasks
+ */
 public class NotificationService extends JobIntentService {
 
     private static final String TAG = NotificationService.class.getSimpleName();
@@ -44,6 +47,13 @@ public class NotificationService extends JobIntentService {
     private int mMaxPriority;
     private int mMaxNotifications;
 
+    /**
+     * Wrapper for JobIntentService.enqueueWork(context, cls, jobId, work). Either directly starts
+     * the service (pre-O) or enqueues the work as a job (O and later). Work ends up in onHandleWork().
+     *
+     * @param context Context to use for the Service
+     * @param work    Intent to use for the Service (passed to onHandleWork)
+     */
     static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, NotificationService.class, JOB_ID, work);
     }
@@ -61,6 +71,11 @@ public class NotificationService extends JobIntentService {
         }
     }
 
+    /**
+     * Handler for SEND_NOTIFICATIONS action. Fetches outstanding tasks with notifications enabled,
+     * determines which of these tasks should have notifications sent right now, then sends the
+     * notifications.
+     */
     private void handleSendNotifications() {
         // asynchronously get all outstanding tasks with notifications enabled
         LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication())
@@ -81,6 +96,14 @@ public class NotificationService extends JobIntentService {
         observableTasks.observeForever(observer);
     }
 
+    /**
+     * Takes a list of tasks and reduces the list to only the tasks that are ready to have
+     * notifications sent.
+     *
+     * @param tasks List of outstanding Tasks that have notifications enabled
+     * @return      List of Tasks that should have notifications sent now, ordered by priority
+     *              highest to lowest
+     */
     private List<Task> getNotificationTasks(List<Task> tasks) {
         Collections.sort(tasks, new Task.TaskComparator());
         List<Task> notificationTasks = new ArrayList<>();
@@ -96,6 +119,11 @@ public class NotificationService extends JobIntentService {
         return notificationTasks;
     }
 
+    /**
+     * Sends a notification for each Task in tasks.
+     *
+     * @param tasks List of Tasks to send notifications for
+     */
     private void sendNotifications(List<Task> tasks) {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -112,6 +140,12 @@ public class NotificationService extends JobIntentService {
         }
     }
 
+    /**
+     * Builds a task Notification using the provided Task.
+     *
+     * @param task Task to use for building Notification
+     * @return     Notification for a Task
+     */
     private Notification buildTaskNotification(Task task) {
         String notificationContent = getString(R.string.dueDateDetailLabel) + " " +
                 task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
@@ -131,6 +165,12 @@ public class NotificationService extends JobIntentService {
                 .build();
     }
 
+    /**
+     * Builds a PendingIntent for opening the detail activity for the Task with the provided id.
+     *
+     * @param id Task ID
+     * @return   PendingIntent to launch a Task detail view
+     */
     private PendingIntent buildClickPendingIntent(long id) {
         Intent clickIntent = new Intent(this, TaskActivity.class);
         clickIntent.putExtra(TaskActivity.EXTRA_TASK_ID, id);
@@ -141,6 +181,12 @@ public class NotificationService extends JobIntentService {
                 0);
     }
 
+    /**
+     * Builds a PendingIntent for completing the Task associated with the provided id.
+     *
+     * @param id Task ID
+     * @return   PendingIntent to complete a Task
+     */
     private PendingIntent buildCompletePendingIntent(long id) {
         Intent completeIntent = new Intent(this, TaskActionReceiver.class);
         completeIntent.setAction(TaskActionReceiver.ACTION_COMPLETE);
@@ -152,11 +198,23 @@ public class NotificationService extends JobIntentService {
                 0);
     }
 
+    /**
+     * Dismisses the notification with the provided notification ID. For a task notification, the
+     * notification ID is the Task ID of the associated Task.
+     *
+     * @param context Context to use to get the notification service
+     * @param id      ID of the notification to dismiss
+     */
     public static void dismissNotification(Context context, int id) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(id);
     }
 
+    /**
+     * Dismisses all of the app's notifications
+     *
+     * @param context Context to use to get the notification service
+     */
     public static void dismissNotifications(Context context) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancelAll();
