@@ -67,6 +67,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 
+    /**
+     * Set the list of Tasks to use as the Adapter's underlying data structure. If the Adapter
+     * already has a Task list, DiffUtil is used to dispatch only the updates necessary to get
+     * from the old list to the new list (so the changes are animated).
+     *
+     * @param tasks List of Tasks to display
+     */
     public void setTasks(List<Task> tasks) {
         if (mTasks == null) {
             mTasks = tasks;
@@ -75,32 +82,64 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             swap(tasks);
         }
 
-        mTasks = tasks;
+        mTasks = tasks; // move to else
     }
 
     public void setViewModel(TaskListViewModel viewModel) {
         mViewModel = viewModel;
     }
 
+    /**
+     * Removes the item at the specified position in the Task list, then notifies the adapter that
+     * the item has been removed (which automatically triggers a remove animation).
+     *
+     * @param position index in Task list of item to remove
+     */
     private void removeItem(int position) {
         mTasks.remove(position);
         notifyItemRemoved(position);
     }
 
+    /**
+     * Adds the provided Task to the Task list at the specified position, then notifies the adapter
+     * that the item has been added (which automatically triggers an insert animation.
+     *
+     * @param position index in the Task list to add the item
+     * @param task     Task to add to the list
+     */
     private void addItem(int position, Task task) {
         mTasks.add(position, task);
         notifyItemInserted(position);
     }
 
+    /**
+     * Calculates the steps necessary to go from mTasks to tasks, then dispatches these steps to
+     * the Adapter. This allows the Adapter to animate the change from the old task list to the new
+     * task list.
+     *
+     * @param tasks List of Tasks to swap with mTasks
+     */
     private void swap(List<Task> tasks) {
         final TaskListDiffCallback diffCallback = new TaskListDiffCallback(mTasks, tasks);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        mTasks = tasks;
+        mTasks = tasks; // not necessary?
 
         diffResult.dispatchUpdatesTo(this);
     }
 
+    /**
+     * Handles completing an individual Task in the Task list.
+     *
+     * Removes the Task from the UI, then shows a Snackbar which gives the user the opportunity to
+     * undo the complete action. If the Snackbar expires without the user clicking undo, the
+     * ViewModel is notified to complete the Task. If the user clicks undo, the Task is added back to
+     * the UI.
+     *
+     * @param task     Task to complete
+     * @param position index in mTasks of the Task to complete
+     * @param v        View that represents the Task to complete
+     */
     private void complete(Task task, int position, View v) {
         removeItem(position);
 
@@ -114,6 +153,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 }).show();
     }
 
+    /**
+     * Handles deleting an individual Task in the Task list.
+     *
+     * Removes the task from the UI, then shows a Snackbar which gives the user the opportunity to
+     * undo the delete action. If the Snackbar expires without the user clicking undo, the ViewModel
+     * is notified to delete the Task. If the user clicks undo, the Task is added back to the UI.
+     *
+     * @param task     Task to delete
+     * @param position index in mTasks of the Task to complete
+     * @param v        View that represents the Task to delete
+     */
     private void delete(Task task, int position, View v) {
         removeItem(position);
 
@@ -148,6 +198,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             mContext = itemView.getContext();
         }
 
+        /**
+         * Uses the data in Task to populate the Views in this ViewHolder
+         *
+         * @param task Task to bind to this ViewHolder
+         */
         void bindTask(Task task) {
             mTask = task;
             DueStatus dueStatus = new DueStatus(mContext, mTask.getDuePriority());
