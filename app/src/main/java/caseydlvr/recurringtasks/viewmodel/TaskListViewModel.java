@@ -21,7 +21,7 @@ public class TaskListViewModel extends AndroidViewModel {
     private LiveData<Boolean> mIsLoading;
 
     /**
-     * Constructor. This starts the async loading of Tasks from the repository.
+     * Constructor. This starts the async loading of Tasks by the repository.
      *
      * @param app RecurringTaskApp
      */
