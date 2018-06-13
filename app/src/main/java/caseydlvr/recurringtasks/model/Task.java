@@ -9,6 +9,9 @@ import org.threeten.bp.temporal.ChronoUnit;
 
 import java.util.Comparator;
 
+/**
+ * Represents a Task. Room entity for the Tasks table.
+ */
 @Entity(tableName = "tasks")
 public class Task {
 
@@ -45,6 +48,9 @@ public class Task {
     private transient LocalDate mDueDate;
     private transient int mDuePriority;
 
+    /**
+     * Constructor. Sets default values for the task.
+     */
     public Task() {
         mName = "";
         mDuration = 1;
@@ -55,6 +61,9 @@ public class Task {
         mUsesNotifications = true;
     }
 
+    /**
+     * @return Unique ID for the Task. This is the DB key.
+     */
     public long getId() {
         return mId;
     }
@@ -71,36 +80,93 @@ public class Task {
         mName = name;
     }
 
+    /**
+     * duration is combined with durationUnit to indicate a period of time. For example, 5 days.
+     * In this example, getDuration() returns 5.
+     *
+     * @return duration integer
+     * @see    #getDurationUnit()
+     */
     public int getDuration() {
         return mDuration;
     }
 
+    /**
+     * Causes calculated due date fields to be recalculated
+     *
+     * @param duration duration integer
+     */
     public void setDuration(int duration) {
         mDuration = duration;
         setDueDateFields();
     }
 
+    /**
+     * durationUnit is combined with duration to indicate a period of time. For example, 5 days.
+     * In this example, getDurationUnit() returns the String defined by DurationUnit.KEY_DAY. All
+     * possible durationUnit values correspond to a DurationUnit.KEY_ constant.
+     *
+     * @return String corresponding to a DurationUnit.KEY_ constant
+     * @see    DurationUnit
+     * @see    #getDuration()
+     */
     public String getDurationUnit() {
         return mDurationUnit;
     }
 
+    /**
+     * Causes calculated due date fields to be recalculated
+     *
+     * @param durationUnit String corresponding to a DurationUnit.KEY_ constant
+     * @see                DurationUnit
+     */
     public void setDurationUnit(String durationUnit) {
         mDurationUnit = durationUnit;
         setDueDateFields();
     }
 
+    /**
+     * Due date is determined by adding the Task's duration (a combination of duration and durationUnit)
+     * to the Task's startDate. This is a rough due date (the Task could be considered due before
+     * this date, and due but not overdue after this date).
+     *
+     * The dueDate is calculated and cached whenever a field that influences the due date changes,
+     * rather than calculating the due date every time getDueDate() is called.
+     *
+     * @return LocalDate representing the Task's rough due date
+     */
     public LocalDate getDueDate() {
         return mDueDate;
     }
 
+    /**
+     * Priority is determined by comparing the current date to the due date. The duePriority is
+     * calculated and cached whenever a field that influences the priority changes, rather than
+     * calculating the priority every time getDuePriority() is called.
+     *
+     * The priority corresponds to a DueStatus.PRIORITY_ constant. A lower int value is higher
+     * priority. Return value should be compared to PRIORITY_ constants, rather than hardcoded
+     * int values.
+     *
+     * @return int corresponding to a DueStatus.PRIORITY_ constant
+     * @see    DueStatus
+     */
     public int getDuePriority() {
         return mDuePriority;
     }
 
+    /**
+     * @return LocalDate representing the start of the Task's duration period
+     */
     public LocalDate getStartDate() {
         return mStartDate;
     }
 
+    /**
+     * Causes calculated due date fields to be recalculated
+     *
+     * @param startDate LocalDate representing the start of the Task's duration period
+     */
     public void setStartDate(LocalDate startDate) {
         mStartDate = startDate;
         setDueDateFields();
@@ -114,6 +180,9 @@ public class Task {
         mEndDate = endDate;
     }
 
+    /**
+     * @return boolean representing whether the Task automatically repeats after completion
+     */
     public boolean isRepeating() {
         return mRepeating;
     }
@@ -122,6 +191,9 @@ public class Task {
         mRepeating = repeats;
     }
 
+    /**
+     * @return boolean representing whether notifications for this Task should be shown
+     */
     public boolean usesNotifications() {
         return mUsesNotifications;
     }
@@ -146,11 +218,20 @@ public class Task {
                 || other.usesNotifications() != mUsesNotifications;
     }
 
+    /**
+     * Calculates and caches all fields that are related to the tasks due date.
+     */
     private void setDueDateFields() {
         calculateDueDate();
         calculateDuePriority();
     }
 
+    /**
+     * Calculates and caches (as a field) the rough due date using duration, durationUnit and
+     * startDate.
+     *
+     * @see #getDueDate()
+     */
     private void calculateDueDate() {
         LocalDate dueDate;
 
@@ -175,6 +256,12 @@ public class Task {
         mDueDate = dueDate;
     }
 
+    /**
+     * Calculates and caches (as a field) the duePriority. Uses dueDate and startDate. Since dueDate
+     * is a calculated field, calculateDueDate() should always be called before calculateDuePriority().
+     *
+     * @see #getDuePriority()
+     */
     private void calculateDuePriority() {
         LocalDate today = LocalDate.now();
         int durationDays = (int) ChronoUnit.DAYS.between(mStartDate, mDueDate);
@@ -197,6 +284,13 @@ public class Task {
         }
     }
 
+    /**
+     * Comparator for Task. A Task is less than another Task if its duePriority is less than the
+     * other's duePriority. If the due priorities are equal, then a Task is less than another Task
+     * if its dueDate is before (a date comparison) the other's due date. This results in a List of
+     * Tasks sorted with this Comparator sorted in the order of highest priority task to lowest
+     * priority task.
+     */
     public static class TaskComparator implements Comparator<Task> {
 
         @Override
