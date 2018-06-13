@@ -31,14 +31,24 @@ public class RecurringTaskApp extends Application {
         initNotifications();
     }
 
+    /**
+     * @return AppDatabase singleton
+     */
     public AppDatabase getDb() {
         return AppDatabase.getInstance(this);
     }
 
+    /**
+     * @return DataRepository singleton
+     */
     public DataRepository getRepository() {
         return DataRepository.getInstance(getDb());
     }
 
+    /**
+     * Creates a daily alarm for sending task notifications. Uses user preferences to determine the
+     * time of the alarm.
+     */
     public void addNotificationAlarm() {
         // get hour and minute from time preference
         SharedPreferences settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -63,16 +73,26 @@ public class RecurringTaskApp extends Application {
                 AlarmManager.INTERVAL_DAY,
                 buildAlarmPendingIntent());
 
+        // too ensure alarm is recreated if device is restarted
         setBootReceiverEnabled(true);
     }
 
+    /**
+     * Removes daily notification alarm
+     */
     public void removeNotificationAlarm() {
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.cancel(buildAlarmPendingIntent());
 
+        // don't need to trigger BootReceiver if notifications are disabled
         setBootReceiverEnabled(false);
     }
 
+    /**
+     * Builds a PendingIntent for triggering the sending of task notifications
+     *
+     * @return PendingIntent to send notifications
+     */
     private PendingIntent buildAlarmPendingIntent() {
         Intent intent = new Intent(this, NotificationReceiver.class);
         intent.setAction(NotificationReceiver.ACTION_SEND_NOTIFICATIONS);
@@ -83,6 +103,12 @@ public class RecurringTaskApp extends Application {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    /**
+     * Enables or disables the BroadcastReceiver that handles the BOOT_COMPLETED system action.
+     *
+     * @param enabled boolean indicating whether the boot receiver should be enabled (true)
+     *                or disabled (false)
+     */
     private void setBootReceiverEnabled(boolean enabled) {
         int enabledState;
         if (enabled) enabledState = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;

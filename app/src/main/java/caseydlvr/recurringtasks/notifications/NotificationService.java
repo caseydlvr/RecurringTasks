@@ -166,7 +166,7 @@ public class NotificationService extends JobIntentService {
     }
 
     /**
-     * Builds a PendingIntent for opening the detail activity for the Task with the provided id.
+     * Builds a PendingIntent for opening the detail view for the Task with the provided id.
      *
      * @param id Task ID
      * @return   PendingIntent to launch a Task detail view
