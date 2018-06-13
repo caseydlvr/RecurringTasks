@@ -7,6 +7,10 @@ import android.util.Log;
 
 import caseydlvr.recurringtasks.notifications.NotificationService;
 
+/**
+ * BroadcastReceiver for handling actions to perform on a Task. This allows non-App context's, such
+ * as Notifications, to perform Task actions.
+ */
 public class TaskActionReceiver extends BroadcastReceiver {
 
     private static final String TAG = TaskActionReceiver.class.getSimpleName();
@@ -27,6 +31,12 @@ public class TaskActionReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Complete the Task with a Task ID equal to the provided id
+     *
+     * @param context Context to use to get a RecurringTaskApp object
+     * @param id      Task ID of Task to complete
+     */
     private void completeTask(Context context, long id) {
         if (id < 1) return;
 
