@@ -6,6 +6,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 
+/**
+ * ItemTouchHelper callback used to handle RecyclerView swipe to dismiss functionality. Currently
+ * only supports swiping left or right (no long press drag, no movement, no swiping vertically).
+ */
 public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
 
     private ItemTouchSwipeListener mListener;
@@ -16,6 +20,7 @@ public class SwipeToDismissCallback extends ItemTouchHelper.Callback {
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        // only enable swiping left or right
         return makeMovementFlags(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
     }
