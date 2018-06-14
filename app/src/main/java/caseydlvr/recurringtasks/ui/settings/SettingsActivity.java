@@ -25,7 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
                     case KEY_SHOW_NOTIFICATIONS:
                         if (sharedPreferences.getBoolean(key, true)) {
                             ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();
-                            showNotification();
+                            showNotifications();
                         } else {
                             ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
                             NotificationService.dismissNotifications(this);
@@ -65,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * Send all Task notifications now, regardless of notification alarm time
      */
-    private void showNotification() {
+    private void showNotifications() {
         Intent intent = new Intent(this, NotificationReceiver.class);
         intent.setAction(NotificationReceiver.ACTION_SEND_NOTIFICATIONS);
         sendBroadcast(intent);
