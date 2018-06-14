@@ -69,28 +69,22 @@ public class TaskListFragment extends Fragment {
      * @param viewModel ViewModel to provide data updates for the UI
      */
     private void subscribeUi(TaskListViewModel viewModel) {
-        viewModel.getOutstandingTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable List<Task> tasks) {
-                if (tasks == null || tasks.size() == 0) {
-                    mRecyclerView.setVisibility(View.GONE);
-                    mEmptyView.setVisibility(View.VISIBLE);
-                } else {
-                    Collections.sort(tasks, new Task.TaskComparator());
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mEmptyView.setVisibility(View.GONE);
-                }
-                mTaskAdapter.setTasks(tasks);
+        viewModel.getOutstandingTasks().observe(this, tasks -> {
+            if (tasks == null || tasks.size() == 0) {
+                mRecyclerView.setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                Collections.sort(tasks, new Task.TaskComparator());
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.GONE);
             }
+            mTaskAdapter.setTasks(tasks);
         });
 
-        viewModel.isLoading().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isLoading) {
-                if (isLoading != null) {
-                    if (isLoading) ((MainActivity) getActivity()).showLoadingSpinner();
-                    else           ((MainActivity) getActivity()).hideLoadingSpinner();
-                }
+        viewModel.isLoading().observe(this, isLoading -> {
+            if (isLoading != null) {
+                if (isLoading) ((MainActivity) getActivity()).showLoadingSpinner();
+                else           ((MainActivity) getActivity()).hideLoadingSpinner();
             }
         });
     }
