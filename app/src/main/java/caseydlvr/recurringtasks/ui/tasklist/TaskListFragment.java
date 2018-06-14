@@ -63,6 +63,11 @@ public class TaskListFragment extends Fragment {
         subscribeUi(viewModel);
     }
 
+    /**
+     * Start observing ViewModel LiveData with appropriate onChange handling
+     *
+     * @param viewModel ViewModel to provide data updates for the UI
+     */
     private void subscribeUi(TaskListViewModel viewModel) {
         viewModel.getOutstandingTasks().observe(this, new Observer<List<Task>>() {
             @Override
