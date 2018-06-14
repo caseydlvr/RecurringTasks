@@ -125,7 +125,7 @@ public class NotificationService extends JobIntentService {
                 .addAction(R.drawable.ic_notification_check,
                         getString(R.string.complete),
                         buildCompletePendingIntent(task.getId()))
-                .setCategory(Notification.CATEGORY_REMINDER)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setColor(getResources().getColor(R.color.primaryColor))
                 .setGroup(GROUP_KEY_TASKS)
                 .build();
