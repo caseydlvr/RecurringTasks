@@ -62,6 +62,9 @@ public class SettingsActivity extends AppCompatActivity {
         mSharedPreferences.unregisterOnSharedPreferenceChangeListener(mSharedPreferenceChangeListener);
     }
 
+    /**
+     * Send all Task notifications now, regardless of notification alarm time
+     */
     private void showNotification() {
         Intent intent = new Intent(this, NotificationReceiver.class);
         intent.setAction(NotificationReceiver.ACTION_SEND_NOTIFICATIONS);
