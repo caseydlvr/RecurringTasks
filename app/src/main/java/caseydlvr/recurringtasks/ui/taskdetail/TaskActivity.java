@@ -197,6 +197,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @OnItemSelected(R.id.durationUnitSpinner)
     public void durationUnitChange() {
         mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey());
+        // changing durationUnit changes the calculated dueDate
         mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 
@@ -208,40 +209,60 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @OnEditorAction(R.id.duration)
     public boolean durationChange() {
         mTask.setDuration(getDurationInput());
+        // changing duration changes the calculated dueDate
         mDueDate.setText(formatDate(mTask.getDueDate()));
 
         return false;
     }
 
+    /**
+     * Handles the user performing a delete action
+     */
     protected void deleteHandler() {
         deleteTask();
         showResultMessage(R.string.taskDeleteSuccess);
         finish();
     }
 
+    /**
+     * Commits the current values of all user editable views to mTask, then tells the ViewModel to
+     * save this Task
+     */
     private void saveTask() {
         populateTaskFromInput();
 
         mViewModel.persist(mTask);
     }
 
+    /**
+     * Tells the ViewModel to complete this Task
+     */
     private void completeTask() {
         // don't want observer's onChanged callback to fire after complete() deletes the task
         mViewModel.getTask().removeObservers(this);
         mViewModel.complete(mTask);
     }
 
+    /**
+     * Tells the ViewModel to delete this Task
+     */
     private void deleteTask() {
         // don't want observer's onChanged callback to fire after complete() deletes the task
         mViewModel.getTask().removeObservers(this);
         mViewModel.delete(mTask);
     }
 
+    /**
+     * Shows a delete confirmation dialog
+     */
     private void showDeleteDialog() {
         DialogFragment deleteDialog = new DeleteDialogFragment();
         deleteDialog.show(getFragmentManager(), "delete_dialog");
     }
 
+    /**
+     * Updates mTasks with values from user editable views
+     */
     private void populateTaskFromInput() {
         mTask.setName(mTaskName.getText().toString());
         mTask.setDuration(getDurationInput());
@@ -251,6 +272,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mTask.setUsesNotifications(mNotifications.isChecked());
     }
 
+    /**
+     * Populates the duration unit drop down with all possible duration unit choices
+     */
     private void populateSpinner() {
         ArrayAdapter<DurationUnit> adapter = new ArrayAdapter<>(
                 this,
@@ -260,6 +284,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mDurationUnitSpinner.setAdapter(adapter);
     }
 
+    /**
+     * Populate views with data from mTask
+     */
     private void populateViews() {
         mTaskName.setText(mTask.getName());
         if (mTask.getDuration() > 0) {
@@ -274,6 +301,11 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 
+    /**
+     * Sets clean values to use when checking if there are unsaved values
+     *
+     * @param task Task to use to set clean values
+     */
     private void setCleanValues(Task task) {
         mCleanTaskName = task.getName();
         mCleanDuration = task.getDuration();
@@ -283,6 +315,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mCleanNotifications = task.usesNotifications();
     }
 
+    /**
+     * @return boolean indicating whether there is unsaved user input
+     */
     private boolean isDirty() {
         return !mCleanTaskName.equals(mTaskName.getText().toString())
                 || mCleanDuration != getDurationInput()
@@ -292,6 +327,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 || mCleanNotifications != mNotifications.isChecked();
     }
 
+    /**
+     * Shows a confirmation dialog notifying the user there are unsaved changes to the Task
+     */
     private void showDirtyAlert() {
         String message;
 
@@ -305,6 +343,13 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         dirtyFragment.show(getFragmentManager(), "dirty_dialog");
     }
 
+    /**
+     * Convenience method for showing a message to the user after performing an action. For example,
+     * a success or failure message. Ensures all result messages are displayed in a consistent
+     * manner.
+     *
+     * @param stringId id of String resource of the message to show
+     */
     private void showResultMessage(int stringId) {
         Toast.makeText(getBaseContext(), stringId, Toast.LENGTH_SHORT).show();
     }
@@ -322,30 +367,61 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 
+    /**
+     * Convenience method for converting a LocalDate to a String for displaying the date. Ensures
+     * all dates are displayed in a consistent format.
+     *
+     * @param date LocalDate
+     * @return     String representing date
+     */
     private String formatDate(LocalDate date) {
         return date.format(DATE_FORMAT);
     }
 
+    /**
+     * @return String durationUnit key of the currently selected duration unit
+     */
     private String getDurationUnitInput() {
         return ((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey();
     }
 
+    /**
+     * Converts the String stored in the duration view to an int that can be stored as a Task's
+     * duration
+     *
+     * @return int representing a duration
+     */
     private int getDurationInput() {
         // Only have to worry about being passed an empty string
         // Non-numeric and negative input is blocked by EditText.inputType set to "number"
         return Integer.parseInt("0" + mDuration.getText());
     }
 
+    /**
+     * Converts String stored in the startDate view to a LocalDate that can be stored as a
+     * Task's startDate
+     *
+     * @return startDate LocalDate
+     */
     private LocalDate getStartDateInput() {
         return LocalDate.parse(mStartDate.getText(), DATE_FORMAT);
     }
 
+    /**
+     * Updates the text of the startDate and dueDate views. To do this, mTask's startDate is updated
+     * so that the new dueDate can be calculated.
+     *
+     * @param dateString String representing a startDate that can be parsed by LocalDate.Parse()
+     */
     private void updateDates(String dateString) {
         mTask.setStartDate(LocalDate.parse(dateString));
         mStartDate.setText(formatDate(mTask.getStartDate()));
         mDueDate.setText(formatDate(mTask.getDueDate()));
     }
 
+    /**
+     * Initializes input validation
+     */
     private void initValidation() {
         mTaskNameLayout.setCounterMaxLength(Task.NAME_MAX_LENGTH);
 
@@ -384,6 +460,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         });
     }
 
+    /**
+     * @return String error message if taskName is invalid, otherwise null
+     */
     @Nullable
     private String validateTaskName() {
         Editable input = mTaskName.getText();
@@ -398,6 +477,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         return errorText;
     }
 
+    /**
+     * @return String error message if duration is invalid, otherwise null
+     */
     @Nullable
     private String validateDuration() {
         int duration = getDurationInput();
@@ -412,6 +494,12 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         return errorText;
     }
 
+    /**
+     * Validates all inputs. Stops as soon as an invalid input is found and shows the error message
+     * returned by the validation method.
+     *
+     * @return boolean indicating if all user inputs are valid (true) or not (false)
+     */
     private boolean validateInputs() {
         String errorText = validateTaskName();
         if (errorText != null) {
