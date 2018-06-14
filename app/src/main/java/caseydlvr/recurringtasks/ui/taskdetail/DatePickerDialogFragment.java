@@ -8,6 +8,10 @@ import android.os.Bundle;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeParseException;
 
+/**
+ * Dialog for selecting a Date. Uses a DatePickerDialog, which generally shows a calendar UI for
+ * choosing the date, though the exact UI varies by Android version
+ */
 public class DatePickerDialogFragment extends DialogFragment {
 
     public static final String KEY_LOCAL_DATE = "key_local_date";
