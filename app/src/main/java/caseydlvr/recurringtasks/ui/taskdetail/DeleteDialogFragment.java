@@ -7,6 +7,9 @@ import android.os.Bundle;
 
 import caseydlvr.recurringtasks.R;
 
+/**
+ * Confirmation dialog for deleting a Task.
+ */
 public class DeleteDialogFragment extends DialogFragment {
 
     @Override
