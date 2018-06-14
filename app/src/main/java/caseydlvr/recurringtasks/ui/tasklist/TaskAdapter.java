@@ -68,21 +68,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     /**
-     * Set the list of Tasks to use as the Adapter's underlying data structure. If the Adapter
-     * already has a Task list, DiffUtil is used to dispatch only the updates necessary to get
-     * from the old list to the new list (so the changes are animated).
+     * Set the list of Tasks to use as the Adapter's underlying data structure, then notify the
+     * Adapter of the change. If the Adapter already has a Task list, DiffUtil is used to dispatch
+     * only the updates necessary to get from the old list to the new list (so the changes are animated).
      *
-     * @param tasks List of Tasks to display
+     * @param newTasks List of Tasks to display
      */
-    public void setTasks(List<Task> tasks) {
-        if (mTasks == null) {
-            mTasks = tasks;
-            notifyItemRangeChanged(0, tasks.size());
+    public void setTasks(List<Task> newTasks) {
+        List<Task> oldTasks = mTasks;
+        mTasks = newTasks;
+        if (oldTasks == null) {
+            notifyItemRangeChanged(0, newTasks.size());
         } else {
-            swap(tasks);
+            DiffUtil.calculateDiff(new TaskListDiffCallback(oldTasks, newTasks))
+                    .dispatchUpdatesTo(this);
         }
-
-        mTasks = tasks; // move to else
     }
 
     public void setViewModel(TaskListViewModel viewModel) {
@@ -110,22 +110,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private void addItem(int position, Task task) {
         mTasks.add(position, task);
         notifyItemInserted(position);
-    }
-
-    /**
-     * Calculates the steps necessary to go from mTasks to tasks, then dispatches these steps to
-     * the Adapter. This allows the Adapter to animate the change from the old task list to the new
-     * task list.
-     *
-     * @param tasks List of Tasks to swap with mTasks
-     */
-    private void swap(List<Task> tasks) {
-        final TaskListDiffCallback diffCallback = new TaskListDiffCallback(mTasks, tasks);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-        mTasks = tasks; // not necessary?
-
-        diffResult.dispatchUpdatesTo(this);
     }
 
     /**
