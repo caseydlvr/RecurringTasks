@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -374,6 +375,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
      * @param date LocalDate
      * @return     String representing date
      */
+    @NonNull
     private String formatDate(LocalDate date) {
         return date.format(DATE_FORMAT);
     }
@@ -521,19 +523,23 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     }
 
+    @NonNull
     private String taskNameEmptyMessage() {
         return getString(R.string.taskNameEmptyError);
     }
 
+    @NonNull
     private String taskNameTooLongMessage() {
         return getString(R.string.taskNameTooLongErrorPrefix) + " "
                 + mTaskNameLayout.getCounterMaxLength();
     }
 
+    @NonNull
     private String durationTooSmallMessage() {
         return getString(R.string.durationTooSmallError);
     }
 
+    @NonNull
     private String durationTooLargeMessage() {
         return getString(R.string.durationTooLargeErrorPrefix) + " "
                 + Task.DURATION_MAX;
