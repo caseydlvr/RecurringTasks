@@ -7,6 +7,9 @@ import android.os.Bundle;
 
 import caseydlvr.recurringtasks.R;
 
+/**
+ * Confirmation dialog for navigating away from screen while there is unsaved data"
+ */
 public class DirtyDialogFragment extends DialogFragment {
 
     public static final String KEY_MESSAGE = "key_message";
