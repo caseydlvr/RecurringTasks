@@ -120,7 +120,12 @@ public class NotificationService extends JobIntentService {
     }
 
     /**
-     *
+     * Whether notifications should be grouped. This depends on Android version. Pre-N
+     * devices cannot expand a notification group to reveal the individual child notifications,
+     * which means functionality to complete a task and launch a task detail view is lost when
+     * grouping. Therefore, grouping isn't enabled until more than 3 notifications are active. On N
+     * and newer devices there is little downside to grouping (since the individual notifications
+     * can still be accessed), so notifications are grouped as soon as there are more than 1.
      *
      * @return boolean indicating whether notifications should be grouped (true) or not (false)
      */
