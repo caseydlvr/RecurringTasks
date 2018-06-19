@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
@@ -27,6 +26,7 @@ import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.TaskActionReceiver;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.ui.MainActivity;
 import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
 
 public class NotificationService extends JobIntentService {
@@ -40,9 +40,11 @@ public class NotificationService extends JobIntentService {
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
     static final int JOB_ID = 999;
     static final int DEFAULT_MAX_NOTIFICATIONS = 4;
+    static final int NOTIFICATION_SUMMARY_ID = 1;
 
     private int mMaxPriority;
     private int mMaxNotifications;
+    private List<Task> mNotificationTasks;
 
     static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, NotificationService.class, JOB_ID, work);
@@ -72,7 +74,8 @@ public class NotificationService extends JobIntentService {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
                 if (tasks != null && !tasks.isEmpty()) {
-                    sendNotifications(getNotificationTasks(tasks));
+                    createNotificationTasks(tasks);
+                    sendNotifications();
                     observableTasks.removeObserver(this);
                 }
             }
@@ -81,22 +84,24 @@ public class NotificationService extends JobIntentService {
         observableTasks.observeForever(observer);
     }
 
-    private List<Task> getNotificationTasks(List<Task> tasks) {
+    private void createNotificationTasks(List<Task> tasks) {
         Collections.sort(tasks, new Task.TaskComparator());
-        List<Task> notificationTasks = new ArrayList<>();
+        mNotificationTasks = new ArrayList<>();
 
         for (Task task : tasks) {
             if (task.getDuePriority() > mMaxPriority) break;
-            if (notificationTasks.size() >= mMaxNotifications) break;
+            if (mNotificationTasks.size() > mMaxNotifications) break;
 
             // add to front of list so lower priority notifications are sent first
-            notificationTasks.add(0, task);
+            mNotificationTasks.add(0, task);
         }
-
-        return notificationTasks;
     }
 
-    private void sendNotifications(List<Task> tasks) {
+    private boolean useGrouping() {
+        return mNotificationTasks.size() > 1;
+    }
+
+    private void sendNotifications() {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -107,18 +112,19 @@ public class NotificationService extends JobIntentService {
             manager.createNotificationChannel(channel);
         }
 
-        for (Task task : tasks) {
+        for (Task task : mNotificationTasks) {
             manager.notify((int) task.getId(), buildTaskNotification(task));
+        }
+
+        if (useGrouping()) {
+            manager.notify(NOTIFICATION_SUMMARY_ID, buildSummaryNotification());
         }
     }
 
     private Notification buildTaskNotification(Task task) {
-        String notificationContent = getString(R.string.dueDateDetailLabel) + " " +
-                task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
-
-        return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(task.getName())
-                .setContentText(notificationContent)
+                .setContentText(getNotificationContent(task))
                 .setSmallIcon(R.drawable.ic_notification_clock)
                 .setContentIntent(buildClickPendingIntent(task.getId()))
                 .setAutoCancel(true)
@@ -126,10 +132,35 @@ public class NotificationService extends JobIntentService {
                         getString(R.string.complete),
                         buildCompletePendingIntent(task.getId()))
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                .setColor(getResources().getColor(R.color.primaryColor));
+
+        if (useGrouping()) {
+            builder.setGroup(GROUP_KEY_TASKS)
+                    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY);
+        }
+
+        return builder.build();
+    }
+
+    private Notification buildSummaryNotification() {
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+//                .setBigContentTitle(mNotificationTasks.size() + " tasks due");
+//                .setSummaryText("testing");
+
+        for (Task task : mNotificationTasks) {
+            inboxStyle.addLine(task.getName() + "    " + getNotificationContent(task));
+        }
+
+        return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification_clock)
+                .setStyle(inboxStyle)
                 .setColor(getResources().getColor(R.color.primaryColor))
+                .setContentIntent(buildSummaryPendingIntent())
                 .setGroup(GROUP_KEY_TASKS)
+                .setGroupSummary(true)
                 .build();
     }
+
 
     private PendingIntent buildClickPendingIntent(long id) {
         Intent clickIntent = new Intent(this, TaskActivity.class);
@@ -150,6 +181,20 @@ public class NotificationService extends JobIntentService {
                 (int) id, // so intents for other tasks aren't updated
                 completeIntent,
                 0);
+    }
+
+    private PendingIntent buildSummaryPendingIntent() {
+        Intent summaryIntent = new Intent(this, MainActivity.class);
+
+        return PendingIntent.getActivity(this,
+                0,
+                summaryIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private String getNotificationContent(Task task) {
+        return getString(R.string.dueDateDetailLabel) + " " +
+                task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
 
     public static void dismissNotification(Context context, int id) {
