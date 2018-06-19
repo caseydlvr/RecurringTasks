@@ -196,15 +196,17 @@ public class NotificationService extends JobIntentService {
      */
     private Notification buildSummaryNotification() {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-//                .setBigContentTitle(mNotificationTasks.size() + " tasks due");
-//                .setSummaryText("testing");
 
+        // Summary lines for Pre-N devices (created automatically from child content on N+)
         for (Task task : mNotificationTasks) {
-            inboxStyle.addLine(task.getName() + "    " + getNotificationContent(task));
+            // \u2022 is unicode for bullet •, middle dot · (\u00B7) is another option
+            inboxStyle.addLine(task.getName() + " \u2022 " + getNotificationContent(task));
         }
 
         return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification_clock)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(mNotificationTasks.size() + " " + getString(R.string.tasksDue))
                 .setStyle(inboxStyle)
                 .setColor(getResources().getColor(R.color.primaryColor))
                 .setContentIntent(buildSummaryPendingIntent())
