@@ -44,6 +44,7 @@ public class NotificationService extends JobIntentService {
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
     static final int JOB_ID = 999;
     static final int DEFAULT_MAX_NOTIFICATIONS = 4;
+    static final int DEFAULT_MAX_NOTIFICATIONS_PRE_N = 2;
     static final int NOTIFICATION_SUMMARY_ID = -1;
 
     private int mMaxPriority;
@@ -67,7 +68,7 @@ public class NotificationService extends JobIntentService {
             switch (intent.getAction()) {
                 case NotificationReceiver.ACTION_SEND_NOTIFICATIONS:
                     mMaxPriority = intent.getIntExtra(EXTRA_MAX_PRIORITY, DueStatus.PRIORITY_DUE);
-                    mMaxNotifications = intent.getIntExtra(EXTRA_MAX_NOTIFICATIONS, DEFAULT_MAX_NOTIFICATIONS);
+                    mMaxNotifications = intent.getIntExtra(EXTRA_MAX_NOTIFICATIONS, getDefaultMaxNotifications());
                     handleSendNotifications();
                     break;
             }
@@ -134,6 +135,22 @@ public class NotificationService extends JobIntentService {
             return mNotificationTasks.size() > 3;
         } else {
             return mNotificationTasks.size() > 1;
+        }
+    }
+
+    /**
+     * Max number of notifications to show, by default. This depends on Android version. Since
+     * grouping on Pre-N devices reduces notification functionality, a lower max is used so the
+     * default max doesn't cause grouping. Since grouping has minimal downsides on N+ devices, a
+     * higher default max is used.
+     *
+     * @return max number of notifications to show, by default
+     */
+    private int getDefaultMaxNotifications() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return DEFAULT_MAX_NOTIFICATIONS_PRE_N;
+        } else {
+            return DEFAULT_MAX_NOTIFICATIONS;
         }
     }
 
