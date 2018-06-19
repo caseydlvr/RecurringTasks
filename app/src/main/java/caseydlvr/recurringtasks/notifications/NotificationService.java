@@ -204,7 +204,7 @@ public class NotificationService extends JobIntentService {
         }
 
         return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification_clock)
+                .setSmallIcon(R.drawable.ic_notification_clock_history)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(mNotificationTasks.size() + " " + getString(R.string.tasksDue))
                 .setStyle(inboxStyle)
