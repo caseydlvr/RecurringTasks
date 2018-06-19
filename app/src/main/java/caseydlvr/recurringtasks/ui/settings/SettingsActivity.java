@@ -1,6 +1,5 @@
 package caseydlvr.recurringtasks.ui.settings;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -8,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import caseydlvr.recurringtasks.RecurringTaskApp;
-import caseydlvr.recurringtasks.notifications.NotificationReceiver;
 import caseydlvr.recurringtasks.notifications.NotificationUtils;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -25,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
                     case KEY_SHOW_NOTIFICATIONS:
                         resetNotificationAlarm(sharedPreferences);
                         if (sharedPreferences.getBoolean(key, true)) {
-                            showNotifications();
+                            NotificationUtils.showNotifications(this);
                         } else {
                             NotificationUtils.dismissNotifications(this);
                         }
@@ -71,14 +69,5 @@ public class SettingsActivity extends AppCompatActivity {
             ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
             ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();
         }
-    }
-
-    /**
-     * Send all Task notifications now, regardless of notification alarm time
-     */
-    private void showNotifications() {
-        Intent intent = new Intent(this, NotificationReceiver.class);
-        intent.setAction(NotificationReceiver.ACTION_SEND_NOTIFICATIONS);
-        sendBroadcast(intent);
     }
 }

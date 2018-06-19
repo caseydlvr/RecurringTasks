@@ -2,9 +2,10 @@ package caseydlvr.recurringtasks.notifications;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 
 /**
- * Static functions for handling notificaiton related actions
+ * Static functions for handling notification related actions
  */
 public class NotificationUtils {
 
@@ -28,5 +29,14 @@ public class NotificationUtils {
     public static void dismissNotifications(Context context) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancelAll();
+    }
+
+    /**
+     * Send all Task notifications now, regardless of notification alarm time
+     */
+    public static void showNotifications(Context context) {
+        Intent intent = new Intent(context, NotificationReceiver.class);
+        intent.setAction(NotificationReceiver.ACTION_SEND_NOTIFICATIONS);
+        context.sendBroadcast(intent);
     }
 }
