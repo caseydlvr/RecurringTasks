@@ -46,7 +46,7 @@ public class TaskViewModel extends AndroidViewModel {
      *
      * @param task Task to persist
      */
-    public void complete(Task task) {
+    public void complete(@NonNull Task task) {
         TaskActions.complete(getApplication(),task);
     }
 

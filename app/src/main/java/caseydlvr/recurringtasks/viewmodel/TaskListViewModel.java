@@ -9,6 +9,7 @@ import java.util.List;
 
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
+import caseydlvr.recurringtasks.TaskActions;
 import caseydlvr.recurringtasks.model.Task;
 
 /**
@@ -53,8 +54,8 @@ public class TaskListViewModel extends AndroidViewModel {
      *
      * @param task Task to complete
      */
-    public void complete(Task task) {
-        mRepository.complete(task);
+    public void complete(@NonNull Task task) {
+        TaskActions.complete(getApplication(), task);
     }
 
     /**
