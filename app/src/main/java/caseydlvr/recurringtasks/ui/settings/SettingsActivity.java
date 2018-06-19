@@ -22,19 +22,15 @@ public class SettingsActivity extends AppCompatActivity {
             (sharedPreferences, key) -> {
                 switch (key) {
                     case KEY_SHOW_NOTIFICATIONS:
+                        resetNotificationAlarm(sharedPreferences);
                         if (sharedPreferences.getBoolean(key, true)) {
-                            ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();
                             showNotifications();
                         } else {
-                            ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
                             NotificationUtils.dismissNotifications(this);
                         }
                         break;
                     case KEY_NOTIFICATION_TIME:
-                        if (sharedPreferences.getBoolean(KEY_SHOW_NOTIFICATIONS, true)) {
-                            ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
-                            ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();
-                        }
+                        resetNotificationAlarm(sharedPreferences);
                         break;
                 }
             };
@@ -59,6 +55,18 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mSharedPreferences.unregisterOnSharedPreferenceChangeListener(mSharedPreferenceChangeListener);
+    }
+
+    /**
+     * Resets (removes then re-adds) the notification alarm if the user has notifications enabled
+     *
+     * @param sharedPreferences SharedPreferences to use to check if user has notifications enabled
+     */
+    private void resetNotificationAlarm(SharedPreferences sharedPreferences) {
+        if (sharedPreferences.getBoolean(KEY_SHOW_NOTIFICATIONS, true)) {
+            ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
+            ((RecurringTaskApp) getApplicationContext()).addNotificationAlarm();
+        }
     }
 
     /**
