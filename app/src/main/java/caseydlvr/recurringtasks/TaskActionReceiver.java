@@ -21,7 +21,7 @@ public class TaskActionReceiver extends BroadcastReceiver {
             switch (intent.getAction()) {
                 case ACTION_COMPLETE:
                     long taskId = intent.getLongExtra(EXTRA_TASK_ID, 0);
-                    TaskActions.completeTask(context, taskId);
+                    TaskActions.completeById(context, taskId);
                     break;
             }
         }

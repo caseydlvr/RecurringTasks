@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
+import caseydlvr.recurringtasks.TaskActions;
 import caseydlvr.recurringtasks.model.Task;
 
 /**
@@ -46,7 +47,7 @@ public class TaskViewModel extends AndroidViewModel {
      * @param task Task to persist
      */
     public void complete(Task task) {
-        mRepository.complete(task);
+        TaskActions.complete(getApplication(),task);
     }
 
     /**
