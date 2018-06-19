@@ -43,7 +43,7 @@ public class NotificationService extends JobIntentService {
     static final String NOTIFICATION_CHANNEL_ID = "task_channel";
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
     static final int JOB_ID = 999;
-    static final int DEFAULT_MAX_NOTIFICATIONS = 3;
+    static final int DEFAULT_MAX_NOTIFICATIONS = 4;
     static final int NOTIFICATION_SUMMARY_ID = -1;
 
     private int mMaxPriority;
