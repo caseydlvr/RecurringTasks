@@ -40,7 +40,7 @@ import butterknife.OnItemSelected;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
-import caseydlvr.recurringtasks.viewmodel.TaskViewModel;
+import caseydlvr.recurringtasks.viewmodel.TaskDetailViewModel;
 
 
 public class TaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
@@ -50,7 +50,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     private Task mTask;
     private List<DurationUnit> mDurationUnits;
-    private TaskViewModel mViewModel;
+    private TaskDetailViewModel mViewModel;
 
     private String mCleanTaskName;
     private int mCleanDuration;
@@ -93,7 +93,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         if (savedInstanceState == null) populateViews();
 
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
-        mViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(TaskDetailViewModel.class);
 
         if (taskId > 0) {
             mCreateMode = false;
