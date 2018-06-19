@@ -24,7 +24,6 @@ public class TaskActionReceiver extends BroadcastReceiver {
                 case ACTION_COMPLETE:
                     long taskId = intent.getLongExtra(EXTRA_TASK_ID, 0);
                     completeTask(context, taskId);
-                    NotificationUtils.dismissNotification(context, (int) taskId);
                     break;
             }
         }
@@ -36,11 +35,13 @@ public class TaskActionReceiver extends BroadcastReceiver {
      * @param context Context to use to get a RecurringTaskApp object
      * @param id      Task ID of Task to complete
      */
-    private void completeTask(Context context, long id) {
+    private static void completeTask(Context context, long id) {
         if (id < 1) return;
 
         ((RecurringTaskApp) context.getApplicationContext())
                 .getRepository()
                 .completeById(id);
+
+        NotificationUtils.dismissNotification(context, (int) id);
     }
 }
