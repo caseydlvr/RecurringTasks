@@ -16,6 +16,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static final String KEY_SHOW_NOTIFICATIONS = "pref_show_notifications";
     public static final String KEY_NOTIFICATION_TIME = "pref_notification_time";
+    public static final String KEY_MAX_NOTIFICATIONS = "pref_max_notifications";
 
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
@@ -30,6 +31,9 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                         break;
                     case KEY_NOTIFICATION_TIME:
+                        resetNotificationAlarm(sharedPreferences);
+                        break;
+                    case KEY_MAX_NOTIFICATIONS:
                         resetNotificationAlarm(sharedPreferences);
                         break;
                 }
