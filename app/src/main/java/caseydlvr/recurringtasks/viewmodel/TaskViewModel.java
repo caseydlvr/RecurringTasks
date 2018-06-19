@@ -33,7 +33,7 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     /**
-     * Tells the repository to persist the provided Task
+     * Persist the provided Task
      *
      * @param task Task to persist
      */
@@ -42,7 +42,7 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     /**
-     * Tells the repository to complete the provided Task in persistent storage
+     * Complete the provided Task in persistent storage
      *
      * @param task Task to persist
      */
@@ -51,12 +51,12 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     /**
-     * Tells the repository to delete the provided Task from persistent storage
+     * Delete the provided Task from persistent storage
      *
      * @param task Task to delete
      */
-    public void delete(Task task) {
-        mRepository.delete(task);
+    public void delete(@NonNull Task task) {
+        TaskActions.delete(getApplication(), task);
     }
 
     /**
