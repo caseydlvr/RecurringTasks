@@ -15,7 +15,7 @@ import caseydlvr.recurringtasks.model.Task;
  * prior to calling any methods that use mTask. This is necessary because using a constructor that
  * takes a Task ID isn't possible when using ViewModelProviders to instantiate the ViewModel.
  */
-public class TaskDetailViewModel extends AndroidViewModel {
+public class TaskDetailViewModel extends TaskViewModel {
 
     private LiveData<Task> mTask;
     private DataRepository mRepository;
@@ -39,24 +39,6 @@ public class TaskDetailViewModel extends AndroidViewModel {
      */
     public void persist(Task task) {
         mRepository.persist(task);
-    }
-
-    /**
-     * Complete the provided Task in persistent storage
-     *
-     * @param task Task to persist
-     */
-    public void complete(@NonNull Task task) {
-        TaskActions.complete(getApplication(),task);
-    }
-
-    /**
-     * Delete the provided Task from persistent storage
-     *
-     * @param task Task to delete
-     */
-    public void delete(@NonNull Task task) {
-        TaskActions.delete(getApplication(), task);
     }
 
     /**

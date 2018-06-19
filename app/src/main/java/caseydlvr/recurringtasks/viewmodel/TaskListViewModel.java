@@ -15,7 +15,7 @@ import caseydlvr.recurringtasks.model.Task;
 /**
  * ViewModel for the task list view
  */
-public class TaskListViewModel extends AndroidViewModel {
+public class TaskListViewModel extends TaskViewModel {
 
     private final LiveData<List<Task>> mObservableTasks;
     private DataRepository mRepository;
@@ -48,23 +48,4 @@ public class TaskListViewModel extends AndroidViewModel {
     public LiveData<Boolean> isLoading() {
         return mIsLoading;
     }
-
-    /**
-     * Complete the given Task in persistent storage
-     *
-     * @param task Task to complete
-     */
-    public void complete(@NonNull Task task) {
-        TaskActions.complete(getApplication(), task);
-    }
-
-    /**
-     * Delete the given Task from persistent storage
-     *
-     * @param task Task to delete
-     */
-    public void delete(@NonNull Task task) {
-        TaskActions.delete(getApplication(), task);
-    }
-
 }
