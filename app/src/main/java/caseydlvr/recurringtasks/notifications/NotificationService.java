@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
@@ -119,10 +120,16 @@ public class NotificationService extends JobIntentService {
     }
 
     /**
+     *
+     *
      * @return boolean indicating whether notifications should be grouped (true) or not (false)
      */
     private boolean useGrouping() {
-        return mNotificationTasks.size() > 1;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return mNotificationTasks.size() > 3;
+        } else {
+            return mNotificationTasks.size() > 1;
+        }
     }
 
     /**
