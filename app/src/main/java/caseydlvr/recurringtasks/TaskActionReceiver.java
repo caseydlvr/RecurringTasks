@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import caseydlvr.recurringtasks.notifications.NotificationUtils;
-
 /**
  * BroadcastReceiver for handling actions to perform on a Task. This allows non-App context's, such
  * as Notifications, to perform Task actions.
@@ -23,25 +21,10 @@ public class TaskActionReceiver extends BroadcastReceiver {
             switch (intent.getAction()) {
                 case ACTION_COMPLETE:
                     long taskId = intent.getLongExtra(EXTRA_TASK_ID, 0);
-                    completeTask(context, taskId);
+                    TaskActions.completeTask(context, taskId);
                     break;
             }
         }
     }
 
-    /**
-     * Complete the Task with a Task ID equal to the provided id
-     *
-     * @param context Context to use to get a RecurringTaskApp object
-     * @param id      Task ID of Task to complete
-     */
-    private static void completeTask(Context context, long id) {
-        if (id < 1) return;
-
-        ((RecurringTaskApp) context.getApplicationContext())
-                .getRepository()
-                .completeById(id);
-
-        NotificationUtils.dismissNotification(context, (int) id);
-    }
 }
