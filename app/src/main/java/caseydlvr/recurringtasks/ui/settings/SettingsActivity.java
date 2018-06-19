@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.notifications.NotificationReceiver;
-import caseydlvr.recurringtasks.notifications.NotificationService;
+import caseydlvr.recurringtasks.notifications.NotificationUtils;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
@@ -28,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
                             showNotifications();
                         } else {
                             ((RecurringTaskApp) getApplicationContext()).removeNotificationAlarm();
-                            NotificationService.dismissNotifications(this);
+                            NotificationUtils.dismissNotifications(this);
                         }
                         break;
                     case KEY_NOTIFICATION_TIME:

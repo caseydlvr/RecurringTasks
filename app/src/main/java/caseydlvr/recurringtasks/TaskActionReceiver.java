@@ -3,9 +3,8 @@ package caseydlvr.recurringtasks;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
-import caseydlvr.recurringtasks.notifications.NotificationService;
+import caseydlvr.recurringtasks.notifications.NotificationUtils;
 
 /**
  * BroadcastReceiver for handling actions to perform on a Task. This allows non-App context's, such
@@ -25,7 +24,7 @@ public class TaskActionReceiver extends BroadcastReceiver {
                 case ACTION_COMPLETE:
                     long taskId = intent.getLongExtra(EXTRA_TASK_ID, 0);
                     completeTask(context, taskId);
-                    NotificationService.dismissNotification(context, (int) taskId);
+                    NotificationUtils.dismissNotification(context, (int) taskId);
                     break;
             }
         }
