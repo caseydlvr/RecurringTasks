@@ -100,12 +100,10 @@ public class NotificationService extends JobIntentService {
     }
 
     /**
-     * Takes a list of tasks and reduces the list to only the tasks that are ready to have
-     * notifications sent.
+     * Creates a list of Tasks that area ready for notifications and saves it to the
+     * mNotificationTasks field.
      *
      * @param tasks List of outstanding Tasks that have notifications enabled
-     * @return      List of Tasks that should have notifications sent now, ordered by priority
-     *              highest to lowest
      */
     private void createNotificationTasks(List<Task> tasks) {
         Collections.sort(tasks, new Task.TaskComparator());
@@ -120,14 +118,16 @@ public class NotificationService extends JobIntentService {
         }
     }
 
+    /**
+     * @return boolean indicating whether notifications should be grouped (true) or not (false)
+     */
     private boolean useGrouping() {
         return mNotificationTasks.size() > 1;
     }
 
     /**
-     * Sends a notification for each Task in tasks.
-     *
-     * @param tasks List of Tasks to send notifications for
+     * Sends a notification for each Task in mNotificationTasks. If the criteria for grouping
+     * notifications are met, a group summary notification is also sent.
      */
     private void sendNotifications() {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -150,7 +150,7 @@ public class NotificationService extends JobIntentService {
     }
 
     /**
-     * Builds a task Notification using the provided Task.
+     * Builds a task Notification using the provided Task
      *
      * @param task Task to use for building Notification
      * @return     Notification for a Task
@@ -176,6 +176,12 @@ public class NotificationService extends JobIntentService {
         return builder.build();
     }
 
+    /**
+     * Builds a Notification to use as a group summary. This is an inbox style notification that
+     * shows a one line summary of each notification in the group.
+     *
+     * @return group summary Notification
+     */
     private Notification buildSummaryNotification() {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 //                .setBigContentTitle(mNotificationTasks.size() + " tasks due");
@@ -196,7 +202,7 @@ public class NotificationService extends JobIntentService {
     }
 
     /**
-     * Builds a PendingIntent for opening the detail activity for the Task with the provided id.
+     * Builds a PendingIntent for opening the detail activity for the Task with the provided id
      *
      * @param id Task ID
      * @return   PendingIntent to launch a Task detail view
@@ -212,7 +218,7 @@ public class NotificationService extends JobIntentService {
     }
 
     /**
-     * Builds a PendingIntent for completing the Task associated with the provided id.
+     * Builds a PendingIntent for completing the Task associated with the provided id
      *
      * @param id Task ID
      * @return   PendingIntent to complete a Task
@@ -228,6 +234,12 @@ public class NotificationService extends JobIntentService {
                 0);
     }
 
+    /**
+     * Builds a PendingIntent for opening the app to the Activity or Fragment that shows the list
+     * of all Tasks
+     *
+     * @return PendingIntent to open the list of Tasks
+     */
     private PendingIntent buildSummaryPendingIntent() {
         Intent summaryIntent = new Intent(this, MainActivity.class);
 
@@ -237,6 +249,12 @@ public class NotificationService extends JobIntentService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    /**
+     * Builds a string summary of the due status of a Task
+     *
+     * @param task Task to build summary string for
+     * @return     String summarizing task
+     */
     private String getNotificationContent(Task task) {
         return getString(R.string.dueDateDetailLabel) + " " +
                 task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
