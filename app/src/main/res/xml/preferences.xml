@@ -8,6 +8,7 @@
         android:defaultValue="true"/>
 
     <caseydlvr.recurringtasks.ui.settings.TimePreference
+        android:dependency="pref_show_notifications"
         android:key="pref_notification_time"
         android:title="@string/pref_notification_time_title"
         android:summary="@string/pref_notification_time_summary"
