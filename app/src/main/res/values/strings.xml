@@ -50,4 +50,7 @@
     <string name="pref_max_notificaitons_title">Max number of notifications</string>
     <string name="pref_max_notifications_summary">Never show more than %s notifications simultaneously, even if there are more tasks that meet the notification criteria.</string>
     <string name="tasksDue">tasks due</string>
+    <string name="notificationOption_Never">Never</string>
+    <string name="notificationOption_Overdue">When overdue</string>
+    <string name="notificationOption_OverdueDue">When overdue or due</string>
 </resources>
