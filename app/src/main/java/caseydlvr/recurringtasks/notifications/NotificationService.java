@@ -8,7 +8,9 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
@@ -27,7 +29,11 @@ import caseydlvr.recurringtasks.TaskActionReceiver;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.ui.MainActivity;
+import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
+
+import static caseydlvr.recurringtasks.notifications.NotificationReceiver.*;
+import static caseydlvr.recurringtasks.notifications.NotificationUtils.*;
 
 /**
  * JobIntentService for sending notifications for Tasks
@@ -36,8 +42,6 @@ public class NotificationService extends JobIntentService {
 
     private static final String TAG = NotificationService.class.getSimpleName();
 
-    public static final String EXTRA_MAX_PRIORITY = "NotificationService_Max_Priority";
-    public static final String EXTRA_MAX_NOTIFICATIONS = "NotificationService_Max_Notifications";
     public static final String GROUP_KEY_TASKS = "caseydlvr.recurringtasks.notifications.TASKS";
     static final String NOTIFICATION_CHANNEL_ID = "task_channel";
     static final String NOTIFICATION_CHANNEL_NAME = "Due task notification";
@@ -63,13 +67,22 @@ public class NotificationService extends JobIntentService {
     protected void onHandleWork(@NonNull Intent intent) {
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
-                case NotificationReceiver.ACTION_SEND_NOTIFICATIONS:
-                    mMaxPriority = intent.getIntExtra(EXTRA_MAX_PRIORITY, DueStatus.PRIORITY_DUE);
-                    mMaxNotifications = intent.getIntExtra(EXTRA_MAX_NOTIFICATIONS, NotificationUtils.getDefaultMaxNotifications());
+                case ACTION_SEND_NOTIFICATIONS:
+                    initFields();
                     handleSendNotifications();
                     break;
             }
         }
+    }
+
+    /**
+     * Initializes private fields. Gets values from user preferences when appropriate
+     */
+    private void initFields() {
+        SharedPreferences settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mMaxNotifications = Integer.parseInt(settingsPrefs.getString(
+                SettingsActivity.KEY_MAX_NOTIFICATIONS, getDefaultMaxNotifications()));
+        mMaxPriority = DueStatus.PRIORITY_DUE;
     }
 
     /**
@@ -165,7 +178,7 @@ public class NotificationService extends JobIntentService {
      * @param task Task to use for building Notification
      * @return     Notification for a Task
      */
-    private Notification buildTaskNotification(Task task) {
+    private Notification buildTaskNotification(@NonNull Task task) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(task.getName())
                 .setContentText(getNotificationContent(task))
@@ -267,7 +280,8 @@ public class NotificationService extends JobIntentService {
      * @param task Task to build summary string for
      * @return     String summarizing task
      */
-    private String getNotificationContent(Task task) {
+    @NonNull
+    private String getNotificationContent(@NonNull Task task) {
         return getString(R.string.dueDateDetailLabel) + " " +
                 task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }

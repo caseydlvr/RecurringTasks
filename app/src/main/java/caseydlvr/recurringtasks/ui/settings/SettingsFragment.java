@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.notifications.NotificationUtils;
 
+import static caseydlvr.recurringtasks.ui.settings.SettingsActivity.*;
+
 public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,9 +26,9 @@ public class SettingsFragment extends PreferenceFragment {
      * value in preferences.xml.
      */
     private void setMaxNotificationsDefaultValue() {
-        ListPreference maxNotifications = (ListPreference) findPreference(SettingsActivity.KEY_MAX_NOTIFICATIONS);
+        ListPreference maxNotifications = (ListPreference) findPreference(KEY_MAX_NOTIFICATIONS);
         if (maxNotifications.getValue() == null) {
-            maxNotifications.setValue(String.valueOf(NotificationUtils.getDefaultMaxNotifications()));
+            maxNotifications.setValue(NotificationUtils.getDefaultMaxNotifications());
         }
     }
 }

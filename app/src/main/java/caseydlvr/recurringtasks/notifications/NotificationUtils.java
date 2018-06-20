@@ -12,8 +12,8 @@ public class NotificationUtils {
 
     private static final String TAG = NotificationUtils.class.getSimpleName();
 
-    private static final int DEFAULT_MAX_NOTIFICATIONS = 4;
-    private static final int DEFAULT_MAX_NOTIFICATIONS_PRE_N = 2;
+    private static final String DEFAULT_MAX_NOTIFICATIONS = "4";
+    private static final String DEFAULT_MAX_NOTIFICATIONS_PRE_N = "2";
 
     /**
      * Dismisses the notification with the provided notification ID. For a task notification, the
@@ -54,7 +54,7 @@ public class NotificationUtils {
      *
      * @return max number of notifications to show, by default
      */
-    public static int getDefaultMaxNotifications() {
+    public static String getDefaultMaxNotifications() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return DEFAULT_MAX_NOTIFICATIONS_PRE_N;
         } else {
