@@ -49,6 +49,6 @@ dependencies {
     annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
     // Test helpers for LiveData
     testImplementation 'android.arch.core:core-testing:1.1.1'
-    //ThreeTen Android Backport
+    // ThreeTen Android Backport
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 }
