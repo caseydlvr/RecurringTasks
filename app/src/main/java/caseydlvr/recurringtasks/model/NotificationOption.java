@@ -11,9 +11,9 @@ import caseydlvr.recurringtasks.R;
 public class NotificationOption {
     private static final String TAG = NotificationOption.class.getSimpleName();
 
-    public static final String NEVER = "never";
-    public static final String OVERDUE = "overdue";
-    public static final String OVERDUE_DUE = "overdue_due";
+    public static final String KEY_NEVER = "never";
+    public static final String KEY_OVERDUE = "overdue";
+    public static final String KEY_OVERDUE_DUE = "overdue_due";
 
     private static final int COUNT = 3;
     private static final int INDEX_NEVER = 0;
@@ -27,14 +27,14 @@ public class NotificationOption {
         mOption = option;
 
         switch (option) {
-            case OVERDUE:
+            case KEY_OVERDUE:
                 mName = context.getString(R.string.notificationOption_Overdue);
                 break;
-            case OVERDUE_DUE:
+            case KEY_OVERDUE_DUE:
                 mName = context.getString(R.string.notificationOption_OverdueDue);
                 break;
-            default: // NEVER
-                mOption = NEVER;
+            default: // KEY_NEVER
+                mOption = KEY_NEVER;
                 mName = context.getString(R.string.notificationOption_Never);
         }
     }
@@ -49,9 +49,9 @@ public class NotificationOption {
 
     public static List<NotificationOption> buildList(@NonNull Context context) {
         List<NotificationOption> notificationOptions = new ArrayList<>(COUNT);
-        notificationOptions.add(INDEX_NEVER, new NotificationOption(context, NEVER));
-        notificationOptions.add(INDEX_OVERDUE, new NotificationOption(context, OVERDUE));
-        notificationOptions.add(INDEX_OVERDUE_DUE, new NotificationOption(context, OVERDUE_DUE));
+        notificationOptions.add(INDEX_NEVER, new NotificationOption(context, KEY_NEVER));
+        notificationOptions.add(INDEX_OVERDUE, new NotificationOption(context, KEY_OVERDUE));
+        notificationOptions.add(INDEX_OVERDUE_DUE, new NotificationOption(context, KEY_OVERDUE_DUE));
 
         return notificationOptions;
     }
