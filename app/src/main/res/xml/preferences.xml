@@ -14,13 +14,13 @@
         android:summary="@string/pref_notification_time_summary"
         android:defaultValue="9:00"/>
 
+    <!-- default value is set dynamically based on Android version in SettingsFragment -->
     <ListPreference
         android:dependency="pref_show_notifications"
         android:key="pref_max_notifications"
         android:title="@string/pref_max_notificaitons_title"
         android:summary="@string/pref_max_notifications_summary"
         android:entries="@array/max_notifications_entries"
-        android:entryValues="@array/max_notifications_entries"
-        android:defaultValue="2"/>
+        android:entryValues="@array/max_notifications_entries"/>
 
 </PreferenceScreen>
