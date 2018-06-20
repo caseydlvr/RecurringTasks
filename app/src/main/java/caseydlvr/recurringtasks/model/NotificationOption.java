@@ -11,19 +11,19 @@ import caseydlvr.recurringtasks.R;
 public class NotificationOption {
     private static final String TAG = NotificationOption.class.getSimpleName();
 
-    public static final int NEVER = 0;
-    public static final int OVERDUE = 1;
-    public static final int OVERDUE_DUE = 2;
+    public static final String NEVER = "never";
+    public static final String OVERDUE = "overdue";
+    public static final String OVERDUE_DUE = "overdue_due";
 
     private static final int COUNT = 3;
     private static final int INDEX_NEVER = 0;
     private static final int INDEX_OVERDUE = 1;
     private static final int INDEX_OVERDUE_DUE = 2;
 
-    private int mOption;
+    private String mOption;
     private String mName;
 
-    public NotificationOption(@NonNull Context context, int option) {
+    public NotificationOption(@NonNull Context context, String option) {
         mOption = option;
 
         switch (option) {
@@ -39,7 +39,7 @@ public class NotificationOption {
         }
     }
 
-    public int getOption() {
+    public String getOption() {
         return mOption;
     }
 
