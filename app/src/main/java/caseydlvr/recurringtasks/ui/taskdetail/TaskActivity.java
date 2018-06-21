@@ -39,6 +39,7 @@ import butterknife.OnFocusChange;
 import butterknife.OnItemSelected;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DurationUnit;
+import caseydlvr.recurringtasks.model.NotificationOption;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.viewmodel.TaskDetailViewModel;
 
@@ -49,7 +50,6 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
     private Task mTask;
-    private List<DurationUnit> mDurationUnits;
     private TaskDetailViewModel mViewModel;
 
     private String mCleanTaskName;
@@ -57,7 +57,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     private String mCleanDurationUnit;
     private LocalDate mCleanStartDate;
     private boolean mCleanRepeats;
-    private boolean mCleanNotifications;
+    private String mCleanNotificationOption;
     private boolean mCreateMode = true;
 
     @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
@@ -67,7 +67,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
     @BindView(R.id.startDate) TextView mStartDate;
     @BindView(R.id.repeating) Switch mRepeating;
-    @BindView(R.id.notifications) Switch mNotifications;
+    @BindView(R.id.notificationOption) Spinner mNotificationOption;
     @BindView(R.id.dueDate) TextView mDueDate;
     @BindView(R.id.taskToolbar) Toolbar mToolbar;
 
@@ -84,8 +84,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
         initValidation();
 
-        mDurationUnits = DurationUnit.buildList(this);
-        populateSpinner();
+        populateSpinner(mDurationUnitSpinner, DurationUnit.buildList(this));
+        populateSpinner(mNotificationOption, NotificationOption.buildList(this));
         mTask = new Task();
         setCleanValues(mTask);
 
@@ -270,19 +270,19 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mTask.setDurationUnit(getDurationUnitInput());
         mTask.setStartDate(getStartDateInput());
         mTask.setRepeating(mRepeating.isChecked());
-        mTask.setUsesNotifications(mNotifications.isChecked());
+        mTask.setNotificationOption(getNotificationOptionInput());
     }
 
     /**
      * Populates the duration unit drop down with all possible duration unit choices
      */
-    private void populateSpinner() {
-        ArrayAdapter<DurationUnit> adapter = new ArrayAdapter<>(
+    private void populateSpinner(Spinner spinner, List<?> items) {
+        ArrayAdapter<?> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_dropdown_item,
-                mDurationUnits);
+                android.R.layout.simple_spinner_item,
+                items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mDurationUnitSpinner.setAdapter(adapter);
+        spinner.setAdapter(adapter);
     }
 
     /**
@@ -295,7 +295,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         }
         mDurationUnitSpinner.setSelection(DurationUnit.getIndex(mTask.getDurationUnit()));
         mRepeating.setChecked(mTask.isRepeating());
-        mNotifications.setChecked(mTask.usesNotifications());
+        mNotificationOption.setSelection(NotificationOption.getIndex(mTask.getNotificationOption()));
 
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
         mStartDate.setText(formatDate(mTask.getStartDate()));
@@ -313,7 +313,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         mCleanDurationUnit = task.getDurationUnit();
         mCleanStartDate = task.getStartDate();
         mCleanRepeats = task.isRepeating();
-        mCleanNotifications = task.usesNotifications();
+        mCleanNotificationOption = task.getNotificationOption();
     }
 
     /**
@@ -325,7 +325,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                 || !mCleanDurationUnit.equals(getDurationUnitInput())
                 || !mCleanStartDate.equals(mTask.getStartDate())
                 || mCleanRepeats != mRepeating.isChecked()
-                || mCleanNotifications != mNotifications.isChecked();
+                || !mCleanNotificationOption.equals(getNotificationOptionInput());
     }
 
     /**
@@ -384,7 +384,11 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
      * @return String durationUnit key of the currently selected duration unit
      */
     private String getDurationUnitInput() {
-        return ((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey();
+        return ((DurationUnit) mDurationUnitSpinner.getSelectedItem()).getKey();
+    }
+
+    private String getNotificationOptionInput() {
+        return ((NotificationOption) mNotificationOption.getSelectedItem()).getKey();
     }
 
     /**

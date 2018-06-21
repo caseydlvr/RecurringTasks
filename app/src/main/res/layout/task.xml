@@ -68,6 +68,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:paddingEnd="8dp"
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toStartOf="@+id/durationUnitSpinner"
                 app:layout_constraintStart_toStartOf="@id/contentLeftMargin">
@@ -77,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="0dp"
-                    android:paddingEnd="0dp"
+                    android:textSize="18sp"
                     android:hint="@string/durationLabel"
                     android:inputType="number"/>
 
@@ -87,7 +88,7 @@
                 android:id="@+id/durationUnitSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="21dp"
                 app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
                 app:layout_constraintTop_toTopOf="@+id/durationLayout"/>
 
@@ -184,23 +185,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 app:layout_constraintStart_toStartOf="@id/screenLeftMargin"
-                app:layout_constraintTop_toTopOf="@+id/notifications"
+                app:layout_constraintTop_toTopOf="@+id/notificationOptionLabel"
                 app:srcCompat="@drawable/ic_notifications"/>
 
-            <Switch
-                android:id="@+id/notifications"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+            <TextView
+                android:id="@+id/notificationOptionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:checked="true"
-                android:splitTrack="false"
-                android:switchPadding="8dp"
                 android:text="@string/notificationsLabel"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
-                app:layout_constraintTop_toBottomOf="@+id/datesDivider"
-                tools:checked="true"/>
+                app:layout_constraintTop_toBottomOf="@+id/datesDivider"/>
+
+            <Spinner
+                android:id="@+id/notificationOption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+                app:layout_constraintStart_toStartOf="@+id/contentLeftMargin"
+                app:layout_constraintTop_toBottomOf="@+id/notificationOptionLabel"/>
 
             <View
                 android:id="@+id/notificationsDivider"
@@ -211,7 +216,7 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
                 app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
-                app:layout_constraintTop_toBottomOf="@+id/notifications"/>
+                app:layout_constraintTop_toBottomOf="@+id/notificationOption"/>
 
             <android.support.constraint.Guideline
                 android:id="@+id/contentLeftMargin"

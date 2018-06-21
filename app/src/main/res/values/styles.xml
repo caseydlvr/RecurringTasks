@@ -9,6 +9,7 @@
         <item name="android:datePickerDialogTheme">@style/Dialog</item>
         <item name="android:alertDialogTheme">@style/Dialog</item>
         <item name="textColorError">@color/colorError</item>
+        <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -36,6 +37,10 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="SpinnerItem" parent="TextAppearance.AppCompat.Widget.TextView.SpinnerItem">
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>

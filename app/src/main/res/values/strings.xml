@@ -40,7 +40,7 @@
     <string name="discard">Discard</string>
     <string name="areYouSureNew">Are you sure you want to discard this task?</string>
     <string name="areYouSureChanges">Are you sure you want to discard changes to this task?</string>
-    <string name="notificationsLabel">Show notifications</string>
+    <string name="notificationsLabel">Send notifications</string>
     <string name="emptyTaskListMessage">No tasks\n\nPress \'+\' to get started</string>
     <string name="settings">Settings</string>
     <string name="pref_show_notifications_title">Show notifications</string>
@@ -52,5 +52,5 @@
     <string name="tasksDue">tasks due</string>
     <string name="notificationOption_Never">Never</string>
     <string name="notificationOption_Overdue">When overdue</string>
-    <string name="notificationOption_OverdueDue">When overdue or due</string>
+    <string name="notificationOption_OverdueDue">When due or overdue</string>
 </resources>
