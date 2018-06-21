@@ -231,7 +231,7 @@ public class DataRepository {
                 newTask.setDuration(task.getDuration());
                 newTask.setDurationUnit(task.getDurationUnit());
                 newTask.setRepeating(task.isRepeating());
-                newTask.setUsesNotifications(task.usesNotifications());
+                newTask.setNotificationOption(task.getNotificationOption());
 
                 db.taskDao().insert(newTask);
             }

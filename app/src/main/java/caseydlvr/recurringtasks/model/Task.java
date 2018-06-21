@@ -41,8 +41,8 @@ public class Task {
     @ColumnInfo(name = "repeating")
     private boolean mRepeating;
 
-    @ColumnInfo(name = "uses_notifications")
-    private boolean mUsesNotifications;
+    @ColumnInfo(name = "notification_option")
+    private String mNotificationOption;
 
     // cache for calculated fields
     private transient LocalDate mDueDate;
@@ -58,7 +58,7 @@ public class Task {
         mStartDate = LocalDate.now();
         setDueDateFields();
         mRepeating = true;
-        mUsesNotifications = true;
+        mNotificationOption = NotificationOption.KEY_OVERDUE_DUE;
     }
 
     /**
@@ -191,15 +191,19 @@ public class Task {
         mRepeating = repeats;
     }
 
+    public String getNotificationOption() {
+        return mNotificationOption;
+    }
+
+    public void setNotificationOption(String notificationOption) {
+        mNotificationOption = notificationOption;
+    }
+
     /**
      * @return boolean representing whether notifications for this Task should be shown
      */
     public boolean usesNotifications() {
-        return mUsesNotifications;
-    }
-
-    public void setUsesNotifications(boolean usesNotifications) {
-        mUsesNotifications = usesNotifications;
+        return !mNotificationOption.equals(NotificationOption.KEY_NEVER);
     }
 
     @Override
@@ -215,7 +219,7 @@ public class Task {
                 || other.getDurationUnit().equals(mDurationUnit)
                 || other.getStartDate().equals(mStartDate)
                 || other.isRepeating() != mRepeating)
-                || other.usesNotifications() != mUsesNotifications;
+                || other.getNotificationOption() != mNotificationOption;
     }
 
     /**

@@ -27,7 +27,7 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks WHERE id = :id")
     Task loadByIdTask(long id);
 
-    @Query("SELECT * FROM tasks WHERE end_date IS NULL AND uses_notifications = 1")
+    @Query("SELECT * FROM tasks WHERE end_date IS NULL AND notification_option != 'never'")
     LiveData<List<Task>> loadOutstandingWithNotifications();
 
     @Insert(onConflict = REPLACE)
