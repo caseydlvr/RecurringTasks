@@ -27,6 +27,7 @@ import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.TaskActionReceiver;
 import caseydlvr.recurringtasks.model.DueStatus;
+import caseydlvr.recurringtasks.model.NotificationOption;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.ui.MainActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
@@ -124,6 +125,8 @@ public class NotificationService extends JobIntentService {
         for (Task task : tasks) {
             if (task.getDuePriority() > mMaxPriority) break;
             if (mNotificationTasks.size() >= mMaxNotifications) break;
+            if (task.getNotificationOption().equals(NotificationOption.KEY_OVERDUE)
+                    && task.getDuePriority() > DueStatus.PRIORITY_OVERDUE) continue;
 
             // add to front of list so lower priority notifications are sent first
             mNotificationTasks.add(0, task);
