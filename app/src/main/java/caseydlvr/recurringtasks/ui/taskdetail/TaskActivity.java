@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -97,6 +98,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
         if (taskId > 0) {
             mCreateMode = false;
+            // don't automatically show keyboard when activity launches for existing tasks
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
             mViewModel.init(taskId);
             mViewModel.getTask().observe(this, task -> {
                 if (task == null) {
