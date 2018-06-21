@@ -479,7 +479,8 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
         if (input.length() > mTaskNameLayout.getCounterMaxLength()) {
             errorText = taskNameTooLongMessage();
-        } else if (input.length() < 1) {
+        } else if (input.length() < 1
+                || input.toString().trim().length() < 1) {
             errorText = taskNameEmptyMessage();
         }
 
