@@ -64,7 +64,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
     @BindView(R.id.taskName) TextInputEditText mTaskName;
     @BindView(R.id.durationLayout) TextInputLayout mDurationLayout;
     @BindView(R.id.duration) TextInputEditText mDuration;
-    @BindView(R.id.durationUnitSpinner) Spinner mDurationUnitSpinner;
+    @BindView(R.id.durationUnit) Spinner mDurationUnit;
     @BindView(R.id.startDate) TextView mStartDate;
     @BindView(R.id.repeating) Switch mRepeating;
     @BindView(R.id.notificationOption) Spinner mNotificationOption;
@@ -84,7 +84,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
         initValidation();
 
-        populateSpinner(mDurationUnitSpinner, DurationUnit.buildList(this));
+        populateSpinner(mDurationUnit, DurationUnit.buildList(this));
         populateSpinner(mNotificationOption, NotificationOption.buildList(this));
         mTask = new Task();
         setCleanValues(mTask);
@@ -195,9 +195,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         dateFragment.show(getFragmentManager(), "start_date_picker");
     }
 
-    @OnItemSelected(R.id.durationUnitSpinner)
+    @OnItemSelected(R.id.durationUnit)
     public void durationUnitChange() {
-        mTask.setDurationUnit(((DurationUnit)mDurationUnitSpinner.getSelectedItem()).getKey());
+        mTask.setDurationUnit(((DurationUnit) mDurationUnit.getSelectedItem()).getKey());
         // changing durationUnit changes the calculated dueDate
         mDueDate.setText(formatDate(mTask.getDueDate()));
     }
@@ -293,7 +293,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         if (mTask.getDuration() > 0) {
             mDuration.setText(String.valueOf(mTask.getDuration()));
         }
-        mDurationUnitSpinner.setSelection(DurationUnit.getIndex(mTask.getDurationUnit()));
+        mDurationUnit.setSelection(DurationUnit.getIndex(mTask.getDurationUnit()));
         mRepeating.setChecked(mTask.isRepeating());
         mNotificationOption.setSelection(NotificationOption.getIndex(mTask.getNotificationOption()));
 
@@ -384,7 +384,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
      * @return String durationUnit key of the currently selected duration unit
      */
     private String getDurationUnitInput() {
-        return ((DurationUnit) mDurationUnitSpinner.getSelectedItem()).getKey();
+        return ((DurationUnit) mDurationUnit.getSelectedItem()).getKey();
     }
 
     private String getNotificationOptionInput() {
