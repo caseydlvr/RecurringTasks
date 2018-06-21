@@ -83,8 +83,6 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        initValidation();
-
         populateSpinner(mDurationUnit, DurationUnit.buildList(this));
         populateSpinner(mNotificationOption, NotificationOption.buildList(this));
         mTask = new Task();
@@ -113,10 +111,14 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                         mTask = task;
                         populateViews();
                     }
+
+                    // don't turn on validation until after views are populated from DB values
+                    initValidation();
                 }
             });
         } else {
             actionBar.setTitle(R.string.newTask);
+            initValidation();
         }
     }
 
