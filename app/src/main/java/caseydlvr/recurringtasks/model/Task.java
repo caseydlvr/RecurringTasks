@@ -219,7 +219,7 @@ public class Task {
                 || other.getDurationUnit().equals(mDurationUnit)
                 || other.getStartDate().equals(mStartDate)
                 || other.isRepeating() != mRepeating)
-                || other.getNotificationOption() != mNotificationOption;
+                || !other.getNotificationOption().equals(mNotificationOption);
     }
 
     /**
