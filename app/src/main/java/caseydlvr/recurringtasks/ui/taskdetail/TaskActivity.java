@@ -52,14 +52,16 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
 
     private Task mTask;
     private TaskDetailViewModel mViewModel;
+    private boolean mCreateMode = true;
+    private boolean mIsTaskNameValidationON = false;
 
+    // clean Task values
     private String mCleanTaskName;
     private int mCleanDuration;
     private String mCleanDurationUnit;
     private LocalDate mCleanStartDate;
     private boolean mCleanRepeats;
     private String mCleanNotificationOption;
-    private boolean mCreateMode = true;
 
     @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
     @BindView(R.id.taskName) TextInputEditText mTaskName;
@@ -155,6 +157,9 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
                     else             showResultMessage(R.string.taskSaveSuccess);
 
                     finish();
+                } else if (!mIsTaskNameValidationON) {
+                    mTaskNameLayout.setError(validateTaskName());
+                    mIsTaskNameValidationON = true;
                 }
                 return true;
 
@@ -451,6 +456,7 @@ public class TaskActivity extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void afterTextChanged(Editable s) {
                 mTaskNameLayout.setError(validateTaskName());
+                mIsTaskNameValidationON = true;
             }
         });
 
