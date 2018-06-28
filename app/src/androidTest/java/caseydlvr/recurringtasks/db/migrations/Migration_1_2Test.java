@@ -27,10 +27,10 @@ public class Migration_1_2Test {
     private static final String TEST_DB = "migration_1_2-test";
 
     @Rule
-    public MigrationTestHelper helper;
+    public MigrationTestHelper mHelper;
 
     public Migration_1_2Test() {
-        helper = new MigrationTestHelper(
+        mHelper = new MigrationTestHelper(
                 InstrumentationRegistry.getInstrumentation(),
                 AppDatabase.class.getCanonicalName(),
                 new FrameworkSQLiteOpenHelperFactory());
@@ -45,13 +45,13 @@ public class Migration_1_2Test {
      */
     @Test
     public void migrate1To2() throws IOException {
-        SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1);
+        SupportSQLiteDatabase db = mHelper.createDatabase(TEST_DB, 1);
 
         // insert test data into version 1 DB
         populateTestTasks(db);
         db.close();
 
-        db = helper.runMigrationsAndValidate(TEST_DB, 2, true, new Migration_1_2());
+        db = mHelper.runMigrationsAndValidate(TEST_DB, 2, true, new Migration_1_2());
 
         Cursor tasks = db.query("SELECT * FROM tasks");
 
