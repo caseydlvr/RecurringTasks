@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 /**
- * Represents a Tag. Room entity for the tags table
+ * Room entity for the tags table. Tags are used to apply labels to Tasks.
  */
 @Entity(tableName = "tags")
 public class Tag {

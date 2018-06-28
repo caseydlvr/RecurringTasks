@@ -8,7 +8,11 @@ import android.arch.persistence.room.Index;
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
- * Room entity for the tasks_tags table
+ * Defines relations between Tasks and Tags. Room entity for the tasks_tags table.
+ *
+ * Index is added for tag_id to help with its foreign key constraint. The task_id/tag_id primary key
+ * index doesn't help for the foreign key constraint since tag_id isn't the leftmost column in the
+ * primary key index. Compiler complains without this index.
  */
 @Entity(tableName = "tasks_tags",
         primaryKeys = { "task_id", "tag_id" },
