@@ -1,19 +1,16 @@
 package caseydlvr.recurringtasks.db;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import caseydlvr.recurringtasks.db.migrations.Migration_1_2;
 import caseydlvr.recurringtasks.db.migrations.Migration_2_3;
 import caseydlvr.recurringtasks.model.*;
 
-@Database(entities = {Task.class}, version = 3)
+@Database(entities = { Task.class, Tag.class, TaskTag.class }, version = 3)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
