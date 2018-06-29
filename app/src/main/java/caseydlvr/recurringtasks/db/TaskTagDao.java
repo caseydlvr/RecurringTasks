@@ -11,6 +11,8 @@ import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
 
+import static android.arch.persistence.room.OnConflictStrategy.IGNORE;
+
 @Dao
 public interface TaskTagDao {
 
@@ -24,6 +26,6 @@ public interface TaskTagDao {
             "WHERE tasks_tags.task_id = :taskId")
     LiveData<List<Tag>> getTagsForTask(long taskId);
 
-    @Insert
+    @Insert(onConflict = IGNORE)
     void insert(TaskTag taskTag);
 }

@@ -10,12 +10,14 @@ import java.util.List;
 
 import caseydlvr.recurringtasks.model.Tag;
 
+import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+
 public interface TagDao {
 
     @Query("Select * FROM tags")
     LiveData<List<Tag>> getAllTags();
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     int insert(Tag tag);
 
     @Update
