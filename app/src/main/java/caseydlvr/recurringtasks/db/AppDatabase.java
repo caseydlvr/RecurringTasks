@@ -17,6 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase sInstance;
 
     public abstract TaskDao taskDao();
+    public abstract TagDao tagDao();
     public abstract TaskTagDao taskTagDao();
 
     public static AppDatabase getInstance(Context context) {
