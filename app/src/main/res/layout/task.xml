@@ -68,12 +68,13 @@
                 android:id="@+id/durationLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toStartOf="@+id/durationUnit"
                 app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
-                tools:layout_editor_absoluteY="16dp">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/duration"
