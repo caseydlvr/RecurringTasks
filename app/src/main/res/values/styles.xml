@@ -1,14 +1,14 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
+        <item name="colorError">@color/colorError</item>
         <item name="android:datePickerDialogTheme">@style/Dialog</item>
         <item name="android:alertDialogTheme">@style/Dialog</item>
-        <!--<item name="textColorError">@color/colorError</item>-->
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
     </style>
 
@@ -17,17 +17,17 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light"/>
 
-    <style name="AppThemeDark" parent="ThemeOverlay.AppCompat.Dark">
+    <style name="AppThemeDark" parent="ThemeOverlay.MaterialComponents.Dark">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
     </style>
 
-    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
+    <style name="Dialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
