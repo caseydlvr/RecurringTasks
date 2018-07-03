@@ -15,7 +15,7 @@ public interface ItemTouchSwipeTarget {
 
     /**
      * @param direction direction of the swipe. Corresponds to an ItemTouchHelper direction constant
-     * @see             android.support.v7.widget.helper.ItemTouchHelper
+     * @see             androidx.recyclerview.widget.ItemTouchHelper
      */
     void prepareSwipeBackground(int direction);
 }

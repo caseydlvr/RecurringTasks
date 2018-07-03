@@ -1,7 +1,7 @@
 package caseydlvr.recurringtasks;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.notifications.NotificationUtils;

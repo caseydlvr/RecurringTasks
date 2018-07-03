@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="72dp">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/swipeBackgroundLayout"
         android:layout_width="match_parent"
         android:layout_height="72dp"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/delete"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:id="@+id/listItemLayout"
@@ -41,7 +41,7 @@
         android:layout_height="72dp"
         android:background="?android:colorBackground">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:background="?android:selectableItemBackground">
@@ -114,7 +114,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 

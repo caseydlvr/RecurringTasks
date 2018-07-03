@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/primaryLightColor</item>
         <item name="android:datePickerDialogTheme">@style/Dialog</item>
         <item name="android:alertDialogTheme">@style/Dialog</item>
-        <item name="textColorError">@color/colorError</item>
+        <!--<item name="textColorError">@color/colorError</item>-->
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
     </style>
 

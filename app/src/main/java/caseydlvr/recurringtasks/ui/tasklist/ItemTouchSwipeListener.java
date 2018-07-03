@@ -1,6 +1,6 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Interface for a RecyclerView swipe to dismiss listener. Implemented by classes that wish to
@@ -12,7 +12,7 @@ public interface ItemTouchSwipeListener {
      *
      * @param viewHolder ViewHolder swiped by the user
      * @param direction  Direction of the swipe. Corresponds to an ItemTouchHelper direction constant
-     * @see              android.support.v7.widget.helper.ItemTouchHelper
+     * @see              androidx.recyclerview.widget.ItemTouchHelper
      */
     void onItemSwiped(RecyclerView.ViewHolder viewHolder, int direction);
 }

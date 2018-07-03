@@ -1,9 +1,9 @@
 package caseydlvr.recurringtasks.db;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
 
-import static android.arch.persistence.room.OnConflictStrategy.IGNORE;
+import static androidx.room.OnConflictStrategy.IGNORE;
 
 @Dao
 public interface TaskTagDao {

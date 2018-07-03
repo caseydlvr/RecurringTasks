@@ -1,8 +1,8 @@
 package caseydlvr.recurringtasks.viewmodel;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.annotation.NonNull;
 
 import caseydlvr.recurringtasks.TaskActions;
 import caseydlvr.recurringtasks.model.Task;

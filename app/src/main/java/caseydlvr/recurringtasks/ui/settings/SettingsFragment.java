@@ -3,7 +3,7 @@ package caseydlvr.recurringtasks.ui.settings;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.notifications.NotificationUtils;
