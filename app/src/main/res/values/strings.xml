@@ -54,4 +54,5 @@
     <string name="notificationOption_Overdue">When overdue</string>
     <string name="notificationOption_OverdueDue">When due or overdue</string>
     <string name="tagsLabel">Tags</string>
+    <string name="tagViewHint">Click to add tags</string>
 </resources>
