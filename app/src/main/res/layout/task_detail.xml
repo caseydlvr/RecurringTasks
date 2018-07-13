@@ -136,6 +136,45 @@
         app:layout_constraintTop_toBottomOf="@+id/dueDate"/>
 
     <ImageView
+        android:id="@+id/notificationsImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@id/screenLeftMargin"
+        app:layout_constraintTop_toTopOf="@+id/notificationOptionLabel"
+        app:srcCompat="@drawable/ic_notifications"/>
+
+    <TextView
+        android:id="@+id/notificationOptionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/notificationsLabel"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/datesDivider"/>
+
+    <Spinner
+        android:id="@+id/notificationOption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@+id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/notificationOptionLabel"/>
+
+    <View
+        android:id="@+id/notificationsDivider"
+        style="@style/Divider"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
+        app:layout_constraintTop_toBottomOf="@+id/notificationOption"/>
+
+    <ImageView
         android:id="@+id/tagsImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -148,11 +187,11 @@
         android:id="@+id/tagsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/tagsLabel"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
-        app:layout_constraintTop_toBottomOf="@+id/datesDivider"/>
+        app:layout_constraintTop_toBottomOf="@+id/notificationsDivider"/>
 
     <TextView
         android:id="@+id/tagsText"
@@ -175,45 +214,6 @@
         app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
         app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
         app:layout_constraintTop_toBottomOf="@+id/tagsText"/>
-
-    <ImageView
-        android:id="@+id/notificationsImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="@id/screenLeftMargin"
-        app:layout_constraintTop_toTopOf="@+id/notificationOptionLabel"
-        app:srcCompat="@drawable/ic_notifications"/>
-
-    <TextView
-        android:id="@+id/notificationOptionLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/notificationsLabel"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
-        app:layout_constraintTop_toBottomOf="@+id/tagsDivider"/>
-
-    <Spinner
-        android:id="@+id/notificationOption"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
-        app:layout_constraintStart_toStartOf="@+id/contentLeftMargin"
-        app:layout_constraintTop_toBottomOf="@+id/notificationOptionLabel"/>
-
-    <View
-        android:id="@+id/notificationsDivider"
-        style="@style/Divider"
-        android:layout_width="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="@id/screenRightMargin"
-        app:layout_constraintStart_toStartOf="@id/contentLeftMargin"
-        app:layout_constraintTop_toBottomOf="@+id/notificationOption"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/contentLeftMargin"
