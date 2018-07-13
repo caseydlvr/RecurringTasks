@@ -1,12 +1,13 @@
 package caseydlvr.recurringtasks.ui.taskdetail;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeParseException;
+
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Dialog for selecting a Date. Uses a DatePickerDialog, which generally shows a calendar UI for
@@ -31,8 +32,8 @@ public class DatePickerDialogFragment extends DialogFragment {
         int month = date.getMonthValue() - 1;
         int day = date.getDayOfMonth();
 
-        return new DatePickerDialog(getActivity(),
-                (DatePickerDialog.OnDateSetListener)getActivity(),
+        return new DatePickerDialog(getContext(),
+                (DatePickerDialog.OnDateSetListener) getTargetFragment(),
                 year, month, day);
     }
 }
