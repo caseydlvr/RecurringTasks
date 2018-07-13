@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui.taskdetail;
+package caseydlvr.recurringtasks.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.ui.taskdetail.TaskDetailFragment;
 
 
 public class TaskActivity extends AppCompatActivity {

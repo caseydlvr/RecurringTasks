@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
-import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
 
 public class MainActivity extends AppCompatActivity {
 

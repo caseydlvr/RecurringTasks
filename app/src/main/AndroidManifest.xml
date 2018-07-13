@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.taskdetail.TaskActivity"
+            android:name=".ui.TaskActivity"
             android:label="@string/editTask"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.MainActivity">

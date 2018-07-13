@@ -28,7 +28,7 @@ import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Task;
-import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
+import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>

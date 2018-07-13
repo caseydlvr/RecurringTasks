@@ -31,7 +31,7 @@ import caseydlvr.recurringtasks.model.NotificationOption;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.ui.MainActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
-import caseydlvr.recurringtasks.ui.taskdetail.TaskActivity;
+import caseydlvr.recurringtasks.ui.TaskActivity;
 
 import static caseydlvr.recurringtasks.notifications.NotificationReceiver.*;
 import static caseydlvr.recurringtasks.notifications.NotificationUtils.*;

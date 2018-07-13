@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +46,8 @@ import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.NotificationOption;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.ui.TaskActivity;
+import caseydlvr.recurringtasks.ui.taglist.TagListFragment;
 import caseydlvr.recurringtasks.viewmodel.TaskDetailViewModel;
 
 public class TaskDetailFragment extends Fragment
@@ -242,6 +243,14 @@ public class TaskDetailFragment extends Fragment
         dateFragment.setArguments(args);
         dateFragment.setTargetFragment(this, 0);
         dateFragment.show(getFragmentManager(), "start_date_picker");
+    }
+
+    @OnClick(R.id.tagsText)
+    void addTagsClick() {
+        TagListFragment tagsFragment = new TagListFragment();
+        Bundle args = new Bundle();
+        args.putLong(TagListFragment.KEY_TASK_ID, mTask.getId());
+        tagsFragment.setArguments(args);
     }
 
     @OnItemSelected(R.id.durationUnit)
