@@ -58,4 +58,7 @@
     <string name="tagViewHint">Click to add tags</string>
     <string name="create">Create</string>
     <string name="createTag">Create tag</string>
+    <string name="tagNameHint">Tag name</string>
+    <string name="tagNameTooLongErrorPrefix">Name is too long</string>
+    <string name="tagNameEmptyErrorPrefix">Name cannot be empty</string>
 </resources>

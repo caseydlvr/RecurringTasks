@@ -10,6 +10,8 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "tags")
 public class Tag {
 
+    public static final int NAME_MAX_LENGTH = 20;
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int mId;
