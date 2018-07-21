@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -83,6 +84,7 @@ public class TaskDetailFragment extends Fragment
     @BindView(R.id.notificationOption) Spinner mNotificationOption;
     @BindView(R.id.dueDate) TextView mDueDate;
     @BindView(R.id.tagsChipGroup) ChipGroup mTagsChipGroup;
+    @BindView(R.id.tagGroup) Group mTagGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,6 +142,9 @@ public class TaskDetailFragment extends Fragment
             });
         } else {
             actionBar.setTitle(R.string.newTask);
+
+            // hide tagging interface in create mode because a task ID is needed to add a tag
+            mTagGroup.setVisibility(View.GONE);
 
             // rely on onRestoreInstanceState to populate views to preserve unsaved user input
             if (savedInstanceState == null) {
