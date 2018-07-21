@@ -213,13 +213,13 @@ public class Task {
 
         final Task other = (Task) obj;
 
-        return !(other.getId() != mId
-                || other.getName().equals(mName)
-                || other.getDuration() != mDuration
-                || other.getDurationUnit().equals(mDurationUnit)
-                || other.getStartDate().equals(mStartDate)
-                || other.isRepeating() != mRepeating)
-                || !other.getNotificationOption().equals(mNotificationOption);
+        return (other.getId() == mId
+                && other.getName().equals(mName)
+                && other.getDuration() == mDuration
+                && other.getDurationUnit().equals(mDurationUnit)
+                && other.getStartDate().equals(mStartDate)
+                && other.isRepeating() == mRepeating)
+                && other.getNotificationOption().equals(mNotificationOption);
     }
 
     /**

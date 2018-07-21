@@ -29,24 +29,29 @@ import static androidx.room.ForeignKey.CASCADE;
 public class TaskTag {
 
     @ColumnInfo(name = "task_id")
-    private long taskId;
+    private long mTaskId;
 
     @ColumnInfo(name = "tag_id")
-    private int tagId;
+    private int mTagId;
+
+    public TaskTag(long taskId, int tagId) {
+        mTaskId = taskId;
+        mTagId = tagId;
+    }
 
     public long getTaskId() {
-        return taskId;
+        return mTaskId;
     }
 
     public void setTaskId(long taskId) {
-        this.taskId = taskId;
+        this.mTaskId = taskId;
     }
 
     public int getTagId() {
-        return tagId;
+        return mTagId;
     }
 
     public void setTagId(int tagId) {
-        this.tagId = tagId;
+        this.mTagId = tagId;
     }
 }

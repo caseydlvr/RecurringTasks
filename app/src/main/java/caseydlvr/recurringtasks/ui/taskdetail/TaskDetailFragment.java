@@ -19,7 +19,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -33,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -45,9 +47,9 @@ import butterknife.OnItemSelected;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.NotificationOption;
+import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.ui.TaskActivity;
-import caseydlvr.recurringtasks.ui.taglist.TagListFragment;
 import caseydlvr.recurringtasks.viewmodel.TaskDetailViewModel;
 
 public class TaskDetailFragment extends Fragment
@@ -70,9 +72,9 @@ public class TaskDetailFragment extends Fragment
     private boolean mCleanRepeats;
     private String mCleanNotificationOption;
 
-    private TextInputLayout mTaskNameLayout;
-    private TextInputEditText mTaskName;
-
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.taskNameLayout) TextInputLayout mTaskNameLayout;
+    @BindView(R.id.taskName) TextInputEditText mTaskName;
     @BindView(R.id.durationLayout) TextInputLayout mDurationLayout;
     @BindView(R.id.duration) TextInputEditText mDuration;
     @BindView(R.id.durationUnit) Spinner mDurationUnit;
@@ -80,6 +82,7 @@ public class TaskDetailFragment extends Fragment
     @BindView(R.id.repeating) Switch mRepeating;
     @BindView(R.id.notificationOption) Spinner mNotificationOption;
     @BindView(R.id.dueDate) TextView mDueDate;
+    @BindView(R.id.tagsChipGroup) ChipGroup mTagsChipGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,15 +95,10 @@ public class TaskDetailFragment extends Fragment
         View rootView = inflater.inflate(R.layout.task_detail, container, false);
         ButterKnife.bind(this, rootView);
 
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = getActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
-        inflater.inflate(R.layout.task_detail_header, appBarLayout);
-
-        mTaskNameLayout = getActivity().findViewById(R.id.taskNameLayout);
-        mTaskName = getActivity().findViewById(R.id.taskName);
 
         populateSpinner(mDurationUnit, DurationUnit.buildList(getContext()));
         populateSpinner(mNotificationOption, NotificationOption.buildList(getContext()));
@@ -111,6 +109,7 @@ public class TaskDetailFragment extends Fragment
         mViewModel = ViewModelProviders.of(this).get(TaskDetailViewModel.class);
 
         if (taskId > 0) {
+            actionBar.setTitle(R.string.editTask);
             mCreateMode = false;
             mViewModel.init(taskId);
             mViewModel.getTask().observe(this, task -> {
@@ -131,6 +130,13 @@ public class TaskDetailFragment extends Fragment
                     // don't turn on validation until after views are populated from DB values
                     initValidation();
                 }
+            });
+
+            mViewModel.getTags().observe(this, tags -> {
+                // remove all existing tag chips other than the add tag chip
+                mTagsChipGroup.removeViews(1, mTagsChipGroup.getChildCount() -1);
+                // append Chips for all current tags
+                createTagChips(tags);
             });
         } else {
             actionBar.setTitle(R.string.newTask);
@@ -245,12 +251,9 @@ public class TaskDetailFragment extends Fragment
         dateFragment.show(getFragmentManager(), "start_date_picker");
     }
 
-    @OnClick(R.id.tagsText)
+    @OnClick(R.id.addTags)
     void addTagsClick() {
-        TagListFragment tagsFragment = new TagListFragment();
-        Bundle args = new Bundle();
-        args.putLong(TagListFragment.KEY_TASK_ID, mTask.getId());
-        tagsFragment.setArguments(args);
+        ((TaskActivity) getActivity()).showTagListForTask(mTask.getId());
     }
 
     @OnItemSelected(R.id.durationUnit)
@@ -351,7 +354,7 @@ public class TaskDetailFragment extends Fragment
     /**
      * Populates the duration unit drop down with all possible duration unit choices
      */
-    private void populateSpinner(Spinner spinner, List<?> items) {
+    private void populateSpinner(@NonNull Spinner spinner, List<?> items) {
         ArrayAdapter<?> adapter = new ArrayAdapter<>(
                 getContext(),
                 android.R.layout.simple_spinner_item,
@@ -375,6 +378,17 @@ public class TaskDetailFragment extends Fragment
         if (mTask.getStartDate() == null) mTask.setStartDate(LocalDate.now());
         mStartDate.setText(formatDate(mTask.getStartDate()));
         mDueDate.setText(formatDate(mTask.getDueDate()));
+    }
+
+    private void createTagChips(List<Tag> tags) {
+        if (tags == null) return;
+
+        for (int i = 0; i < tags.size(); i++) {
+            Tag tag = tags.get(i);
+            Chip chip = new Chip(getContext());
+            chip.setText(tag.getName());
+            mTagsChipGroup.addView(chip, i + 1);
+        }
     }
 
     /**

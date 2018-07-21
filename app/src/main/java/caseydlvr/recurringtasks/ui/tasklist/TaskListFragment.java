@@ -1,7 +1,6 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Collections;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -2,6 +2,7 @@ package caseydlvr.recurringtasks.db;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -18,7 +19,7 @@ public interface TaskTagDao {
 
     @Query("SELECT tasks.* FROM tasks " +
             "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
-            "WHERE tasks_tags.task_id = :tagId")
+            "WHERE tasks_tags.tag_id = :tagId")
     LiveData<List<Task>> getTasksForTag(int tagId);
 
     @Query("SELECT tags.* FROM tags " +
@@ -28,4 +29,7 @@ public interface TaskTagDao {
 
     @Insert(onConflict = IGNORE)
     void insert(TaskTag taskTag);
+
+    @Delete
+    void delete(TaskTag... taskTags);
 }

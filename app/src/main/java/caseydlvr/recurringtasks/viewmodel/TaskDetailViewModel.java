@@ -1,6 +1,9 @@
 package caseydlvr.recurringtasks.viewmodel;
 
 import android.app.Application;
+
+import java.util.List;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.annotation.NonNull;
@@ -8,6 +11,7 @@ import androidx.annotation.NonNull;
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.TaskActions;
+import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 
 /**
@@ -17,7 +21,9 @@ import caseydlvr.recurringtasks.model.Task;
  */
 public class TaskDetailViewModel extends TaskViewModel {
 
+    private long mTaskId;
     private LiveData<Task> mTask;
+    private LiveData<List<Tag>> mTags;
     private DataRepository mRepository;
 
     public TaskDetailViewModel(@NonNull Application app) {
@@ -30,6 +36,10 @@ public class TaskDetailViewModel extends TaskViewModel {
      */
     public LiveData<Task> getTask() {
         return mTask;
+    }
+
+    public LiveData<List<Tag>> getTags() {
+        return mTags;
     }
 
     /**
@@ -48,6 +58,8 @@ public class TaskDetailViewModel extends TaskViewModel {
      * @param taskId Task ID to use with this ViewModel
      */
     public void init(long taskId) {
+        mTaskId = taskId;
         mTask = mRepository.loadTaskById(taskId);
+        mTags = mRepository.loadTagsForTask(taskId);
     }
 }

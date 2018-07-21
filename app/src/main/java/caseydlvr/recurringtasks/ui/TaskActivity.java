@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.AppBarLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.ui.taglist.TagListFragment;
 import caseydlvr.recurringtasks.ui.taskdetail.TaskDetailFragment;
 
 
@@ -30,14 +33,11 @@ public class TaskActivity extends AppCompatActivity {
 
     private List<BackPressedListener> mBackPressedListeners = new ArrayList<>();
 
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
 
         if (savedInstanceState != null) return;
 
@@ -63,7 +63,7 @@ public class TaskActivity extends AppCompatActivity {
         mBackPressedListeners.remove(listener);
     }
 
-    private void showDetailFragment() {
+    public void showDetailFragment() {
         long taskId = getIntent().getLongExtra(TaskActivity.EXTRA_TASK_ID, -1);
         Bundle args = new Bundle();
         args.putLong(TaskDetailFragment.KEY_TASK_ID, taskId);
@@ -72,8 +72,22 @@ public class TaskActivity extends AppCompatActivity {
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragmentContainer, fragment);
+        transaction.replace(R.id.fragmentContainer, fragment);
         transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void showTagListForTask(long taskId) {
+        Bundle args = new Bundle();
+        args.putLong(TagListFragment.KEY_TASK_ID, taskId);
+
+        TagListFragment fragment = new TagListFragment();
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, fragment);
+        transaction.addToBackStack(null);
+
         transaction.commit();
     }
 

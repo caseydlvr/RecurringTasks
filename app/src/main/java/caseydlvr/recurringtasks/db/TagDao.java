@@ -16,14 +16,11 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface TagDao {
 
-    @Query("Select * FROM tags")
+    @Query("Select * FROM tags ORDER BY name")
     LiveData<List<Tag>> getAllTags();
 
     @Insert(onConflict = REPLACE)
     long insert(Tag tag);
-
-    @Update
-    void update(Tag tag);
 
     @Delete
     void delete(Tag... tags);

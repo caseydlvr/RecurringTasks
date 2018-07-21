@@ -8,7 +8,9 @@ import androidx.annotation.WorkerThread;
 import java.util.List;
 
 import caseydlvr.recurringtasks.db.AppDatabase;
+import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.model.TaskTag;
 
 /**
  * Singleton that handles CRUD for database storage. Single point of access to the data. Handles
@@ -126,6 +128,26 @@ public class DataRepository {
      */
     public AppDatabase getDb() {
         return mDb;
+    }
+
+    public LiveData<List<Tag>> loadAllTags() {
+        return mDb.tagDao().getAllTags();
+    }
+
+    public void addTag(Tag tag) {
+        new AddTagTask(this).execute(tag);
+    }
+
+    public void addTaskTag(long taskId, Tag tag) {
+        new AddTaskTagTask(this).execute(new TaskTag(taskId, tag.getId()));
+    }
+
+    public void removeTaskTag(long taskId, Tag tag) {
+        new RemoveTaskTagTask(this).execute(new TaskTag(taskId, tag.getId()));
+    }
+
+    public LiveData<List<Tag>> loadTagsForTask(long taskId) {
+        return mDb.taskTagDao().getTagsForTask(taskId);
     }
 
     /**
@@ -266,4 +288,48 @@ public class DataRepository {
         }
     }
 
+    private static class AddTagTask extends AsyncTask<Tag, Void, Void> {
+        DataRepository mDr;
+
+        AddTagTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected Void doInBackground(Tag... tags) {
+            mDr.getDb().tagDao().insert(tags[0]);
+
+            return null;
+        }
+    }
+
+    private static class AddTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
+        DataRepository mDr;
+
+        AddTaskTagTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected Void doInBackground(TaskTag... taskTags) {
+            mDr.getDb().taskTagDao().insert(taskTags[0]);
+
+            return null;
+        }
+    }
+
+    private static class RemoveTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
+        DataRepository mDr;
+
+        RemoveTaskTagTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected Void doInBackground(TaskTag... taskTags) {
+            mDr.getDb().taskTagDao().delete(taskTags[0]);
+
+            return null;
+        }
+    }
 }

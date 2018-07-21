@@ -17,6 +17,10 @@ public class Tag {
     @ColumnInfo(name = "name")
     private String mName;
 
+    public Tag(String name) {
+        mName = name;
+    }
+
     public int getId() {
         return mId;
     }
@@ -31,5 +35,16 @@ public class Tag {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!Tag.class.isAssignableFrom(obj.getClass())) return false;
+
+        final Tag other = (Tag) obj;
+
+        return (other.getId() == mId
+            && other.getName().equals(mName));
     }
 }
