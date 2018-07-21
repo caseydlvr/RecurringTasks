@@ -72,6 +72,7 @@ public class CreateDialogFragment extends DialogFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 mTagNameLayout.setError(validateTagName());
+                mTagNameLayout.setHintEnabled(true);
             }
         });
     }
