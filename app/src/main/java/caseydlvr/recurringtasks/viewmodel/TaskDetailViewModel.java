@@ -33,6 +33,18 @@ public class TaskDetailViewModel extends TaskViewModel {
     }
 
     /**
+     * Initialize this ViewModel to work with a Task with the provided ID. Starts the async loading
+     * of the Task by the repository.
+     *
+     * @param taskId Task ID to use with this ViewModel
+     */
+    public void init(long taskId) {
+        mTaskId = taskId;
+        mTask = mRepository.loadTaskById(taskId);
+        mTags = mRepository.loadTagsForTask(taskId);
+    }
+
+    /**
      * @return Task wrapped in LiveData
      */
     public LiveData<Task> getTask() {
@@ -50,18 +62,6 @@ public class TaskDetailViewModel extends TaskViewModel {
      */
     public void persist(Task task) {
         mRepository.persist(task);
-    }
-
-    /**
-     * Initialize this ViewModel to work with a Task with the provided ID. Starts the async loading
-     * of the Task by the repository.
-     *
-     * @param taskId Task ID to use with this ViewModel
-     */
-    public void init(long taskId) {
-        mTaskId = taskId;
-        mTask = mRepository.loadTaskById(taskId);
-        mTags = mRepository.loadTagsForTask(taskId);
     }
 
     public void removeTag(Tag tag) {
