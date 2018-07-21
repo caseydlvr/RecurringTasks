@@ -142,8 +142,8 @@ public class DataRepository {
         new AddTaskTagTask(this).execute(new TaskTag(taskId, tag.getId()));
     }
 
-    public void removeTaskTag(long taskId, Tag tag) {
-        new RemoveTaskTagTask(this).execute(new TaskTag(taskId, tag.getId()));
+    public void removeTaskTag(TaskTag taskTag) {
+        new RemoveTaskTagTask(this).execute(taskTag);
     }
 
     public LiveData<List<Tag>> loadTagsForTask(long taskId) {

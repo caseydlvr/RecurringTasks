@@ -13,6 +13,7 @@ import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.TaskActions;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.model.TaskTag;
 
 /**
  * ViewModel for the Task detail view. User is expected to call init(long) after the constructor
@@ -61,5 +62,10 @@ public class TaskDetailViewModel extends TaskViewModel {
         mTaskId = taskId;
         mTask = mRepository.loadTaskById(taskId);
         mTags = mRepository.loadTagsForTask(taskId);
+    }
+
+    public void removeTag(Tag tag) {
+        TaskTag taskTag = new TaskTag(mTaskId, tag.getId());
+        mRepository.removeTaskTag(taskTag);
     }
 }

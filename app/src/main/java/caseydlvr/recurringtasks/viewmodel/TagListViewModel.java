@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.model.Tag;
+import caseydlvr.recurringtasks.model.TaskTag;
 
 public class TagListViewModel extends AndroidViewModel {
     private static final String TAG = TagListViewModel.class.getSimpleName();
@@ -40,6 +41,6 @@ public class TagListViewModel extends AndroidViewModel {
     }
 
     public void removeTaskTag(Tag tag) {
-        mRepository.removeTaskTag(mTaskId, tag);
+        mRepository.removeTaskTag(new TaskTag(mTaskId, tag.getId()));
     }
 }

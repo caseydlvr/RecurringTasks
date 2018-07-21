@@ -387,6 +387,9 @@ public class TaskDetailFragment extends Fragment
             Tag tag = tags.get(i);
             Chip chip = new Chip(getContext());
             chip.setText(tag.getName());
+            chip.setTag(tag);
+            chip.setCloseIconEnabled(true);
+            chip.setOnCloseIconClickListener(view -> mViewModel.removeTag((Tag) view.getTag()));
             mTagsChipGroup.addView(chip, i + 1);
         }
     }
