@@ -138,8 +138,8 @@ public class DataRepository {
         new AddTagTask(this).execute(tag);
     }
 
-    public void addTaskTag(long taskId, Tag tag) {
-        new AddTaskTagTask(this).execute(new TaskTag(taskId, tag.getId()));
+    public void addTaskTag(TaskTag taskTag) {
+        new AddTaskTagTask(this).execute(taskTag);
     }
 
     public void removeTaskTag(TaskTag taskTag) {

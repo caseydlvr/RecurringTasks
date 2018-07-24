@@ -23,7 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
-import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.viewmodel.TagListViewModel;
 
 public class TagListFragment extends Fragment implements CreateDialogFragment.CreateTagClickListener {
@@ -67,7 +66,7 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
         mViewModel = ViewModelProviders.of(this).get(TagListViewModel.class);
 
         long taskId = getArguments().getLong(KEY_TASK_ID, -1);
-        mViewModel.setTaskId(taskId);
+        mViewModel.initTaskMode(taskId);
 
         mTagAdapter.setViewModel(mViewModel);
         subscribeUi(mViewModel);
@@ -112,6 +111,14 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
                 mEmptyView.setVisibility(View.GONE);
             }
             mTagAdapter.setTags(tags);
+            mTagAdapter.setTagsChecked(mViewModel.getCheckedTags());
+        });
+
+        viewModel.getTagsForTask().observe(this, tags -> {
+            if (tags != null) {
+                mViewModel.setCheckedTags(tags);
+                mTagAdapter.setTagsChecked(tags);
+            }
         });
     }
 

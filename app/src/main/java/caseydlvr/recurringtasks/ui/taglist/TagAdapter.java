@@ -1,5 +1,6 @@
 package caseydlvr.recurringtasks.ui.taglist;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -23,6 +23,7 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
 
     private List<Tag> mTags;
     private TagListViewModel mViewModel;
+    private RecyclerView mRecyclerView;
 
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,7 +35,15 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
 
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
-        holder.bindTag(mTags.get(position));
+        Tag tag = mTags.get(position);
+        holder.bindTag(tag);
+        holder.setChecked(mViewModel.getCheckedTags().contains(tag));
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
     }
 
     @Override
@@ -54,6 +63,19 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
         } else {
             DiffUtil.calculateDiff(new TagListDiffCallback(oldTags, newTags))
                     .dispatchUpdatesTo(this);
+        }
+    }
+
+    public void setTagsChecked(List<Tag> checkedTags) {
+        if (mTags == null) return;
+
+        for (int i = 0; i < mTags.size(); i++) {
+            Tag tag = mTags.get(i);
+            TagViewHolder viewHolder = (TagViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
+
+            if (viewHolder != null) {
+                viewHolder.setChecked(checkedTags.contains(tag));
+            }
         }
     }
 
@@ -87,6 +109,12 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
                 mViewModel.addTaskTag(mTags.get(getAdapterPosition()));
             } else {
                 mViewModel.removeTaskTag(mTags.get(getAdapterPosition()));
+            }
+        }
+
+        void setChecked(boolean checked) {
+            if (checked != mTagCheckBox.isChecked()) {
+                mTagCheckBox.setChecked(checked);
             }
         }
     }
