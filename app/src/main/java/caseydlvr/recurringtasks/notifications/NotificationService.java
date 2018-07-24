@@ -29,7 +29,6 @@ import caseydlvr.recurringtasks.TaskActionReceiver;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.NotificationOption;
 import caseydlvr.recurringtasks.model.Task;
-import caseydlvr.recurringtasks.ui.MainActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 
@@ -237,6 +236,7 @@ public class NotificationService extends JobIntentService {
      */
     private PendingIntent buildClickPendingIntent(long id) {
         Intent clickIntent = new Intent(this, TaskActivity.class);
+        clickIntent.putExtra(TaskActivity.EXTRA_MODE, TaskActivity.MODE_TASK_DETAIL);
         clickIntent.putExtra(TaskActivity.EXTRA_TASK_ID, id);
 
         return PendingIntent.getActivity(this,
@@ -269,7 +269,8 @@ public class NotificationService extends JobIntentService {
      * @return PendingIntent to open the list of Tasks
      */
     private PendingIntent buildSummaryPendingIntent() {
-        Intent summaryIntent = new Intent(this, MainActivity.class);
+        Intent summaryIntent = new Intent(this, TaskActivity.class);
+        summaryIntent.putExtra(TaskActivity.EXTRA_MODE, TaskActivity.MODE_TASK_LIST);
 
         return PendingIntent.getActivity(this,
                 0,

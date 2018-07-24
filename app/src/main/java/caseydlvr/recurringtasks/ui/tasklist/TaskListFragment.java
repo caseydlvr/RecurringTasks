@@ -1,7 +1,11 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,17 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Task;
-import caseydlvr.recurringtasks.ui.MainActivity;
+import caseydlvr.recurringtasks.ui.TaskActivity;
+import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskListFragment extends Fragment {
@@ -29,12 +39,22 @@ public class TaskListFragment extends Fragment {
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.emptyView) TextView mEmptyView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.progressBar) ProgressBar mProgressBar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.task_list, container, false);
         ButterKnife.bind(this, rootView);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
 
         mTaskAdapter = new TaskAdapter();
         mRecyclerView.setAdapter(mTaskAdapter);
@@ -61,6 +81,29 @@ public class TaskListFragment extends Fragment {
         subscribeUi(viewModel);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_task_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(getContext(), SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.fab)
+    public void fabClick() {
+        ((TaskActivity) getActivity()).showTaskDetailFragment(0);
+    }
+
     /**
      * Start observing ViewModel LiveData with appropriate onChange handling
      *
@@ -81,9 +124,17 @@ public class TaskListFragment extends Fragment {
 
         viewModel.isLoading().observe(this, isLoading -> {
             if (isLoading != null) {
-                if (isLoading) ((MainActivity) getActivity()).showLoadingSpinner();
-                else           ((MainActivity) getActivity()).hideLoadingSpinner();
+                if (isLoading) showLoadingSpinner();
+                else           hideLoadingSpinner();
             }
         });
+    }
+
+    private void showLoadingSpinner() {
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+    }
+
+    private void hideLoadingSpinner() {
+        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 }

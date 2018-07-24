@@ -220,9 +220,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @Override
         @OnClick
         public void onClick(View v) {
-            Intent intent = new Intent(mContext, TaskActivity.class);
-            intent.putExtra(TaskActivity.EXTRA_TASK_ID, mTask.getId());
-            mContext.startActivity(intent);
+            ((TaskActivity) mContext).showTaskDetailFragment(mTask.getId());
         }
 
         @OnClick(R.id.completeCheckBox)

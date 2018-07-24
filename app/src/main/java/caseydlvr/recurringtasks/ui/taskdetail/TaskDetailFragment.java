@@ -227,7 +227,8 @@ public class TaskDetailFragment extends Fragment
                     showDirtyAlert();
                     return true;
                 } else {
-                    return super.onOptionsItemSelected(item);
+                    finish();
+                    return true;
                 }
 
             default:
@@ -287,7 +288,7 @@ public class TaskDetailFragment extends Fragment
     }
 
     private void finish() {
-        getActivity().finish();
+        getFragmentManager().popBackStack();
     }
 
     private Object getSystemService(String string) {
