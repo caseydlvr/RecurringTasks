@@ -24,7 +24,8 @@ public interface TaskTagDao {
 
     @Query("SELECT tags.* FROM tags " +
             "JOIN tasks_tags ON tags.id = tasks_tags.tag_id " +
-            "WHERE tasks_tags.task_id = :taskId")
+            "WHERE tasks_tags.task_id = :taskId " +
+            "ORDER BY tags.name")
     LiveData<List<Tag>> getTagsForTask(long taskId);
 
     @Insert(onConflict = IGNORE)
