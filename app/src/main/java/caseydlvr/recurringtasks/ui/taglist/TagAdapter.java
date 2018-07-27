@@ -114,9 +114,9 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
         @OnClick(R.id.tagCheckBox)
         void onTagCheckboxClick() {
             if (mTagCheckBox.isChecked()) {
-                mViewModel.addTaskTag(mTags.get(getAdapterPosition()));
+                mViewModel.addTaskTag(mTag);
             } else {
-                mViewModel.removeTaskTag(mTags.get(getAdapterPosition()));
+                mViewModel.removeTaskTag(mTag);
             }
         }
 
