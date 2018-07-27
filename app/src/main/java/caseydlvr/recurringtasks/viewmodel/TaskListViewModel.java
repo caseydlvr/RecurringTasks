@@ -19,7 +19,6 @@ public class TaskListViewModel extends TaskViewModel {
 
     private final LiveData<List<Task>> mObservableTasks;
     private DataRepository mRepository;
-    private LiveData<Boolean> mIsLoading;
 
     /**
      * Constructor. This starts the async loading of Tasks by the repository.
@@ -30,7 +29,6 @@ public class TaskListViewModel extends TaskViewModel {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
         mObservableTasks = mRepository.loadOutstandingTasks();
-        mIsLoading = mRepository.isLoading();
     }
 
     /**
@@ -40,12 +38,5 @@ public class TaskListViewModel extends TaskViewModel {
      */
     public LiveData<List<Task>> getOutstandingTasks() {
         return mObservableTasks;
-    }
-
-    /**
-     * @return Boolean wrapped in LiveData indicating whether an async load is in progress
-     */
-    public LiveData<Boolean> isLoading() {
-        return mIsLoading;
     }
 }

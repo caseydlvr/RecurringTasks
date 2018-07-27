@@ -22,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -45,7 +44,6 @@ public class TaskListFragment extends Fragment {
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.emptyView) TextView mEmptyView;
     @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.progressBar) ProgressBar mProgressBar;
     @BindView(R.id.drawerLayout) DrawerLayout mDrawerLayout;
     @BindView(R.id.navView) NavigationView mNavigationView;
 
@@ -156,20 +154,5 @@ public class TaskListFragment extends Fragment {
             }
             mTaskAdapter.setTasks(tasks);
         });
-
-        viewModel.isLoading().observe(this, isLoading -> {
-            if (isLoading != null) {
-                if (isLoading) showLoadingSpinner();
-                else           hideLoadingSpinner();
-            }
-        });
-    }
-
-    private void showLoadingSpinner() {
-        mProgressBar.setVisibility(ProgressBar.VISIBLE);
-    }
-
-    private void hideLoadingSpinner() {
-        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 }

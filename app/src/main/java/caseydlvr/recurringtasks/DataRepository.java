@@ -23,7 +23,6 @@ public class DataRepository {
     private static DataRepository sInstance;
 
     private final AppDatabase mDb;
-    private MutableLiveData<Boolean> mIsLoading = new MutableLiveData<>();
 
     private DataRepository(final AppDatabase db) {
         mDb = db;
@@ -104,26 +103,6 @@ public class DataRepository {
     }
 
     /**
-     * Boolean, wrapped in MutableLiveData, indicating whether an async load is currently in progress.
-     *
-     * @return MutableLiveData holding a boolean indicating whether an async load is currently in progress
-     */
-    public MutableLiveData<Boolean> isLoading() {
-        return mIsLoading;
-    }
-
-    /**
-     * Sets isLoading to the provided boolean. True indicates a load is in progress (call when an
-     * async load begins), false indicates there are no async loads in progress (call when all async
-     * loads are complete).
-     *
-     * @param isLoading boolean indicating whether an async load is in progress (true) or not (false)
-     */
-    public void isLoading(boolean isLoading) {
-        mIsLoading.setValue(isLoading);
-    }
-
-    /**
       * @return AppDatabase singleton
      */
     public AppDatabase getDb() {
@@ -167,20 +146,10 @@ public class DataRepository {
         }
 
         @Override
-        protected void onPreExecute() {
-            mDr.isLoading(true);
-        }
-
-        @Override
         protected Void doInBackground(Task... tasks) {
             mDr.getDb().taskDao().insert(tasks[0]);
 
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mDr.isLoading(false);
         }
     }
 
@@ -197,20 +166,10 @@ public class DataRepository {
         }
 
         @Override
-        protected void onPreExecute() {
-            mDr.isLoading(true);
-        }
-
-        @Override
         protected Void doInBackground(Task... tasks) {
             completeTask(mDr.getDb(), tasks[0]);
 
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mDr.isLoading(false);
         }
     }
 
@@ -276,20 +235,10 @@ public class DataRepository {
         }
 
         @Override
-        protected void onPreExecute() {
-            mDr.isLoading(true);
-        }
-
-        @Override
         protected Void doInBackground(Task... tasks) {
             mDr.getDb().taskDao().delete(tasks[0]);
 
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mDr.isLoading(false);
         }
     }
 
