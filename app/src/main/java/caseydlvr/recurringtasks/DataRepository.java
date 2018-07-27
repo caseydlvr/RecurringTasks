@@ -138,6 +138,11 @@ public class DataRepository {
         new AddTagTask(this).execute(tag);
     }
 
+    public void deleteTag(Tag tag) {
+        new DeleteTagTask(this).execute(tag);
+    }
+
+
     public void addTaskTag(TaskTag taskTag) {
         new AddTaskTagTask(this).execute(taskTag);
     }
@@ -298,6 +303,21 @@ public class DataRepository {
         @Override
         protected Void doInBackground(Tag... tags) {
             mDr.getDb().tagDao().insert(tags[0]);
+
+            return null;
+        }
+    }
+
+    private static class DeleteTagTask extends AsyncTask<Tag, Void, Void> {
+        DataRepository mDr;
+
+        DeleteTagTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected Void doInBackground(Tag... tags) {
+            mDr.getDb().tagDao().delete(tags[0]);
 
             return null;
         }

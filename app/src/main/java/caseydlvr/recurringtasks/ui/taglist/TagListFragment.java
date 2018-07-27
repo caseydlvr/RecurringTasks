@@ -29,9 +29,13 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
     private static final String TAG = TagListFragment.class.getSimpleName();
 
     public static final String KEY_TASK_ID = "key_task_id";
+    public static final String KEY_MODE = "key_mode";
+    public static final String MODE_TASK = "mode_task";
+    public static final String MODE_EDIT = "mode_edit";
 
     private TagAdapter mTagAdapter = new TagAdapter();
     private TagListViewModel mViewModel;
+    private boolean mTaskMode = true;
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -49,12 +53,8 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
         View rootView = inflater.inflate(R.layout.tag_list, container, false);
         ButterKnife.bind(this, rootView);
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(null);
-        actionBar.setTitle("Select tags");
-
+        setModeFromArgs();
+        initActionBar();
         initRecyclerView();
 
         return rootView;
@@ -65,8 +65,10 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(TagListViewModel.class);
 
-        long taskId = getArguments().getLong(KEY_TASK_ID, -1);
-        mViewModel.initTaskMode(taskId);
+        if (mTaskMode) {
+            long taskId = getArguments().getLong(KEY_TASK_ID, 0);
+            mViewModel.initTaskMode(taskId);
+        }
 
         mTagAdapter.setViewModel(mViewModel);
         subscribeUi(mViewModel);
@@ -89,6 +91,26 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
     @Override
     public void onCreateTagClick(String tagName) {
         mViewModel.addTag(tagName);
+    }
+
+    private void setModeFromArgs() {
+        String mode = getArguments().getString(KEY_MODE, MODE_TASK);
+
+        if (!mode.equals(MODE_TASK)) mTaskMode = false;
+    }
+
+    private void initActionBar() {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        if (mTaskMode) {
+            actionBar.setHomeAsUpIndicator(null);
+            actionBar.setTitle("Select tags");
+        } else {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
+            actionBar.setTitle("Edit tags");
+        }
     }
 
     private void initRecyclerView() {
@@ -114,12 +136,14 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
             mTagAdapter.setTagsChecked(mViewModel.getCheckedTags());
         });
 
-        viewModel.getTagsForTask().observe(this, tags -> {
-            if (tags != null) {
-                mViewModel.setCheckedTags(tags);
-                mTagAdapter.setTagsChecked(tags);
-            }
-        });
+        if (mTaskMode) {
+            viewModel.getTagsForTask().observe(this, tags -> {
+                if (tags != null) {
+                    mViewModel.setCheckedTags(tags);
+                    mTagAdapter.setTagsChecked(tags);
+                }
+            });
+        }
     }
 
     @OnClick(R.id.addTagFab)

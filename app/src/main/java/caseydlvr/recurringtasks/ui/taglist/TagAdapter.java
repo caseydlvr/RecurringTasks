@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -86,10 +87,17 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
 
         @BindView(R.id.tagName) TextView mTagName;
         @BindView(R.id.tagCheckBox) CheckBox mTagCheckBox;
+        @BindView(R.id.deleteTag) ImageView mDeleteTag;
 
         TagViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            if (mViewModel.isTaskMode()) {
+                mDeleteTag.setVisibility(View.GONE);
+            } else {
+                mTagCheckBox.setVisibility(View.GONE);
+            }
         }
 
         void bindTag(Tag tag) {
@@ -110,6 +118,11 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
             } else {
                 mViewModel.removeTaskTag(mTags.get(getAdapterPosition()));
             }
+        }
+
+        @OnClick(R.id.deleteTag)
+        void onTagDeleteClick() {
+            mViewModel.deleteTag(mTag);
         }
 
         void setChecked(boolean checked) {

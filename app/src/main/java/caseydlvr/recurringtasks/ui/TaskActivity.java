@@ -101,6 +101,7 @@ public class TaskActivity extends AppCompatActivity {
 
     public void showTagListFragment() {
         Bundle args = new Bundle();
+        args.putString(TagListFragment.KEY_MODE, TagListFragment.MODE_EDIT);
 
         TagListFragment fragment = new TagListFragment();
         fragment.setArguments(args);
@@ -110,6 +111,7 @@ public class TaskActivity extends AppCompatActivity {
 
     public void showTagListForTask(long taskId) {
         Bundle args = new Bundle();
+        args.putString(TagListFragment.KEY_MODE, TagListFragment.MODE_TASK);
         args.putLong(TagListFragment.KEY_TASK_ID, taskId);
 
         TagListFragment fragment = new TagListFragment();

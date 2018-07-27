@@ -19,6 +19,7 @@ public class TagListViewModel extends AndroidViewModel {
     private LiveData<List<Tag>> mTagsForTask;
     private DataRepository mRepository;
     private long mTaskId;
+    private boolean mTaskMode = false;
     private List<Tag> mCheckedTags = new ArrayList<>();
 
     public TagListViewModel(Application app) {
@@ -28,6 +29,7 @@ public class TagListViewModel extends AndroidViewModel {
     }
 
     public void initTaskMode(long taskId) {
+        mTaskMode = true;
         mTaskId = taskId;
         mTagsForTask = mRepository.loadTagsForTask(mTaskId);
     }
@@ -48,8 +50,16 @@ public class TagListViewModel extends AndroidViewModel {
         mCheckedTags = tags;
     }
 
+    public boolean isTaskMode() {
+        return mTaskMode;
+    }
+
     public void addTag(String tagName) {
         mRepository.addTag(new Tag(tagName));
+    }
+
+    public void deleteTag(Tag tag) {
+        mRepository.deleteTag(tag);
     }
 
     public void addTaskTag(Tag tag) {

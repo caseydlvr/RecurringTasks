@@ -65,5 +65,15 @@
         app:layout_constraintStart_toStartOf="@+id/contentRightMargin"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <ImageView
+        android:id="@+id/deleteTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+        app:layout_constraintStart_toStartOf="@+id/contentRightMargin"
+        app:layout_constraintTop_toTopOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
