@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/navAllTasks"
+            android:icon="@drawable/ic_clock_history"
+            android:title="@string/allTasks"/>
+
+        <item android:title="@string/tagsLabel">
+            <menu>
+                <group
+                    android:id="@+id/tagsGroup"
+                    android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/navEditTags"
+                        android:icon="@drawable/ic_edit"
+                        android:title="@string/editTags"/>
+                </group>
+            </menu>
+        </item>
+
+        <group
+            android:id="@+id/bottomGroup"
+            android:checkableBehavior="single">
+            <item
+                android:id="@+id/navSettings"
+                android:icon="@drawable/ic_action_settings"
+                android:title="@string/settings"/>
+        </group>
+
+    </group>
+</menu>

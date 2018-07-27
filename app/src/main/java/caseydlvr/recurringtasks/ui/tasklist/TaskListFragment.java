@@ -1,8 +1,11 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -21,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.Collections;
 
@@ -41,6 +46,8 @@ public class TaskListFragment extends Fragment {
     @BindView(R.id.emptyView) TextView mEmptyView;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.progressBar) ProgressBar mProgressBar;
+    @BindView(R.id.drawerLayout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.navView) NavigationView mNavigationView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,10 @@ public class TaskListFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
 
         mTaskAdapter = new TaskAdapter();
         mRecyclerView.setAdapter(mTaskAdapter);
@@ -67,6 +78,26 @@ public class TaskListFragment extends Fragment {
 
         mRecyclerView.addItemDecoration(
                 new DividerItemDecoration(mRecyclerView.getContext(), layoutManager.getOrientation()));
+
+        mNavigationView.setNavigationItemSelectedListener(menuItem -> {
+            menuItem.setChecked(true);
+            mDrawerLayout.closeDrawers();
+
+            switch (menuItem.getItemId()) {
+                case R.id.navAllTasks:
+                    ((TaskActivity) getActivity()).showTaskListFragment();
+                    return true;
+                case R.id.navEditTags:
+                    ((TaskActivity) getActivity()).showTagListFragment();
+                    return true;
+                case R.id.navSettings:
+                    Intent intent = new Intent(getContext(), SettingsActivity.class);
+                    startActivity(intent);
+                    return true;
+                default:
+                    return false;
+            }
+        });
 
         return rootView;
     }
@@ -88,15 +119,19 @@ public class TaskListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
 
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(getContext(), SettingsActivity.class);
-            startActivity(intent);
-            return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @OnClick(R.id.fab)

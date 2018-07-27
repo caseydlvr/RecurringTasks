@@ -61,4 +61,6 @@
     <string name="tagNameHint">Tag name</string>
     <string name="tagNameTooLongErrorPrefix">Name is too long</string>
     <string name="tagNameEmptyErrorPrefix">Name cannot be empty</string>
+    <string name="editTags">Edit tags</string>
+    <string name="allTasks">All tasks</string>
 </resources>

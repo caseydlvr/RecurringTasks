@@ -99,6 +99,15 @@ public class TaskActivity extends AppCompatActivity {
         showFragment(fragment);
     }
 
+    public void showTagListFragment() {
+        Bundle args = new Bundle();
+
+        TagListFragment fragment = new TagListFragment();
+        fragment.setArguments(args);
+
+        showFragment(fragment);
+    }
+
     public void showTagListForTask(long taskId) {
         Bundle args = new Bundle();
         args.putLong(TagListFragment.KEY_TASK_ID, taskId);
