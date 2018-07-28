@@ -1,7 +1,6 @@
 package caseydlvr.recurringtasks.viewmodel;
 
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.annotation.NonNull;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
-import caseydlvr.recurringtasks.TaskActions;
+import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 
 /**
@@ -17,8 +16,10 @@ import caseydlvr.recurringtasks.model.Task;
  */
 public class TaskListViewModel extends TaskViewModel {
 
-    private final LiveData<List<Task>> mObservableTasks;
+    private LiveData<List<Task>> mObservableTasks;
+    private LiveData<List<Tag>> mObservableTags;
     private DataRepository mRepository;
+    private int mFilterTagId;
 
     /**
      * Constructor. This starts the async loading of Tasks by the repository.
@@ -28,7 +29,19 @@ public class TaskListViewModel extends TaskViewModel {
     public TaskListViewModel(@NonNull Application app) {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
-        mObservableTasks = mRepository.loadOutstandingTasks();
+        mObservableTags = mRepository.loadAllTags();
+    }
+
+    public void init() {
+        if (mFilterTagId > 0) {
+            mObservableTasks = mRepository.loadTasksForTag(mFilterTagId);
+        } else {
+            mObservableTasks = mRepository.loadOutstandingTasks();
+        }
+    }
+
+    public void setFilterTagId(int tagId) {
+        mFilterTagId = tagId;
     }
 
     /**
@@ -38,5 +51,9 @@ public class TaskListViewModel extends TaskViewModel {
      */
     public LiveData<List<Task>> getOutstandingTasks() {
         return mObservableTasks;
+    }
+
+    public LiveData<List<Tag>> getAllTags() {
+        return mObservableTags;
     }
 }

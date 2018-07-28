@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.ui.taglist.TagListFragment;
 import caseydlvr.recurringtasks.ui.taskdetail.TaskDetailFragment;
 import caseydlvr.recurringtasks.ui.tasklist.TaskListFragment;
@@ -87,6 +88,17 @@ public class TaskActivity extends AppCompatActivity {
 
     public void showTaskListFragment() {
         showFragment(new TaskListFragment());
+    }
+
+    public void showTaskListFragmentWithTagFilter(Tag tag) {
+        Bundle args = new Bundle();
+        args.putInt(TaskListFragment.KEY_TAG_ID, tag.getId());
+        args.putString(TaskListFragment.KEY_TAG_NAME, tag.getName());
+
+        TaskListFragment fragment = new TaskListFragment();
+        fragment.setArguments(args);
+
+        showFragment(fragment);
     }
 
     public void showTaskDetailFragment(long taskId) {

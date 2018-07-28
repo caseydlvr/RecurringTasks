@@ -134,6 +134,10 @@ public class DataRepository {
         return mDb.taskTagDao().getTagsForTask(taskId);
     }
 
+    public LiveData<List<Task>> loadTasksForTag(int tagFilterId) {
+        return mDb.taskTagDao().getTasksForTag(tagFilterId);
+    }
+
     /**
      * AsyncTask for persisting a Task to the local Room DB. Helper function for persist(Task).
      * Either updates the existing DB record if the task already exists, or inserts a new record.
