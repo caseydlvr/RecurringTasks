@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
+
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -160,10 +162,9 @@ public class TaskListFragment extends Fragment {
     }
 
     private void initNavDrawer() {
-
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
             menuItem.setChecked(true);
-            mDrawerLayout.closeDrawers();
+            mDrawerLayout.closeDrawer(Gravity.START);
 
             switch (menuItem.getItemId()) {
                 case R.id.navAllTasks:
