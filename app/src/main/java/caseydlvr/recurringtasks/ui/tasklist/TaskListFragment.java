@@ -1,6 +1,7 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +47,8 @@ public class TaskListFragment extends Fragment {
     public static final String EXTRA_TAG_NAME = "TaskListFragment_Tag_Name";
     public static final String KEY_TAG_ID = "TaskListFragment_Tag_id";
     public static final String KEY_TAG_NAME = "TaskListFragment_Tag_Name";
+
+    private static final int MENU_TAG_ORDER = 2;
 
     private TaskAdapter mTaskAdapter;
     private boolean mFilterMode = false;
@@ -155,6 +160,7 @@ public class TaskListFragment extends Fragment {
     }
 
     private void initNavDrawer() {
+
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
             menuItem.setChecked(true);
             mDrawerLayout.closeDrawers();
@@ -179,13 +185,12 @@ public class TaskListFragment extends Fragment {
         });
     }
 
-
     /**
      * Start observing ViewModel LiveData with appropriate onChange handling
      *
      * @param viewModel ViewModel to provide data updates for the UI
      */
-    private void subscribeUi(TaskListViewModel viewModel) {
+    private void subscribeUi(@NonNull TaskListViewModel viewModel) {
         viewModel.getOutstandingTasks().observe(this, tasks -> {
             if (tasks == null || tasks.size() == 0) {
                 mRecyclerView.setVisibility(View.GONE);
@@ -198,18 +203,25 @@ public class TaskListFragment extends Fragment {
             mTaskAdapter.setTasks(tasks);
         });
 
-        viewModel.getAllTags().observe(this, tags -> {
-            if (tags == null) return;
+        viewModel.getAllTags().observe(this, this::populateNavViewTagSubMenu);
+    }
 
-            for (Tag tag : tags) {
-                Intent intent = new Intent()
-                        .putExtra(EXTRA_TAG_ID, tag.getId())
-                        .putExtra(EXTRA_TAG_NAME, tag.getName());
+    private void populateNavViewTagSubMenu(List<Tag> tags) {
+        SubMenu tagMenu = mNavigationView.getMenu().findItem(R.id.tagsMenu).getSubMenu();
+        tagMenu.clear();
+        tagMenu.add(R.id.tagsGroup, R.id.navEditTags, MENU_TAG_ORDER - 1, R.string.editTags)
+                .setIcon(R.drawable.ic_edit);
 
-                mNavigationView.getMenu().add(tag.getName())
-                        .setIcon(R.drawable.ic_label)
-                        .setIntent(intent);
-            }
-        });
+        if (tags == null) return;
+
+        for (Tag tag : tags) {
+            Intent intent = new Intent()
+                    .putExtra(EXTRA_TAG_ID, tag.getId())
+                    .putExtra(EXTRA_TAG_NAME, tag.getName());
+
+            tagMenu.add(R.id.tagsGroup, Menu.NONE, MENU_TAG_ORDER, tag.getName())
+                    .setIcon(R.drawable.ic_label)
+                    .setIntent(intent);
+        }
     }
 }

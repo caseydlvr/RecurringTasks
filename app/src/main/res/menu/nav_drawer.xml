@@ -6,30 +6,34 @@
         <item
             android:id="@+id/navAllTasks"
             android:icon="@drawable/ic_clock_history"
-            android:title="@string/allTasks"/>
-
-        <item android:title="@string/tagsLabel">
-            <menu android:id="@+id/navDrawerTagsMenu">
-                <group
-                    android:id="@+id/tagsGroup"
-                    android:checkableBehavior="single">
-                    <item
-                        android:id="@+id/navEditTags"
-                        android:icon="@drawable/ic_edit"
-                        android:title="@string/editTags"
-                        android:orderInCategory="1"/>
-                </group>
-            </menu>
-        </item>
-
-        <group
-            android:id="@+id/bottomGroup"
-            android:checkableBehavior="single">
-            <item
-                android:id="@+id/navSettings"
-                android:icon="@drawable/ic_action_settings"
-                android:title="@string/settings"/>
-        </group>
-
+            android:title="@string/allTasks"
+            android:orderInCategory="0"/>
     </group>
+
+    <item
+        android:id="@+id/tagsMenu"
+        android:title="@string/tagsLabel">
+        <menu>
+            <group
+                android:id="@+id/tagsGroup"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/navEditTags"
+                    android:icon="@drawable/ic_edit"
+                    android:title="@string/editTags"
+                    android:orderInCategory="1"/>
+            </group>
+        </menu>
+    </item>
+
+    <group
+        android:id="@+id/bottomGroup"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/navSettings"
+            android:icon="@drawable/ic_action_settings"
+            android:title="@string/settings"
+            android:orderInCategory="3"/>
+    </group>
+
 </menu>
