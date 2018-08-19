@@ -9,7 +9,6 @@
 /.idea/caches
 /build
 /captures
-/gradle.properties
 app/libs/
 libs/
 output.json

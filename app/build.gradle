@@ -6,8 +6,8 @@ android {
         applicationId "caseydlvr.recurringtasks"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11
-        versionName "0.4.0"
+        versionCode 14
+        versionName "0.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -17,9 +17,14 @@ android {
     }
     buildTypes {
         release {
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // shrink & minify disabled due to crashing on launch in 0.4.0 release APK.
+            // Major changes in 0.4.0:
+            //     compile/targetSdk > 28, migration to androidx, new tagging features,
+            //     refactor to single activity for list, detail and tagging
+            shrinkResources false
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
