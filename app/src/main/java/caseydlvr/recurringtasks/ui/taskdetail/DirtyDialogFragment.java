@@ -1,9 +1,9 @@
 package caseydlvr.recurringtasks.ui.taskdetail;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import caseydlvr.recurringtasks.R;
 
