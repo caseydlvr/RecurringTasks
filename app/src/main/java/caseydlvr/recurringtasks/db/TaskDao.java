@@ -28,7 +28,7 @@ public interface TaskDao {
     Task loadByIdTask(long id);
 
     @Query("SELECT * FROM tasks WHERE end_date IS NULL AND notification_option != 'never'")
-    LiveData<List<Task>> loadOutstandingWithNotifications();
+    List<Task> loadOutstandingWithNotifications();
 
     @Insert(onConflict = REPLACE)
     long insert(Task task);

@@ -1,11 +1,12 @@
 package caseydlvr.recurringtasks;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 import androidx.annotation.WorkerThread;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Tag;
@@ -66,13 +67,18 @@ public class DataRepository {
     }
 
     /**
-     * Loads all Tasks that haven't been complete that have notifications enabled. List of Tasks is
-     * returned wrapped in LiveData.
+     * Loads all Tasks that haven't been complete that have notifications enabled.
      *
-     * @return LiveData holding a List of Tasks
+     * @return List of Tasks
      */
-    public LiveData<List<Task>> loadOutstandingTasksWithNotifications() {
-        return mDb.taskDao().loadOutstandingWithNotifications();
+    public List<Task> loadOutstandingTasksWithNotifications() {
+        try {
+            return new LoadOutstandingTasksWithNotificationsTask(this).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
     }
 
     /**
@@ -303,6 +309,19 @@ public class DataRepository {
             mDr.getDb().taskTagDao().delete(taskTags[0]);
 
             return null;
+        }
+    }
+
+    private static class LoadOutstandingTasksWithNotificationsTask extends AsyncTask<Void, Void, List<Task>> {
+        DataRepository mDr;
+
+        LoadOutstandingTasksWithNotificationsTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected List<Task> doInBackground(Void... voids) {
+            return mDr.getDb().taskDao().loadOutstandingWithNotifications();
         }
     }
 }

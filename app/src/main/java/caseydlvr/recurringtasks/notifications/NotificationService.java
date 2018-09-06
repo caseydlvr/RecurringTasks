@@ -91,24 +91,13 @@ public class NotificationService extends JobIntentService {
      * notifications.
      */
     private void handleSendNotifications() {
-        // asynchronously get all outstanding tasks with notifications enabled
-        LiveData<List<Task>> observableTasks = ((RecurringTaskApp) getApplication())
+        List<Task> tasks = ((RecurringTaskApp) getApplication())
                 .getRepository()
                 .loadOutstandingTasksWithNotifications();
 
-        // when async load completes, send notifications
-        Observer<List<Task>> observer = new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable List<Task> tasks) {
-                if (tasks != null && !tasks.isEmpty()) {
-                    createNotificationTasks(tasks);
-                    sendNotifications();
-                    observableTasks.removeObserver(this);
-                }
-            }
-        };
 
-        observableTasks.observeForever(observer);
+        createNotificationTasks(tasks);
+        sendNotifications();
     }
 
     /**
