@@ -38,28 +38,28 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha1'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha3'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     // ButterKnife (need 9.0.0-SNAPSHOT because earlier versions aren't compatible with androidx)
     implementation 'com.jakewharton:butterknife:9.0.0-SNAPSHOT'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-SNAPSHOT'
 //    implementation 'com.jakewharton:butterknife:8.8.1'
 //    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     // Room
-    implementation 'androidx.room:room-runtime:2.0.0-beta01'
-    annotationProcessor 'androidx.room:room-compiler:2.0.0-beta01'
+    implementation 'androidx.room:room-runtime:2.0.0-rc01'
+    annotationProcessor 'androidx.room:room-compiler:2.0.0-rc01'
     // Test helpers for Room
-    testImplementation 'androidx.room:room-testing:2.0.0-beta01'
-    androidTestImplementation 'androidx.room:room-testing:2.0.0-beta01'
+    testImplementation 'androidx.room:room-testing:2.0.0-rc01'
+    androidTestImplementation 'androidx.room:room-testing:2.0.0-rc01'
     // ViewModel and LiveData
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
-    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0-rc01'
     // Test helpers for LiveData
-    testImplementation 'androidx.arch.core:core-testing:2.0.0-beta01'
+    testImplementation 'androidx.arch.core:core-testing:2.0.0-rc01'
     // ThreeTen Android Backport
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 }
