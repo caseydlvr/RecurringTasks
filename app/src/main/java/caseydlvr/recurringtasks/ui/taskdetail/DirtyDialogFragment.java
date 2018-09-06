@@ -20,8 +20,10 @@ public class DirtyDialogFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setMessage(message)
-                .setPositiveButton(R.string.discard, (dialog, which) -> getActivity().finish())
-                .setNegativeButton(R.string.keepEditing, null)
+                .setPositiveButton(R.string.discard,
+                        ((dialog, which) -> ((TaskDetailFragment) getTargetFragment()).dirtyAlertHandler(true)))
+                .setNegativeButton(R.string.keepEditing,
+                        ((dialog, which) -> ((TaskDetailFragment) getTargetFragment()).dirtyAlertHandler(false)))
                 .create();
     }
 }

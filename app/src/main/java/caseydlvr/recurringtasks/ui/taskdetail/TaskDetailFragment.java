@@ -440,7 +440,14 @@ public class TaskDetailFragment extends Fragment
         Bundle args = new Bundle();
         args.putString(DirtyDialogFragment.KEY_MESSAGE, message);
         dirtyFragment.setArguments(args);
+        dirtyFragment.setTargetFragment(this, 0);
         dirtyFragment.show(getFragmentManager(), "dirty_dialog");
+    }
+
+    protected void dirtyAlertHandler(boolean discard) {
+        if (discard) {
+            finish();
+        }
     }
 
     /**
