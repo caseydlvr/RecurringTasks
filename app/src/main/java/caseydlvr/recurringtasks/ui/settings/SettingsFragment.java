@@ -1,22 +1,33 @@
 package caseydlvr.recurringtasks.ui.settings;
 
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.PreferenceFragment;
-import androidx.annotation.Nullable;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.notifications.NotificationUtils;
 
 import static caseydlvr.recurringtasks.ui.settings.SettingsActivity.*;
 
-public class SettingsFragment extends PreferenceFragment {
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+public class SettingsFragment extends PreferenceFragmentCompat {
 
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences);
         setMaxNotificationsDefaultValue();
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        if (preference instanceof TimePreference) {
+            DialogFragment dialogFragment = TimePreferenceDialogFragment.newInstance(preference.getKey());
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(getFragmentManager(), preference.getKey() + "_dialog");
+        } else {
+            super.onDisplayPreferenceDialog(preference);
+        }
     }
 
     /**

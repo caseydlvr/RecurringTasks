@@ -2,11 +2,11 @@ package caseydlvr.recurringtasks.ui.settings;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
-import android.widget.TimePicker;
+
+import androidx.preference.DialogPreference;
+import caseydlvr.recurringtasks.R;
 
 /**
  * Dialog for selecting a time. Uses a TimePicker which generally lets the user pick a time using
@@ -18,9 +18,7 @@ public class TimePreference extends DialogPreference {
 
     public static final String DEFAULT_TIME = "9:00";
 
-    private TimePicker mTimePicker;
-    private int mHour;
-    private int mMinute;
+    private String mTime;
 
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -28,30 +26,8 @@ public class TimePreference extends DialogPreference {
     }
 
     @Override
-    protected View onCreateDialogView() {
-        mTimePicker = new TimePicker(getContext());
-
-        return mTimePicker;
-    }
-
-    @Override
-    protected void onBindDialogView(View view) {
-        super.onBindDialogView(view);
-
-        mTimePicker.setCurrentHour(mHour);
-        mTimePicker.setCurrentMinute(mMinute);
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
-
-        if (positiveResult) {
-            mHour = mTimePicker.getCurrentHour();
-            mMinute = mTimePicker.getCurrentMinute();
-
-            if (callChangeListener(getTimeString())) persistString(getTimeString());
-        }
+    public int getDialogLayoutResource() {
+        return R.layout.time_preference;
     }
 
     @Override
@@ -60,33 +36,37 @@ public class TimePreference extends DialogPreference {
     }
 
     @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        if (restorePersistedValue) {
-            setTimeFromString(getPersistedString((String) defaultValue));
-        } else {
-            setTimeFromString((String) defaultValue);
-        }
+    protected void onSetInitialValue(Object defaultValue) {
+        if (defaultValue == null) defaultValue = DEFAULT_TIME;
+
+        setTime(getPersistedString((String) defaultValue));
     }
 
     /**
-     * Sets the hour and minute member fields by parsing a time String from user preferences.
+     * @return String representing the currently selected time
+     */
+    String getTime() {
+        return mTime;
+    }
+
+    /**
+     * Persists the given time to user preferences
      *
      * @param s String representing a time, from user preferences
      */
-    private void setTimeFromString(String s) {
-        String[] time = s.split(":");
-        mHour = Integer.valueOf(time[0]);
-        mMinute = Integer.valueOf(time[1]);
+     void setTime(String s) {
+        mTime = s;
+
+        persistString(s);
     }
 
     /**
-     * Formats the selected hour and minute into a String representing a time. For example: "9:00"
-     * This is the format that is stored to user preferences.
-     *
-     * @return String representing a time
+     * @param hour   int representing an hour value
+     * @param minute int representing a minute value
+     * @return       String representation of the time passed in the parameters
      */
-    private String getTimeString() {
-        return mHour + ":" + mMinute;
+    static String buildTimeFromHourMinute(int hour, int minute) {
+        return hour + ":" + minute;
     }
 
     /**
