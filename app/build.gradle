@@ -6,8 +6,8 @@ android {
         applicationId "caseydlvr.recurringtasks"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 15
-        versionName "0.4.2"
+        versionCode 16
+        versionName "0.4.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
