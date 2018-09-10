@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.ButterKnife;
 import caseydlvr.recurringtasks.R;
@@ -35,6 +37,12 @@ public class TaskActivity extends AppCompatActivity {
     public static final String MODE_TASK_DETAIL = "task_detail";
     public static final String MODE_TAG_LIST = "tag_list";
 
+    private FragmentManager.OnBackStackChangedListener mBackStackChangedListener = () -> {
+        if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
+            finish();
+        }
+    };
+
     private List<BackPressedListener> mBackPressedListeners = new ArrayList<>();
 
     @Override
@@ -46,6 +54,18 @@ public class TaskActivity extends AppCompatActivity {
         if (savedInstanceState != null) return;
 
         parseIntent();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSupportFragmentManager().addOnBackStackChangedListener(mBackStackChangedListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getSupportFragmentManager().removeOnBackStackChangedListener(mBackStackChangedListener);
     }
 
     @Override
