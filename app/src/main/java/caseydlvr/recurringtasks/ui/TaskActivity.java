@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -28,7 +27,7 @@ public class TaskActivity extends AppCompatActivity {
     private static String TAG = TaskActivity.class.getSimpleName();
 
     public interface BackPressedListener {
-        void onBackPressed();
+        boolean onBackPressed();
     }
 
     public static final String EXTRA_TASK_ID = "TaskActivity_Task_Id";
@@ -36,12 +35,10 @@ public class TaskActivity extends AppCompatActivity {
     public static final String MODE_TASK_LIST = "task_list";
     public static final String MODE_TASK_DETAIL = "task_detail";
     public static final String MODE_TAG_LIST = "tag_list";
-
-    private FragmentManager.OnBackStackChangedListener mBackStackChangedListener = () -> {
-        if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
-            finish();
-        }
-    };
+    private static final String BACK_STACK_NAME_TASK_LIST_ALL = "task_list_all";
+    private static final String TAG_TASK_LIST_ALL = "task_list_all";
+    private static final String TAG_TASK_LIST_FILTER = "task_list_filter";
+    private static final String TAG_TAG_LIST = "tag_list";
 
     private List<BackPressedListener> mBackPressedListeners = new ArrayList<>();
 
@@ -57,25 +54,15 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        getSupportFragmentManager().addOnBackStackChangedListener(mBackStackChangedListener);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        getSupportFragmentManager().removeOnBackStackChangedListener(mBackStackChangedListener);
-    }
-
-    @Override
     public void onBackPressed() {
-        if (mBackPressedListeners.isEmpty()) {
-            super.onBackPressed();
+        for (BackPressedListener listener : mBackPressedListeners) {
+            if (listener.onBackPressed()) return;
+        }
+
+        if (getSupportFragmentManager().getBackStackEntryCount() < 2) {
+            finish();
         } else {
-            for (BackPressedListener listener : mBackPressedListeners) {
-                listener.onBackPressed();
-            }
+            super.onBackPressed();
         }
     }
 
@@ -107,7 +94,16 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     public void showTaskListFragment() {
-        showFragment(new TaskListFragment());
+        getSupportFragmentManager().popBackStackImmediate(BACK_STACK_NAME_TASK_LIST_ALL,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_TASK_LIST_ALL);
+
+        if (fragment == null) {
+            fragment = new TaskListFragment();
+        }
+
+        showFragment(fragment, TAG_TASK_LIST_ALL, BACK_STACK_NAME_TASK_LIST_ALL);
     }
 
     public void showTaskListFragmentWithTagFilter(Tag tag) {
@@ -118,7 +114,7 @@ public class TaskActivity extends AppCompatActivity {
         TaskListFragment fragment = new TaskListFragment();
         fragment.setArguments(args);
 
-        showFragment(fragment);
+        showFragment(fragment, TAG_TASK_LIST_FILTER, null);
     }
 
     public void showTaskDetailFragment(long taskId) {
@@ -138,7 +134,7 @@ public class TaskActivity extends AppCompatActivity {
         TagListFragment fragment = new TagListFragment();
         fragment.setArguments(args);
 
-        showFragment(fragment);
+        showFragment(fragment, TAG_TAG_LIST, null);
     }
 
     public void showTagListForTask(long taskId) {
@@ -152,11 +148,15 @@ public class TaskActivity extends AppCompatActivity {
         showFragment(fragment);
     }
 
-    private void showFragment(Fragment fragment) {
+    private void showFragment(Fragment fragment, String fragmentTag, String backStackName) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, fragment);
-        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragmentContainer, fragment, fragmentTag);
+        transaction.addToBackStack(backStackName);
         transaction.commit();
+    }
+
+    private void showFragment(Fragment fragment) {
+        showFragment(fragment, null, null);
     }
 
     private long getTaskIdExtra() {

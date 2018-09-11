@@ -117,7 +117,7 @@ public class TaskDetailFragment extends Fragment
             mViewModel.getTask().observe(this, task -> {
                 if (task == null) {
                     showResultMessage(R.string.taskNotFound);
-                    finish();
+                    goBack();
                 } else {
                     setCleanValues(task);
 
@@ -204,7 +204,7 @@ public class TaskDetailFragment extends Fragment
                     if (mCreateMode) showResultMessage(R.string.taskCreateSuccess);
                     else             showResultMessage(R.string.taskSaveSuccess);
 
-                    finish();
+                    goBack();
                 } else if (!mIsTaskNameValidationON) {
                     mTaskNameLayout.setError(validateTaskName());
                     mIsTaskNameValidationON = true;
@@ -215,7 +215,7 @@ public class TaskDetailFragment extends Fragment
                 hideKeyboard();
                 completeTask();
                 showResultMessage(R.string.taskCompleteSuccess);
-                finish();
+                goBack();
                 return true;
 
             case R.id.action_delete:
@@ -227,7 +227,7 @@ public class TaskDetailFragment extends Fragment
                     showDirtyAlert();
                     return true;
                 } else {
-                    finish();
+                    goBack();
                     return true;
                 }
 
@@ -239,11 +239,12 @@ public class TaskDetailFragment extends Fragment
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean onBackPressed() {
         if (isDirty()) {
             showDirtyAlert();
+            return true;
         } else {
-            finish();
+            return false;
         }
     }
 
@@ -287,8 +288,12 @@ public class TaskDetailFragment extends Fragment
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
-    private void finish() {
-        getFragmentManager().popBackStack();
+    private void goBack() {
+        if (getFragmentManager().getBackStackEntryCount() > 1) {
+            getFragmentManager().popBackStack();
+        } else {
+            getActivity().finish();
+        }
     }
 
     private Object getSystemService(String string) {
@@ -305,7 +310,7 @@ public class TaskDetailFragment extends Fragment
     protected void deleteHandler() {
         deleteTask();
         showResultMessage(R.string.taskDeleteSuccess);
-        finish();
+        goBack();
     }
 
     /**
@@ -446,7 +451,7 @@ public class TaskDetailFragment extends Fragment
 
     protected void dirtyAlertHandler(boolean discard) {
         if (discard) {
-            finish();
+            goBack();
         }
     }
 

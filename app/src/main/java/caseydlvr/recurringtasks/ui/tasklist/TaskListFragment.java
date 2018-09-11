@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,7 +43,8 @@ import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
-public class TaskListFragment extends Fragment {
+public class TaskListFragment extends Fragment implements TaskActivity.BackPressedListener {
+    private static final String TAG = TaskListFragment.class.getSimpleName();
 
     public static final String EXTRA_TAG_ID = "TaskListFragment_Tag_Id";
     public static final String EXTRA_TAG_NAME = "TaskListFragment_Tag_Name";
@@ -115,6 +117,29 @@ public class TaskListFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public boolean onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((TaskActivity) getActivity()).registerBackPressedListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((TaskActivity) getActivity()).unregisterBackPressedListener(this);
+    }
+
 
     @OnClick(R.id.fab)
     public void fabClick() {
