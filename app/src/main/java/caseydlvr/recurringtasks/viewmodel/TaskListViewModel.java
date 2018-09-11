@@ -16,7 +16,8 @@ import caseydlvr.recurringtasks.model.Task;
  */
 public class TaskListViewModel extends TaskViewModel {
 
-    private LiveData<List<Task>> mObservableTasks;
+    private LiveData<List<Task>> mAllTasks;
+    private LiveData<List<Task>> mFilteredTasks;
     private LiveData<List<Tag>> mObservableTags;
     private DataRepository mRepository;
     private int mFilterTagId;
@@ -30,18 +31,14 @@ public class TaskListViewModel extends TaskViewModel {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
         mObservableTags = mRepository.loadAllTags();
-    }
-
-    public void init() {
-        if (mFilterTagId > 0) {
-            mObservableTasks = mRepository.loadTasksForTag(mFilterTagId);
-        } else {
-            mObservableTasks = mRepository.loadOutstandingTasks();
-        }
+        mAllTasks = mRepository.loadOutstandingTasks();
     }
 
     public void setFilterTagId(int tagId) {
-        mFilterTagId = tagId;
+        if (tagId != mFilterTagId) {
+            mFilterTagId = tagId;
+            mFilteredTasks = mRepository.loadTasksForTag(mFilterTagId);
+        }
     }
 
     /**
@@ -49,8 +46,12 @@ public class TaskListViewModel extends TaskViewModel {
      *
      * @return List of outstanding tasks wrapped in LiveData
      */
-    public LiveData<List<Task>> getOutstandingTasks() {
-        return mObservableTasks;
+    public LiveData<List<Task>> getAllTasks() {
+        return mAllTasks;
+    }
+
+    public LiveData<List<Task>> getFilteredTasks() {
+        return mFilteredTasks;
     }
 
     public LiveData<List<Tag>> getAllTags() {

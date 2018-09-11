@@ -52,6 +52,7 @@ public class TaskListFragment extends Fragment {
     private static final int MENU_TAG_ORDER = 2;
 
     private TaskAdapter mTaskAdapter;
+    private TaskListViewModel mViewModel;
     private boolean mFilterMode = false;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -83,17 +84,14 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final TaskListViewModel viewModel =
-                ViewModelProviders.of(this).get(TaskListViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(TaskListViewModel.class);
 
         if (mFilterMode) {
-            viewModel.setFilterTagId(getArguments().getInt(KEY_TAG_ID));
+            mViewModel.setFilterTagId(getArguments().getInt(KEY_TAG_ID));
         }
 
-        viewModel.init();
-        mTaskAdapter.setViewModel(viewModel);
-
-        subscribeUi(viewModel);
+        mTaskAdapter.setViewModel(mViewModel);
+        subscribeUi();
     }
 
     @Override
@@ -167,7 +165,10 @@ public class TaskListFragment extends Fragment {
 
             switch (menuItem.getItemId()) {
                 case R.id.navAllTasks:
-                    ((TaskActivity) getActivity()).showTaskListFragment();
+                    // don't need to show new fragment if All Tasks is already showing
+                    if (mFilterMode) {
+                        ((TaskActivity) getActivity()).showTaskListFragment();
+                    }
                     return true;
                 case R.id.navEditTags:
                     ((TaskActivity) getActivity()).showTagListFragment();
@@ -177,9 +178,18 @@ public class TaskListFragment extends Fragment {
                     startActivity(intent);
                     return true;
                 default: // assumed to be a tag filter
-                    Tag tag = new Tag(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
-                    tag.setId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
-                    ((TaskActivity) getActivity()).showTaskListFragmentWithTagFilter(tag);
+                    // re-use this fragment if it is already in filter mode
+                    if (mFilterMode) {
+                        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                                .setTitle(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
+                        mViewModel.getFilteredTasks().removeObservers(this);
+                        mViewModel.setFilterTagId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
+                        mViewModel.getFilteredTasks().observe(this, this::handleTasksChanged);
+                    } else {
+                        Tag tag = new Tag(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
+                        tag.setId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
+                        ((TaskActivity) getActivity()).showTaskListFragmentWithTagFilter(tag);
+                    }
                     return true;
             }
         });
@@ -187,23 +197,27 @@ public class TaskListFragment extends Fragment {
 
     /**
      * Start observing ViewModel LiveData with appropriate onChange handling
-     *
-     * @param viewModel ViewModel to provide data updates for the UI
      */
-    private void subscribeUi(@NonNull TaskListViewModel viewModel) {
-        viewModel.getOutstandingTasks().observe(this, tasks -> {
-            if (tasks == null || tasks.size() == 0) {
-                mRecyclerView.setVisibility(View.GONE);
-                mEmptyView.setVisibility(View.VISIBLE);
-            } else {
-                Collections.sort(tasks, new Task.TaskComparator());
-                mRecyclerView.setVisibility(View.VISIBLE);
-                mEmptyView.setVisibility(View.GONE);
-            }
-            mTaskAdapter.setTasks(tasks);
-        });
+    private void subscribeUi() {
+        if (mFilterMode) {
+            mViewModel.getFilteredTasks().observe(this, this::handleTasksChanged);
+        } else {
+            mViewModel.getAllTasks().observe(this, this::handleTasksChanged);
+        }
 
-        viewModel.getAllTags().observe(this, this::populateNavViewTagSubMenu);
+        mViewModel.getAllTags().observe(this, this::populateNavViewTagSubMenu);
+    }
+
+    private void handleTasksChanged(List<Task> tasks) {
+        if (tasks == null || tasks.size() == 0) {
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            Collections.sort(tasks, new Task.TaskComparator());
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
+        }
+        mTaskAdapter.setTasks(tasks);
     }
 
     private void populateNavViewTagSubMenu(List<Tag> tags) {
