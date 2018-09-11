@@ -26,7 +26,13 @@ import caseydlvr.recurringtasks.ui.tasklist.TaskListFragment;
 public class TaskActivity extends AppCompatActivity {
     private static String TAG = TaskActivity.class.getSimpleName();
 
+    /**
+     * Interface to allow Fragments to override the Activity's onBackPressed handling.
+     */
     public interface BackPressedListener {
+        /**
+         * @return true if back event was handled, false if back still needs to be handled
+         */
         boolean onBackPressed();
     }
 
@@ -55,6 +61,7 @@ public class TaskActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // if any listener indicates it has handled the back event, skip default back handling
         for (BackPressedListener listener : mBackPressedListeners) {
             if (listener.onBackPressed()) return;
         }
