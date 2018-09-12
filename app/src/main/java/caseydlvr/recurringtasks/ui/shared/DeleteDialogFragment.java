@@ -19,10 +19,14 @@ public class DeleteDialogFragment extends DialogFragment {
         void onDeleteDialogConfirmed();
     }
 
+    public static final String KEY_MESSAGE = "key_message";
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        String message = getArguments().getString(KEY_MESSAGE);
+
         return new AlertDialog.Builder(getActivity())
-                .setMessage(R.string.deleteTaskMessage)
+                .setMessage(message)
                 .setPositiveButton(R.string.delete,
                         ((dialog, which) -> ((DeleteDialogListener) getTargetFragment()).onDeleteDialogConfirmed()))
                 .setNegativeButton(R.string.dialogCancel, null)

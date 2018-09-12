@@ -346,9 +346,13 @@ public class TaskDetailFragment extends Fragment
      * Shows a delete confirmation dialog
      */
     private void showDeleteDialog() {
+        Bundle args = new Bundle();
+        args.putString(DeleteDialogFragment.KEY_MESSAGE, getString(R.string.deleteTaskMessage));
+
         DialogFragment deleteDialog = new DeleteDialogFragment();
+        deleteDialog.setArguments(args);
         deleteDialog.setTargetFragment(this, 0);
-        deleteDialog.show(getFragmentManager(), "delete_dialog");
+        deleteDialog.show(getFragmentManager(), "task_detail_delete_dialog");
     }
 
     /**
