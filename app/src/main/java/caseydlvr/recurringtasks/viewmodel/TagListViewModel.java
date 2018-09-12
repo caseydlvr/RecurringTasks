@@ -1,6 +1,7 @@
 package caseydlvr.recurringtasks.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class TagListViewModel extends AndroidViewModel {
     }
 
     public void addTag(String tagName) {
-        mRepository.addTag(new Tag(tagName));
+        mRepository.addTag(new Tag(tagName.trim()));
     }
 
     public void deleteTag(Tag tag) {
@@ -80,5 +81,19 @@ public class TagListViewModel extends AndroidViewModel {
 
     public void setTagPendingDelete(Tag tagPendingDelete) {
         mTagPendingDelete = tagPendingDelete;
+    }
+
+    public boolean tagNameExists(String name) {
+        if (mAllTags.getValue() == null) return false;
+
+        name = name.trim().toLowerCase();
+
+        for (Tag tag : mAllTags.getValue()) {
+            if (tag.getName().toLowerCase().equals(name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

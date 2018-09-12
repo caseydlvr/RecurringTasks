@@ -12,8 +12,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Tag;
+import caseydlvr.recurringtasks.viewmodel.TagListViewModel;
 
 public class CreateDialogFragment extends DialogFragment {
 
@@ -23,6 +25,13 @@ public class CreateDialogFragment extends DialogFragment {
 
     private TextInputLayout mTagNameLayout;
     private TextInputEditText mTagNameInput;
+    private TagListViewModel mViewModel;
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(getTargetFragment()).get(TagListViewModel.class);
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -84,6 +93,8 @@ public class CreateDialogFragment extends DialogFragment {
             errorText = getString(R.string.tagNameTooLongErrorPrefix);
         } else if (input.toString().trim().length() < 1) {
             errorText = getString(R.string.tagNameEmptyErrorPrefix);
+        } else if (mViewModel.tagNameExists(input.toString())) {
+            errorText = getString(R.string.tagNameExistsError);
         }
 
         return errorText;
