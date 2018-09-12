@@ -23,9 +23,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
+import caseydlvr.recurringtasks.model.Tag;
+import caseydlvr.recurringtasks.ui.shared.DeleteDialogFragment;
 import caseydlvr.recurringtasks.viewmodel.TagListViewModel;
 
-public class TagListFragment extends Fragment implements CreateDialogFragment.CreateTagClickListener {
+public class TagListFragment extends Fragment
+        implements CreateDialogFragment.CreateTagClickListener,
+        DeleteDialogFragment.DeleteDialogListener,
+        TagAdapter.TagDeleteClickedListener {
     private static final String TAG = TagListFragment.class.getSimpleName();
 
     public static final String KEY_TASK_ID = "key_task_id";
@@ -33,7 +38,7 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
     public static final String MODE_TASK = "mode_task";
     public static final String MODE_EDIT = "mode_edit";
 
-    private TagAdapter mTagAdapter = new TagAdapter();
+    private TagAdapter mTagAdapter = new TagAdapter(this);
     private TagListViewModel mViewModel;
     private boolean mTaskMode = true;
 
@@ -93,6 +98,16 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
         mViewModel.addTag(tagName);
     }
 
+    @Override
+    public void onDeleteDialogConfirmed() {
+        mViewModel.deleteTagPendingDelete();
+    }
+
+    @Override
+    public void onTagDeleteClicked(Tag tag) {
+        showDeleteDialog(tag);
+    }
+
     private void setModeFromArgs() {
         String mode = getArguments().getString(KEY_MODE, MODE_TASK);
 
@@ -144,6 +159,18 @@ public class TagListFragment extends Fragment implements CreateDialogFragment.Cr
                 }
             });
         }
+    }
+
+    private void showDeleteDialog(Tag tag) {
+        mViewModel.setTagPendingDelete(tag);
+
+        Bundle args = new Bundle();
+        args.putString(DeleteDialogFragment.KEY_MESSAGE, getString(R.string.deleteTagMessage));
+
+        DialogFragment deleteDialog = new DeleteDialogFragment();
+        deleteDialog.setArguments(args);
+        deleteDialog.setTargetFragment(this, 0);
+        deleteDialog.show(getFragmentManager(), "tag_list_delete_dialog");
     }
 
     @OnClick(R.id.addTagFab)

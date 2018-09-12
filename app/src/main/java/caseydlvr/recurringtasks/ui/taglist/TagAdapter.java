@@ -22,9 +22,18 @@ import caseydlvr.recurringtasks.viewmodel.TagListViewModel;
 public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
     private static final String TAG = TagAdapter.class.getSimpleName();
 
+    public interface TagDeleteClickedListener {
+        void onTagDeleteClicked(Tag tag);
+    }
+
     private List<Tag> mTags;
     private TagListViewModel mViewModel;
     private RecyclerView mRecyclerView;
+    private TagDeleteClickedListener mTagDeleteClickedListener;
+
+    TagAdapter(TagDeleteClickedListener listener) {
+        mTagDeleteClickedListener = listener;
+    }
 
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -125,7 +134,7 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
 
         @OnClick(R.id.deleteTag)
         void onTagDeleteClick() {
-            mViewModel.deleteTag(mTag);
+            mTagDeleteClickedListener.onTagDeleteClicked(mTag);
         }
 
         void setChecked(boolean checked) {

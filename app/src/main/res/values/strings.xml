@@ -63,4 +63,5 @@
     <string name="tagNameEmptyErrorPrefix">Name cannot be empty</string>
     <string name="editTags">Edit tags</string>
     <string name="allTasks">All tasks</string>
+    <string name="deleteTagMessage">Delete tag?</string>
 </resources>
