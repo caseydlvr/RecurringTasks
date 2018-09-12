@@ -1,4 +1,4 @@
-package caseydlvr.recurringtasks.ui.taskdetail;
+package caseydlvr.recurringtasks.ui.shared;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -12,12 +12,19 @@ import caseydlvr.recurringtasks.R;
  */
 public class DeleteDialogFragment extends DialogFragment {
 
+    /**
+     * Calling (target) Fragment must implement this interface to receive a callback when the user confirms deletion
+     */
+    public interface DeleteDialogListener {
+        void onDeleteDialogConfirmed();
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.deleteTaskMessage)
                 .setPositiveButton(R.string.delete,
-                        ((dialog, which) -> ((TaskDetailFragment) getTargetFragment()).deleteHandler()))
+                        ((dialog, which) -> ((DeleteDialogListener) getTargetFragment()).onDeleteDialogConfirmed()))
                 .setNegativeButton(R.string.dialogCancel, null)
                 .create();
     }

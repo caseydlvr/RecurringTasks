@@ -51,10 +51,13 @@ import caseydlvr.recurringtasks.model.NotificationOption;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.ui.TaskActivity;
+import caseydlvr.recurringtasks.ui.shared.DeleteDialogFragment;
 import caseydlvr.recurringtasks.viewmodel.TaskDetailViewModel;
 
 public class TaskDetailFragment extends Fragment
-        implements DatePickerDialog.OnDateSetListener, TaskActivity.BackPressedListener {
+        implements DatePickerDialog.OnDateSetListener,
+        TaskActivity.BackPressedListener,
+        DeleteDialogFragment.DeleteDialogListener {
     private static final String TAG = TaskDetailFragment.class.getSimpleName();
 
     public static final String KEY_TASK_ID = "TaskDetailFragment_Task_Id";
@@ -248,6 +251,13 @@ public class TaskDetailFragment extends Fragment
         }
     }
 
+    @Override
+    public void onDeleteDialogConfirmed() {
+        deleteTask();
+        showResultMessage(R.string.taskDeleteSuccess);
+        goBack();
+    }
+
     @OnClick(R.id.startDate)
     public void startDateClick() {
         DialogFragment dateFragment = new DatePickerDialogFragment();
@@ -302,15 +312,6 @@ public class TaskDetailFragment extends Fragment
 
     private View getCurrentFocus() {
         return getActivity().getCurrentFocus();
-    }
-
-    /**
-     * Handles the user performing a delete action
-     */
-    protected void deleteHandler() {
-        deleteTask();
-        showResultMessage(R.string.taskDeleteSuccess);
-        goBack();
     }
 
     /**
