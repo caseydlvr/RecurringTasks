@@ -223,6 +223,8 @@ public class DataRepository {
     @WorkerThread
     private static void completeTask(AppDatabase db, Task task) {
         db.runInTransaction(() -> {
+            List<TaskTag> taskTags = db.taskTagDao().getTaskTagsForTask(task.getId());
+
             db.taskDao().delete(task);
 
             if (task.isRepeating()) {
@@ -233,7 +235,15 @@ public class DataRepository {
                 newTask.setRepeating(task.isRepeating());
                 newTask.setNotificationOption(task.getNotificationOption());
 
-                db.taskDao().insert(newTask);
+                long newTaskId = db.taskDao().insert(newTask);
+
+                if (taskTags != null) {
+                    for (TaskTag taskTag : taskTags) {
+                        taskTag.setTaskId(newTaskId);
+                    }
+
+                    db.taskTagDao().insert(taskTags.toArray(new TaskTag[0]));
+                }
             }
         });
     }

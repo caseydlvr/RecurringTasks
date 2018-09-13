@@ -28,8 +28,11 @@ public interface TaskTagDao {
             "ORDER BY tags.name")
     LiveData<List<Tag>> getTagsForTask(long taskId);
 
+    @Query("SELECT * FROM tasks_tags WHERE task_id = :taskId")
+    List<TaskTag> getTaskTagsForTask(long taskId);
+
     @Insert(onConflict = IGNORE)
-    void insert(TaskTag taskTag);
+    void insert(TaskTag... taskTag);
 
     @Delete
     void delete(TaskTag... taskTags);
