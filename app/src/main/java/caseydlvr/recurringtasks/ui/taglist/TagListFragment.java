@@ -28,9 +28,10 @@ import caseydlvr.recurringtasks.ui.shared.DeleteDialogFragment;
 import caseydlvr.recurringtasks.viewmodel.TagListViewModel;
 
 public class TagListFragment extends Fragment
-        implements CreateDialogFragment.CreateTagClickListener,
+        implements TagDialogFragment.TagDialogConfirmListener,
         DeleteDialogFragment.DeleteDialogListener,
-        TagAdapter.TagDeleteClickedListener {
+        TagAdapter.TagDeleteClickedListener,
+        TagAdapter.TagEditClickedListener {
     private static final String TAG = TagListFragment.class.getSimpleName();
 
     public static final String KEY_TASK_ID = "key_task_id";
@@ -38,7 +39,7 @@ public class TagListFragment extends Fragment
     public static final String MODE_TASK = "mode_task";
     public static final String MODE_EDIT = "mode_edit";
 
-    private TagAdapter mTagAdapter = new TagAdapter(this);
+    private TagAdapter mTagAdapter = new TagAdapter(this, this);
     private TagListViewModel mViewModel;
     private boolean mTaskMode = true;
 
@@ -94,8 +95,8 @@ public class TagListFragment extends Fragment
     }
 
     @Override
-    public void onCreateTagClick(String tagName) {
-        mViewModel.addTag(tagName);
+    public void onTagDialogConfirmed(Tag tag) {
+        mViewModel.saveTag(tag);
     }
 
     @Override
@@ -104,8 +105,18 @@ public class TagListFragment extends Fragment
     }
 
     @Override
+    public void onTagEditClicked(Tag tag) {
+        showEditDialog(tag);
+    }
+
+    @Override
     public void onTagDeleteClicked(Tag tag) {
         showDeleteDialog(tag);
+    }
+
+    @OnClick(R.id.addTagFab)
+    void fabClick() {
+        showCreateDialog();
     }
 
     private void setModeFromArgs() {
@@ -173,10 +184,20 @@ public class TagListFragment extends Fragment
         deleteDialog.show(getFragmentManager(), "tag_list_delete_dialog");
     }
 
-    @OnClick(R.id.addTagFab)
-    public void fabClick() {
-        DialogFragment createDialog = new CreateDialogFragment();
-        createDialog.setTargetFragment(this, 0);
-        createDialog.show(getFragmentManager(), "create_dialog");
+    private void showCreateDialog() {
+        showEditDialog(null);
+    }
+
+    private void showEditDialog(Tag tag) {
+        Bundle args = new Bundle();
+        if (tag != null) {
+            args.putInt(TagDialogFragment.KEY_TAG_ID, tag.getId());
+            args.putString(TagDialogFragment.KEY_TAG_NAME, tag.getName());
+        }
+
+        DialogFragment tagDialog = new TagDialogFragment();
+        tagDialog.setArguments(args);
+        tagDialog.setTargetFragment(this, 0);
+        tagDialog.show(getFragmentManager(), "tag_dialog");
     }
 }

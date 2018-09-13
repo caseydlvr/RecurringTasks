@@ -2,6 +2,7 @@ package caseydlvr.recurringtasks.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -19,8 +20,19 @@ public class Tag {
     @ColumnInfo(name = "name")
     private String mName;
 
-    public Tag(String name) {
+    public Tag(int id, String name) {
+        mId = id;
         mName = name;
+    }
+
+    @Ignore
+    public Tag(String name) {
+        mName = name.trim();
+    }
+
+    @Ignore
+    public Tag() {
+
     }
 
     public int getId() {
@@ -36,7 +48,7 @@ public class Tag {
     }
 
     public void setName(String name) {
-        mName = name;
+        mName = name.trim();
     }
 
     @Override

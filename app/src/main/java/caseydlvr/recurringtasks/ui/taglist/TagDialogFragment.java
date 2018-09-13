@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -17,15 +18,21 @@ import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.viewmodel.TagListViewModel;
 
-public class CreateDialogFragment extends DialogFragment {
+public class TagDialogFragment extends DialogFragment {
+    private static final String TAG = TagDialogFragment.class.getSimpleName();
 
-    public interface CreateTagClickListener {
-        void onCreateTagClick(String tagName);
+    public interface TagDialogConfirmListener {
+        void onTagDialogConfirmed(Tag tag);
     }
+
+    static final String KEY_TAG_ID = "key_tag_id";
+    static final String KEY_TAG_NAME = "key_tag_name";
 
     private TextInputLayout mTagNameLayout;
     private TextInputEditText mTagNameInput;
     private TagListViewModel mViewModel;
+    private Tag mTag;
+    private boolean mCreateMode = true;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -35,24 +42,31 @@ public class CreateDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.create_tag_dialog, null);
+        setModeFromArgs();
+
+        View view = getActivity().getLayoutInflater().inflate(R.layout.tag_dialog, null);
+        String positiveButtonText = mCreateMode ? getString(R.string.create) : getString(R.string.rename);
         mTagNameLayout = view.findViewById(R.id.tagNameLayout);
         mTagNameInput = view.findViewById(R.id.tagNameInput);
 
-        initValidation();
+        if (!mCreateMode) {
+            mTagNameInput.setText(mTag.getName());
+        }
 
+        initValidation();
 
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(view)
-                .setPositiveButton(R.string.create, null)
+                .setPositiveButton(positiveButtonText, null)
                 .setNegativeButton(R.string.dialogCancel, null)
                 .create();
 
         dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setOnClickListener(view1 -> {
                     if (inputsAreValid()) {
-                        ((CreateTagClickListener) getTargetFragment())
-                                .onCreateTagClick(mTagNameInput.getText().toString());
+                        mTag.setName(mTagNameInput.getText().toString());
+
+                        ((TagDialogConfirmListener) getTargetFragment()).onTagDialogConfirmed(mTag);
                         dialogInterface.dismiss();
                     } else {
                         mTagNameLayout.setError(validateTagName());
@@ -60,6 +74,17 @@ public class CreateDialogFragment extends DialogFragment {
                 }));
 
         return dialog;
+    }
+
+    private void setModeFromArgs() {
+        int tagId = getArguments().getInt(KEY_TAG_ID, 0);
+
+        if (tagId > 0) {
+            mCreateMode = false;
+            mTag = new Tag(tagId, getArguments().getString(KEY_TAG_NAME, ""));
+        } else {
+            mTag = new Tag();
+        }
     }
 
     private void initValidation() {
@@ -93,7 +118,8 @@ public class CreateDialogFragment extends DialogFragment {
             errorText = getString(R.string.tagNameTooLongErrorPrefix);
         } else if (input.toString().trim().length() < 1) {
             errorText = getString(R.string.tagNameEmptyErrorPrefix);
-        } else if (mViewModel.tagNameExists(input.toString())) {
+        } else if ((mCreateMode && mViewModel.tagNameExists(input.toString()))
+                || (!mCreateMode && mViewModel.tagNameExists(input.toString(), mTag.getName()))) {
             errorText = getString(R.string.tagNameExistsError);
         }
 

@@ -119,8 +119,8 @@ public class DataRepository {
         return mDb.tagDao().getAllTags();
     }
 
-    public void addTag(Tag tag) {
-        new AddTagTask(this).execute(tag);
+    public void saveTag(Tag tag) {
+        new SaveTagTask(this).execute(tag);
     }
 
     public void deleteTag(Tag tag) {
@@ -252,16 +252,20 @@ public class DataRepository {
         }
     }
 
-    private static class AddTagTask extends AsyncTask<Tag, Void, Void> {
+    private static class SaveTagTask extends AsyncTask<Tag, Void, Void> {
         DataRepository mDr;
 
-        AddTagTask(DataRepository dr) {
+        SaveTagTask(DataRepository dr) {
             mDr = dr;
         }
 
         @Override
         protected Void doInBackground(Tag... tags) {
-            mDr.getDb().tagDao().insert(tags[0]);
+            if (tags[0].getId() >  0) {
+                mDr.getDb().tagDao().update(tags[0]);
+            } else {
+                mDr.getDb().tagDao().insert(tags[0]);
+            }
 
             return null;
         }

@@ -22,6 +22,9 @@ public interface TagDao {
     @Insert(onConflict = REPLACE)
     long insert(Tag tag);
 
+    @Update
+    void update(Tag tag);
+
     @Delete
     void delete(Tag... tags);
 }

@@ -26,13 +26,19 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
         void onTagDeleteClicked(Tag tag);
     }
 
+    public interface TagEditClickedListener {
+        void onTagEditClicked(Tag tag);
+    }
+
     private List<Tag> mTags;
     private TagListViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private TagDeleteClickedListener mTagDeleteClickedListener;
+    private TagEditClickedListener mTagEditClickedListener;
 
-    TagAdapter(TagDeleteClickedListener listener) {
-        mTagDeleteClickedListener = listener;
+    TagAdapter(TagDeleteClickedListener deleteListener, TagEditClickedListener editListener) {
+        mTagDeleteClickedListener = deleteListener;
+        mTagEditClickedListener = editListener;
     }
 
     @Override
@@ -120,6 +126,8 @@ public class TagAdapter  extends RecyclerView.Adapter<TagAdapter.TagViewHolder> 
             if (mViewModel.isTaskMode()) {
                 mTagCheckBox.setChecked(!mTagCheckBox.isChecked());
                 onTagCheckboxClick();
+            } else {
+                mTagEditClickedListener.onTagEditClicked(mTag);
             }
         }
 

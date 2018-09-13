@@ -65,4 +65,5 @@
     <string name="allTasks">All tasks</string>
     <string name="deleteTagMessage">Delete tag?</string>
     <string name="tagNameExistsError">Tag with this name already exists</string>
+    <string name="rename">Rename</string>
 </resources>
