@@ -16,7 +16,7 @@ public abstract class TaskViewModel extends AndroidViewModel {
     /**
      * Complete the provided Task in persistent storage
      *
-     * @param task Task to persist
+     * @param task Task to complete
      */
     public void complete(@NonNull Task task) {
         TaskActions.complete(getApplication(),task);

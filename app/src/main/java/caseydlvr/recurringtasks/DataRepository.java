@@ -40,10 +40,10 @@ public class DataRepository {
     /**
      * Persists (inserts or updates) the provided Task
      *
-     * @param task Task to persist
+     * @param task Task to save
      */
-    public void persist(Task task) {
-        new PersistTask(this).execute(task);
+    public void saveTask(Task task) {
+        new SaveTaskTask(this).execute(task);
     }
 
     /**
@@ -145,19 +145,23 @@ public class DataRepository {
     }
 
     /**
-     * AsyncTask for persisting a Task to the local Room DB. Helper function for persist(Task).
+     * AsyncTask for persisting a Task to the local Room DB. Helper function for saveTask(Task).
      * Either updates the existing DB record if the task already exists, or inserts a new record.
      */
-    private static class PersistTask extends AsyncTask<Task, Void, Void> {
+    private static class SaveTaskTask extends AsyncTask<Task, Void, Void> {
         DataRepository mDr;
 
-        PersistTask(DataRepository dr) {
+        SaveTaskTask(DataRepository dr) {
             mDr = dr;
         }
 
         @Override
         protected Void doInBackground(Task... tasks) {
-            mDr.getDb().taskDao().insert(tasks[0]);
+            if (tasks[0].getId() > 0) {
+                mDr.getDb().taskDao().update(tasks[0]);
+            } else {
+                mDr.getDb().taskDao().insert(tasks[0]);
+            }
 
             return null;
         }

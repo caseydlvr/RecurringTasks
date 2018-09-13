@@ -4,13 +4,11 @@ import android.app.Application;
 
 import java.util.List;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.annotation.NonNull;
 
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
-import caseydlvr.recurringtasks.TaskActions;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
@@ -58,10 +56,10 @@ public class TaskDetailViewModel extends TaskViewModel {
     /**
      * Persist the provided Task
      *
-     * @param task Task to persist
+     * @param task Task to save
      */
-    public void persist(Task task) {
-        mRepository.persist(task);
+    public void saveTask(Task task) {
+        mRepository.saveTask(task);
     }
 
     public void removeTag(Tag tag) {

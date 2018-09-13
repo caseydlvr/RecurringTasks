@@ -321,7 +321,7 @@ public class TaskDetailFragment extends Fragment
     private void saveTask() {
         populateTaskFromInput();
 
-        mViewModel.persist(mTask);
+        mViewModel.saveTask(mTask);
     }
 
     /**
