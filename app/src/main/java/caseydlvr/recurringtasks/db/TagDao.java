@@ -17,7 +17,10 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 public interface TagDao {
 
     @Query("Select * FROM tags ORDER BY name")
-    LiveData<List<Tag>> getAllTags();
+    LiveData<List<Tag>> loadAllTags();
+
+    @Query("SELECT * FROM tags WHERE id = :tagId")
+    LiveData<Tag> loadTagById(int tagId);
 
     @Insert(onConflict = REPLACE)
     long insert(Tag tag);

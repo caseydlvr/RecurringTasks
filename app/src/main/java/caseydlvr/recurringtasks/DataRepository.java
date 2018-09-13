@@ -116,7 +116,7 @@ public class DataRepository {
     }
 
     public LiveData<List<Tag>> loadAllTags() {
-        return mDb.tagDao().getAllTags();
+        return mDb.tagDao().loadAllTags();
     }
 
     public void saveTag(Tag tag) {
@@ -137,11 +137,15 @@ public class DataRepository {
     }
 
     public LiveData<List<Tag>> loadTagsForTask(long taskId) {
-        return mDb.taskTagDao().getTagsForTask(taskId);
+        return mDb.taskTagDao().loadTagsForTask(taskId);
     }
 
     public LiveData<List<Task>> loadTasksForTag(int tagFilterId) {
-        return mDb.taskTagDao().getTasksForTag(tagFilterId);
+        return mDb.taskTagDao().loadTasksForTag(tagFilterId);
+    }
+
+    public LiveData<Tag> loadTagById(int tagId) {
+        return mDb.tagDao().loadTagById(tagId);
     }
 
     /**
@@ -223,7 +227,7 @@ public class DataRepository {
     @WorkerThread
     private static void completeTask(AppDatabase db, Task task) {
         db.runInTransaction(() -> {
-            List<TaskTag> taskTags = db.taskTagDao().getTaskTagsForTask(task.getId());
+            List<TaskTag> taskTags = db.taskTagDao().loadTaskTagsForTask(task.getId());
 
             db.taskDao().delete(task);
 

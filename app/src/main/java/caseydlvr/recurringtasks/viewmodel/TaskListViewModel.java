@@ -19,6 +19,7 @@ public class TaskListViewModel extends TaskViewModel {
     private LiveData<List<Task>> mAllTasks;
     private LiveData<List<Task>> mFilteredTasks;
     private LiveData<List<Tag>> mObservableTags;
+    private LiveData<Tag> mFilterTag;
     private DataRepository mRepository;
     private int mFilterTagId;
 
@@ -38,6 +39,7 @@ public class TaskListViewModel extends TaskViewModel {
         if (tagId != mFilterTagId) {
             mFilterTagId = tagId;
             mFilteredTasks = mRepository.loadTasksForTag(mFilterTagId);
+            mFilterTag = mRepository.loadTagById(tagId);
         }
     }
 
@@ -56,5 +58,9 @@ public class TaskListViewModel extends TaskViewModel {
 
     public LiveData<List<Tag>> getAllTags() {
         return mObservableTags;
+    }
+
+    public LiveData<Tag> getFilterTag() {
+        return mFilterTag;
     }
 }

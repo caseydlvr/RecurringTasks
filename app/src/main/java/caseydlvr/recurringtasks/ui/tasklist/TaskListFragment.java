@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -226,6 +227,11 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
     private void subscribeUi() {
         if (mFilterMode) {
             mViewModel.getFilteredTasks().observe(this, this::handleTasksChanged);
+            mViewModel.getFilterTag().observe(this, tag -> {
+                if (tag != null) {
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tag.getName());
+                }
+            });
         } else {
             mViewModel.getAllTasks().observe(this, this::handleTasksChanged);
         }

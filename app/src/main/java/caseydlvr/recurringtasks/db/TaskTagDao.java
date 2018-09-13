@@ -20,16 +20,16 @@ public interface TaskTagDao {
     @Query("SELECT tasks.* FROM tasks " +
             "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
             "WHERE tasks_tags.tag_id = :tagId")
-    LiveData<List<Task>> getTasksForTag(int tagId);
+    LiveData<List<Task>> loadTasksForTag(int tagId);
 
     @Query("SELECT tags.* FROM tags " +
             "JOIN tasks_tags ON tags.id = tasks_tags.tag_id " +
             "WHERE tasks_tags.task_id = :taskId " +
             "ORDER BY tags.name")
-    LiveData<List<Tag>> getTagsForTask(long taskId);
+    LiveData<List<Tag>> loadTagsForTask(long taskId);
 
     @Query("SELECT * FROM tasks_tags WHERE task_id = :taskId")
-    List<TaskTag> getTaskTagsForTask(long taskId);
+    List<TaskTag> loadTaskTagsForTask(long taskId);
 
     @Insert(onConflict = IGNORE)
     void insert(TaskTag... taskTag);
