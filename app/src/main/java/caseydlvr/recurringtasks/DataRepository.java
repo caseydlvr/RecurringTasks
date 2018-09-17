@@ -12,6 +12,7 @@ import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 
 /**
  * Singleton that handles CRUD for database storage. Single point of access to the data. Handles
@@ -62,8 +63,12 @@ public class DataRepository {
      *
      * @return LiveData holding a List of Tasks
      */
-    public LiveData<List<Task>> loadOutstandingTasks() {
-        return mDb.taskDao().loadAllOutstanding();
+    public LiveData<List<Task>> loadAllTasks() {
+        return mDb.taskDao().loadAll();
+    }
+
+    public LiveData<List<TaskWithTags>> loadAllTasksAsTaskWithTags() {
+        return mDb.taskDao().loadAllAsTasksWithTags();
     }
 
     /**
@@ -71,7 +76,7 @@ public class DataRepository {
      *
      * @return List of Tasks
      */
-    public List<Task> loadOutstandingTasksWithNotifications() {
+    public List<Task> loadTasksWithNotifications() {
         try {
             return new LoadOutstandingTasksWithNotificationsTask(this).execute().get();
         } catch (InterruptedException | ExecutionException e) {
@@ -206,7 +211,7 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Long... longs) {
-            Task task = mDr.getDb().taskDao().loadByIdTask(longs[0]);
+            Task task = mDr.getDb().taskDao().loadByIdAsTask(longs[0]);
 
             if (task != null) completeTask(mDr.getDb(), task);
 
@@ -343,7 +348,7 @@ public class DataRepository {
 
         @Override
         protected List<Task> doInBackground(Void... voids) {
-            return mDr.getDb().taskDao().loadOutstandingWithNotifications();
+            return mDr.getDb().taskDao().loadAllWithNotifications();
         }
     }
 }

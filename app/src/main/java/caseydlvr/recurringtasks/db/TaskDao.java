@@ -15,20 +15,20 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
 public interface TaskDao {
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM tasks WHERE end_date IS NULL")
     LiveData<List<Task>> loadAll();
 
     @Query("SELECT * FROM tasks WHERE end_date IS NULL")
-    LiveData<List<Task>> loadAllOutstanding();
+    LiveData<List<TaskWithTags>> loadAllAsTasksWithTags();
+
+    @Query("SELECT * FROM tasks WHERE end_date IS NULL AND notification_option != 'never'")
+    List<Task> loadAllWithNotifications();
 
     @Query("SELECT * FROM tasks WHERE id = :id")
     LiveData<Task> loadById(long id);
 
     @Query("SELECT * FROM tasks WHERE id = :id")
-    Task loadByIdTask(long id);
-
-    @Query("SELECT * FROM tasks WHERE end_date IS NULL AND notification_option != 'never'")
-    List<Task> loadOutstandingWithNotifications();
+    Task loadByIdAsTask(long id);
 
     @Insert(onConflict = REPLACE)
     long insert(Task task);
