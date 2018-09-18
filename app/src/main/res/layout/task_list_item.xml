@@ -5,12 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="88dp">
+    android:layout_height="@dimen/task_list_item_height">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/swipeBackgroundLayout"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="@dimen/task_list_item_height"
         android:background="@color/deleteColor">
 
         <ImageView
@@ -38,12 +38,12 @@
     <FrameLayout
         android:id="@+id/listItemLayout"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="@dimen/task_list_item_height"
         android:background="?android:colorBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="88dp"
+            android:layout_height="@dimen/task_list_item_height"
             android:background="?android:selectableItemBackground">
 
             <TextView
