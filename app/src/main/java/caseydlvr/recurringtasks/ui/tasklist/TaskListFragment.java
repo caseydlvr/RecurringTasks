@@ -223,7 +223,7 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
      * Start observing ViewModel LiveData with appropriate onChange handling
      */
     private void subscribeUi() {
-        mViewModel.getAllTags().observe(this, this::populateNavViewTagSubMenu);
+        mViewModel.getAllTags().observe(this, this::handleTagsChanged);
 
         if (mFilterMode) {
             mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
@@ -247,6 +247,11 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
             mEmptyView.setVisibility(View.GONE);
         }
         mTaskAdapter.setTasks(tasks);
+    }
+
+    private void handleTagsChanged(List<Tag> tags) {
+        mTaskAdapter.setTags(tags);
+        populateNavViewTagSubMenu(tags);
     }
 
     private void populateNavViewTagSubMenu(List<Tag> tags) {

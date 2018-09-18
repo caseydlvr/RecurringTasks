@@ -2,6 +2,9 @@ package caseydlvr.recurringtasks.ui.tasklist;
 
 import android.content.Context;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -32,6 +35,7 @@ import butterknife.OnTouch;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
+import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
@@ -41,6 +45,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private static final String TAG = TaskAdapter.class.getSimpleName();
 
     private List<TaskWithTags> mTasks;
+    private List<Tag> mTags;
     private TaskListViewModel mViewModel;
 
     @Override
@@ -89,6 +94,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             DiffUtil.calculateDiff(new TaskListDiffCallback(oldTasks, newTasks))
                     .dispatchUpdatesTo(this);
         }
+    }
+
+    public void setTags(List<Tag> tags) {
+        mTags = tags;
     }
 
     public void setViewModel(TaskListViewModel viewModel) {
@@ -179,6 +188,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
         @BindView(R.id.durationRow) TextView mDurationRow;
         @BindView(R.id.tagsRow) HorizontalScrollView mTagsRow;
+        @BindView(R.id.tagsChipGroup) ChipGroup mTagsChipGroup;
         @BindView(R.id.dueStatus) TextView mDueStatus;
         @BindView(R.id.swipeIconLeft) ImageView mSwipeIconLeft;
         @BindView(R.id.swipeIconRight) ImageView mSwipeIconRight;
@@ -222,6 +232,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             mTaskName.setText(task.getTask().getName());
             mDueDateRow.setText(dueDateRow);
             mDurationRow.setText(durationRow);
+
+            buildTagChips();
         }
 
         @Override
@@ -248,6 +260,30 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             }
 
             return false;
+        }
+
+        private void buildTagChips() {
+            if (mTask.getTagIds() == null) return;
+
+            for (int tagId : mTask.getTagIds()) {
+                Tag chipTag = null;
+
+                for (Tag tag : mTags) {
+                    if (tag.getId() == tagId) {
+                        chipTag = tag;
+                        break;
+                    }
+                }
+
+                if (chipTag != null) {
+                    Chip chip = new Chip(mContext);
+                    chip.setText(chipTag.getName());
+                    chip.setTag(chipTag);
+                    chip.setClickable(true);
+                    chip.setOnTouchListener(this::onTagsRowTouched);
+                    mTagsChipGroup.addView(chip);
+                }
+            }
         }
 
         @Override
