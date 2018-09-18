@@ -149,6 +149,10 @@ public class DataRepository {
         return mDb.taskTagDao().loadTasksForTag(tagFilterId);
     }
 
+    public LiveData<List<TaskWithTags>> loadTasksAsTasksWithTagForTag(int tagFilterId) {
+        return mDb.taskTagDao().loadTasksAsTasksWithTagForTag(tagFilterId);
+    }
+
     public LiveData<Tag> loadTagById(int tagId) {
         return mDb.tagDao().loadTagById(tagId);
     }

@@ -1,13 +1,11 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -39,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
@@ -208,9 +206,9 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
                     if (mFilterMode) {
                         ((AppCompatActivity) getActivity()).getSupportActionBar()
                                 .setTitle(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
-                        mViewModel.getFilteredTasks().removeObservers(this);
+                        mViewModel.getFilteredTasksWithTags().removeObservers(this);
                         mViewModel.setFilterTagId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
-                        mViewModel.getFilteredTasks().observe(this, this::handleTasksChanged);
+                        mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
                     } else {
                         Tag tag = new Tag(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
                         tag.setId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
@@ -225,26 +223,26 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
      * Start observing ViewModel LiveData with appropriate onChange handling
      */
     private void subscribeUi() {
+        mViewModel.getAllTags().observe(this, this::populateNavViewTagSubMenu);
+
         if (mFilterMode) {
-            mViewModel.getFilteredTasks().observe(this, this::handleTasksChanged);
+            mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
             mViewModel.getFilterTag().observe(this, tag -> {
                 if (tag != null) {
                     ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tag.getName());
                 }
             });
         } else {
-            mViewModel.getAllTasks().observe(this, this::handleTasksChanged);
+            mViewModel.getAllTasksWithTags().observe(this, this::handleTasksChanged);
         }
-
-        mViewModel.getAllTags().observe(this, this::populateNavViewTagSubMenu);
     }
 
-    private void handleTasksChanged(List<Task> tasks) {
+    private void handleTasksChanged(List<TaskWithTags> tasks) {
         if (tasks == null || tasks.size() == 0) {
             mRecyclerView.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
-            Collections.sort(tasks, new Task.TaskComparator());
+            Collections.sort(tasks, new TaskWithTags.TaskWithTagsComparator());
             mRecyclerView.setVisibility(View.VISIBLE);
             mEmptyView.setVisibility(View.GONE);
         }

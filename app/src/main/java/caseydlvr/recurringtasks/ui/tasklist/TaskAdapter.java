@@ -32,7 +32,7 @@ import butterknife.OnTouch;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
-import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
@@ -40,7 +40,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         implements ItemTouchSwipeListener {
     private static final String TAG = TaskAdapter.class.getSimpleName();
 
-    private List<Task> mTasks;
+    private List<TaskWithTags> mTasks;
     private TaskListViewModel mViewModel;
 
     @Override
@@ -64,7 +64,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onItemSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getAdapterPosition();
-        final Task task = mTasks.get(position);
+        final TaskWithTags task = mTasks.get(position);
 
         if (direction == ItemTouchHelper.LEFT) {
             delete(task, position, viewHolder.itemView);
@@ -80,8 +80,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      *
      * @param newTasks List of Tasks to display
      */
-    public void setTasks(List<Task> newTasks) {
-        List<Task> oldTasks = mTasks;
+    public void setTasks(List<TaskWithTags> newTasks) {
+        List<TaskWithTags> oldTasks = mTasks;
         mTasks = newTasks;
         if (oldTasks == null) {
             notifyItemRangeChanged(0, newTasks.size());
@@ -113,7 +113,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in the Task list to add the item
      * @param task     Task to add to the list
      */
-    private void addItem(int position, Task task) {
+    private void addItem(int position, TaskWithTags task) {
         mTasks.add(position, task);
         notifyItemInserted(position);
     }
@@ -130,7 +130,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to complete
      */
-    private void complete(Task task, int position, View v) {
+    private void complete(TaskWithTags task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
@@ -138,7 +138,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
-                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(task);
+                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(task.getTask());
                     }
                 }).show();
     }
@@ -154,7 +154,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to delete
      */
-    private void delete(Task task, int position, View v) {
+    private void delete(TaskWithTags task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
@@ -162,7 +162,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
-                        if (event != DISMISS_EVENT_ACTION) mViewModel.delete(task);
+                        if (event != DISMISS_EVENT_ACTION) mViewModel.delete(task.getTask());
                     }
                 }).show();
     }
@@ -170,7 +170,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public class TaskViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, ItemTouchSwipeTarget {
 
-        private Task mTask;
+        private TaskWithTags mTask;
         private Context mContext;
 
         @BindView(R.id.listItemLayout) FrameLayout mListItemLayout;
@@ -194,9 +194,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
          *
          * @param task Task to bind to this ViewHolder
          */
-        void bindTask(Task task) {
+        void bindTask(TaskWithTags task) {
             mTask = task;
-            DueStatus dueStatus = new DueStatus(mContext, mTask.getDuePriority());
+            DueStatus dueStatus = new DueStatus(mContext, mTask.getTask().getDuePriority());
 
             if (dueStatus.isDefault()) {
                 mDueStatus.setVisibility(View.GONE);
@@ -206,20 +206,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 mDueStatus.setVisibility(View.VISIBLE);
             }
 
-            String dueDateRow = task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
+            String dueDateRow = task.getTask().getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
 
             String durationRow = mContext.getString(R.string.durationLabel) + " ";
 
-            if (task.getDuration() == 1) {
-                durationRow += DurationUnit.build(mContext, task.getDurationUnit())
+            if (task.getTask().getDuration() == 1) {
+                durationRow += DurationUnit.build(mContext, task.getTask().getDurationUnit())
                         .getNameSingular().toLowerCase();
             } else {
-                durationRow += task.getDuration() + " "
-                        + DurationUnit.build(mContext, task.getDurationUnit())
+                durationRow += task.getTask().getDuration() + " "
+                        + DurationUnit.build(mContext, task.getTask().getDurationUnit())
                         .getName().toLowerCase();
             }
 
-            mTaskName.setText(task.getName());
+            mTaskName.setText(task.getTask().getName());
             mDueDateRow.setText(dueDateRow);
             mDurationRow.setText(durationRow);
         }
@@ -227,7 +227,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @Override
         @OnClick
         public void onClick(View v) {
-            ((TaskActivity) mContext).showTaskDetailFragment(mTask.getId());
+            ((TaskActivity) mContext).showTaskDetailFragment(mTask.getTask().getId());
         }
 
         @OnClick(R.id.completeCheckBox)
@@ -273,10 +273,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public class TaskListDiffCallback extends DiffUtil.Callback {
 
-        private final List<Task> mOldTaskList;
-        private final List<Task> mNewTaskList;
+        private final List<TaskWithTags> mOldTaskList;
+        private final List<TaskWithTags> mNewTaskList;
 
-        TaskListDiffCallback(List<Task> oldTaskList, List<Task> newTaskList) {
+        TaskListDiffCallback(List<TaskWithTags> oldTaskList, List<TaskWithTags> newTaskList) {
             mOldTaskList = oldTaskList;
             mNewTaskList = newTaskList;
         }
@@ -293,8 +293,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         @Override
         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return mOldTaskList.get(oldItemPosition).getId()
-                    == mNewTaskList.get(newItemPosition).getId();
+            return mOldTaskList.get(oldItemPosition).getTask().getId()
+                    == mNewTaskList.get(newItemPosition).getTask().getId();
         }
 
         @Override
