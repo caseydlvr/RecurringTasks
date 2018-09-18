@@ -1,18 +1,22 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 import android.content.Context;
-import android.content.Intent;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
+
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
@@ -33,6 +38,7 @@ import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>
         implements ItemTouchSwipeListener {
+    private static final String TAG = TaskAdapter.class.getSimpleName();
 
     private List<Task> mTasks;
     private TaskListViewModel mViewModel;
@@ -172,6 +178,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @BindView(R.id.taskName) TextView mTaskName;
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
         @BindView(R.id.durationRow) TextView mDurationRow;
+        @BindView(R.id.tagsRow) HorizontalScrollView mTagsRow;
         @BindView(R.id.dueStatus) TextView mDueStatus;
         @BindView(R.id.swipeIconLeft) ImageView mSwipeIconLeft;
         @BindView(R.id.swipeIconRight) ImageView mSwipeIconRight;
@@ -229,6 +236,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             complete(mTask, position, v);
             ((CheckBox) v).setChecked(false);
+        }
+
+        @OnTouch(R.id.tagsRow)
+        public boolean onTagsRowTouched(View view, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                // block swipe to dismiss in favor of horizontal scroll if Tag Chips don't fit in viewport
+                if (mTagsRow.findViewById(R.id.tagsChipGroup).getWidth() > mTagsRow.getWidth()) {
+                    mTagsRow.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+            }
+
+            return false;
         }
 
         @Override
