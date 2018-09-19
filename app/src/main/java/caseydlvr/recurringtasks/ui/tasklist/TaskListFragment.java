@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -194,8 +193,11 @@ public class TaskListFragment extends Fragment
     }
 
     private void initNavDrawer() {
+        if (!mFilterMode) {
+            checkNavMenuItem(mNavigationView.getMenu().findItem(R.id.navAllTasks));
+        }
+
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
-            menuItem.setChecked(true);
             mDrawerLayout.closeDrawer(GravityCompat.START);
 
             switch (menuItem.getItemId()) {
@@ -213,6 +215,7 @@ public class TaskListFragment extends Fragment
                     startActivity(intent);
                     return true;
                 default: // assumed to be a tag filter
+                    if (mFilterMode) checkNavMenuItem(menuItem);
                     Tag tag = new Tag(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
                     tag.setId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
 
@@ -308,9 +311,37 @@ public class TaskListFragment extends Fragment
                     .putExtra(EXTRA_TAG_ID, tag.getId())
                     .putExtra(EXTRA_TAG_NAME, tag.getName());
 
-            tagMenu.add(R.id.tagsGroup, Menu.NONE, MENU_TAG_ORDER, tag.getName())
+            MenuItem newItem = tagMenu.add(R.id.tagsGroup, Menu.NONE, MENU_TAG_ORDER, tag.getName())
                     .setIcon(R.drawable.ic_label)
                     .setIntent(intent);
+
+            // If Tag is the current filter tag, check it
+            if (mFilterMode && tag.getId() == mViewModel.getFilterTagId()) {
+                checkNavMenuItem(newItem);
+            }
+        }
+    }
+
+    /**
+     * Checks the given menuItem in the NavigationView. Ensures this menuItem is the only checked
+     * menu item.
+     *
+     * @param menuItem NavigationView menuItem to check
+     */
+    private void checkNavMenuItem(MenuItem menuItem) {
+        uncheckAllMenuItems(mNavigationView.getMenu());
+        menuItem.setChecked(true);
+    }
+
+    private void uncheckAllMenuItems(Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem menuItem = menu.getItem(i);
+            if (menuItem.hasSubMenu()) {
+                uncheckAllMenuItems(menuItem.getSubMenu());
+            } else {
+                menuItem.setChecked(false);
+            }
+
         }
     }
 }

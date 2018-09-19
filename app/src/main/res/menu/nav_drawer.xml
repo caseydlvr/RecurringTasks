@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:checkableBehavior="single">
-
+    <group>
         <item
             android:id="@+id/navAllTasks"
             android:icon="@drawable/ic_clock_history"
@@ -15,8 +13,7 @@
         android:title="@string/tagsLabel">
         <menu>
             <group
-                android:id="@+id/tagsGroup"
-                android:checkableBehavior="single">
+                android:id="@+id/tagsGroup">
                 <item
                     android:id="@+id/navEditTags"
                     android:icon="@drawable/ic_edit"
@@ -27,8 +24,7 @@
     </item>
 
     <group
-        android:id="@+id/bottomGroup"
-        android:checkableBehavior="single">
+        android:id="@+id/bottomGroup">
         <item
             android:id="@+id/navSettings"
             android:icon="@drawable/ic_action_settings"

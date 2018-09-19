@@ -61,4 +61,8 @@ public class TaskListViewModel extends TaskViewModel {
     public LiveData<List<TaskWithTags>> getAllTasksWithTags() {
         return mAllTasksWithTags;
     }
+
+    public int getFilterTagId() {
+        return mFilterTagId;
+    }
 }
