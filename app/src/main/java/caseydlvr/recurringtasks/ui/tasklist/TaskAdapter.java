@@ -290,6 +290,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
          * The Task's Tag list is sorted alphabetically to ensure the Chips are displayed in order.
          */
         private void buildTagChips() {
+            mTagsChipGroup.removeAllViews();
+
             if (mTask.getTagIds() == null) return;
 
             List<Tag> taskTags = new ArrayList<>();
