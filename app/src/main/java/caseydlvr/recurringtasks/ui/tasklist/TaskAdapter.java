@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -276,10 +275,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 }
 
                 if (chipTag != null) {
-                    Chip chip = new Chip(mContext);
+                    Chip chip = (Chip)
+                            ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                            .inflate(R.layout.task_list_tag_chip, null);
                     chip.setText(chipTag.getName());
                     chip.setTag(chipTag);
-                    chip.setClickable(true);
                     chip.setOnTouchListener(this::onTagsRowTouched);
                     mTagsChipGroup.addView(chip);
                 }

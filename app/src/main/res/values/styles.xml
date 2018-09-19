@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/primaryLightColor</item>
         <item name="colorError">@color/colorError</item>
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+        <item name="chipStyle">@style/TagChip</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -29,6 +30,16 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="TagChip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textColor">?android:textColorPrimaryInverse</item>
+        <item name="chipBackgroundColor">@color/primaryLightColor</item>
+        <item name="closeIconTint">?android:textColorTertiaryInverse</item>
+    </style>
+
+    <style name="TaskListTagChip" parent="TagChip">
+        <item name="chipMinHeight">14dp</item>
     </style>
 
     <style name="SpinnerItem" parent="TextAppearance.AppCompat.Widget.TextView.SpinnerItem">
