@@ -49,6 +49,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private List<TaskWithTags> mTasks;
     private List<Tag> mTags;
     private TaskListViewModel mViewModel;
+    private TaskListFragment mTaskListFragment;
+
+    TaskAdapter(TaskListFragment fragment) {
+        mTaskListFragment = fragment;
+    }
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -287,6 +292,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 chip.setText(tag.getName());
                 chip.setTag(tag);
                 chip.setOnTouchListener(this::onTagsRowTouched);
+                chip.setOnClickListener(v -> {
+                    mTaskListFragment.navigateToFilterView((Tag) v.getTag());
+                });
                 mTagsChipGroup.addView(chip);
             }
         }

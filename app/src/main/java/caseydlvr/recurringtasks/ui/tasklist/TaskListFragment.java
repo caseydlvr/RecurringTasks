@@ -169,7 +169,7 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
     }
 
     private void initRecyclerView() {
-        mTaskAdapter = new TaskAdapter();
+        mTaskAdapter = new TaskAdapter(this);
         mRecyclerView.setAdapter(mTaskAdapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -202,21 +202,27 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
                     startActivity(intent);
                     return true;
                 default: // assumed to be a tag filter
-                    // re-use this fragment if it is already in filter mode
-                    if (mFilterMode) {
-                        ((AppCompatActivity) getActivity()).getSupportActionBar()
-                                .setTitle(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
-                        mViewModel.getFilteredTasksWithTags().removeObservers(this);
-                        mViewModel.setFilterTagId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
-                        mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
-                    } else {
-                        Tag tag = new Tag(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
-                        tag.setId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
-                        ((TaskActivity) getActivity()).showTaskListFragmentWithTagFilter(tag);
-                    }
+                    Tag tag = new Tag(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
+                    tag.setId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
+
+                    navigateToFilterView(tag);
                     return true;
             }
         });
+    }
+
+    protected void navigateToFilterView(Tag tag) {
+        // re-use this fragment if it is already in filter mode
+        if (mFilterMode) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setTitle(tag.getName());
+            mViewModel.getFilteredTasksWithTags().removeObservers(this);
+            mViewModel.setFilterTagId(tag.getId());
+            mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
+        } else {
+
+            ((TaskActivity) getActivity()).showTaskListFragmentWithTagFilter(tag);
+        }
     }
 
     /**
