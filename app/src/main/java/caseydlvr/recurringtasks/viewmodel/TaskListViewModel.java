@@ -35,6 +35,9 @@ public class TaskListViewModel extends TaskViewModel {
         mAllTasksWithTags = mRepository.loadAllTasksAsTaskWithTags();
     }
 
+    /**
+     * @param tagId id of the Tag to use to filter the list of Tasks
+     */
     public void setFilterTagId(int tagId) {
         if (tagId != mFilterTagId) {
             mFilterTagId = tagId;
