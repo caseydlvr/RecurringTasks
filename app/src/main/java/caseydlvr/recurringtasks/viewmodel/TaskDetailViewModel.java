@@ -64,6 +64,6 @@ public class TaskDetailViewModel extends TaskViewModel {
 
     public void removeTag(Tag tag) {
         TaskTag taskTag = new TaskTag(mTaskId, tag.getId());
-        mRepository.removeTaskTag(taskTag);
+        mRepository.deleteTaskTag(taskTag);
     }
 }

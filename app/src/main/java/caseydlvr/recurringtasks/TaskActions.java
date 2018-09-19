@@ -52,13 +52,13 @@ public class TaskActions {
     /**
      * Delete the provided Task. Cancels any notifications related to the task.
      *
-     * @param context Context to use to get a ReucrringTaskApp object
+     * @param context Context to use to get a RecurringTaskApp object
      * @param task    Task to delete
      */
     public static void delete(@NonNull Context context, @NonNull Task task) {
         ((RecurringTaskApp) context.getApplicationContext())
                 .getRepository()
-                .delete(task);
+                .deleteTask(task);
 
         NotificationUtils.dismissNotification(context, (int) task.getId());
     }

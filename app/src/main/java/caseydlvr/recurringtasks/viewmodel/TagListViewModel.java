@@ -64,11 +64,11 @@ public class TagListViewModel extends AndroidViewModel {
     }
 
     public void addTaskTag(Tag tag) {
-        mRepository.addTaskTag(new TaskTag(mTaskId, tag.getId()));
+        mRepository.saveTaskTag(new TaskTag(mTaskId, tag.getId()));
     }
 
     public void removeTaskTag(Tag tag) {
-        mRepository.removeTaskTag(new TaskTag(mTaskId, tag.getId()));
+        mRepository.deleteTaskTag(new TaskTag(mTaskId, tag.getId()));
     }
 
     public void deleteTagPendingDelete() {
