@@ -26,6 +26,8 @@ import android.widget.TextView;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -265,25 +267,27 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private void buildTagChips() {
             if (mTask.getTagIds() == null) return;
 
-            for (int tagId : mTask.getTagIds()) {
-                Tag chipTag = null;
+            List<Tag> taskTags = new ArrayList<>();
 
+            for (int tagId : mTask.getTagIds()) {
                 for (Tag tag : mTags) {
                     if (tag.getId() == tagId) {
-                        chipTag = tag;
+                        taskTags.add(tag);
                         break;
                     }
                 }
+            }
 
-                if (chipTag != null) {
-                    Chip chip = (Chip)
-                            ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                            .inflate(R.layout.task_list_tag_chip, null);
-                    chip.setText(chipTag.getName());
-                    chip.setTag(chipTag);
-                    chip.setOnTouchListener(this::onTagsRowTouched);
-                    mTagsChipGroup.addView(chip);
-                }
+            Collections.sort(taskTags, new Tag.TagComparator());
+
+            for (Tag tag : taskTags) {
+                Chip chip = (Chip)
+                        ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                        .inflate(R.layout.task_list_tag_chip, null);
+                chip.setText(tag.getName());
+                chip.setTag(tag);
+                chip.setOnTouchListener(this::onTagsRowTouched);
+                mTagsChipGroup.addView(chip);
             }
         }
 
