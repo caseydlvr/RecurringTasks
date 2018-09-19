@@ -103,15 +103,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 
+    /**
+     * Master list of Tags to use when Tags are displayed in the list.
+     *
+     * @param tags List of all available Tags
+     */
     public void setTags(List<Tag> tags) {
         mTags = tags;
     }
 
-    public void setViewModel(TaskListViewModel viewModel) {
+    /**
+     * @param viewModel TaskListViewModel for Adapter to use
+     */
+    void setViewModel(TaskListViewModel viewModel) {
         mViewModel = viewModel;
     }
 
-    public void setTagChipClickListener(TagChipClickListener listener) {
+    /**
+     * @param listener TagChipListener to use for handling all tag chip clicks
+     */
+    void setTagChipClickListener(TagChipClickListener listener) {
         mTagChipClickListener = listener;
     }
 
@@ -273,11 +284,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             return false;
         }
 
+        /**
+         * Creates a Chip for each Tag associated with the Task. Uses TaskWithTag's tagId list and
+         * mTags to build a list of Tags for the Task, then builds a Chip for each Tag in that list.
+         * The Task's Tag list is sorted alphabetically to ensure the Chips are displayed in order.
+         */
         private void buildTagChips() {
             if (mTask.getTagIds() == null) return;
 
             List<Tag> taskTags = new ArrayList<>();
 
+            // build List<Tag> from the TaskWithTag's taskIds
             for (int tagId : mTask.getTagIds()) {
                 for (Tag tag : mTags) {
                     if (tag.getId() == tagId) {
@@ -289,6 +306,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             Collections.sort(taskTags, new Tag.TagComparator());
 
+            // create Chips and add to ChipGroup for each Tag in taskTags
             for (Tag tag : taskTags) {
                 Chip chip = (Chip)
                         ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
