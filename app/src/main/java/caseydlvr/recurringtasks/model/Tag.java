@@ -1,5 +1,7 @@
 package caseydlvr.recurringtasks.model;
 
+import java.util.Comparator;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -60,5 +62,13 @@ public class Tag {
 
         return (other.getId() == mId
             && other.getName().equals(mName));
+    }
+
+    public static class TagComparator implements Comparator<Tag> {
+
+        @Override
+        public int compare(Tag o1, Tag o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 }

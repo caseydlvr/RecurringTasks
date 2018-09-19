@@ -1,41 +1,59 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 import android.content.Context;
-import android.content.Intent;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
+
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
-import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.model.Tag;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>
         implements ItemTouchSwipeListener {
+    private static final String TAG = TaskAdapter.class.getSimpleName();
 
-    private List<Task> mTasks;
+    public interface TagChipClickListener {
+        void onTagChipClick(Tag tag);
+    }
+
+    private List<TaskWithTags> mTasks;
+    private List<Tag> mTags;
     private TaskListViewModel mViewModel;
+    private TagChipClickListener mTagChipClickListener;
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -58,7 +76,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onItemSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getAdapterPosition();
-        final Task task = mTasks.get(position);
+        final TaskWithTags task = mTasks.get(position);
 
         if (direction == ItemTouchHelper.LEFT) {
             delete(task, position, viewHolder.itemView);
@@ -74,8 +92,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      *
      * @param newTasks List of Tasks to display
      */
-    public void setTasks(List<Task> newTasks) {
-        List<Task> oldTasks = mTasks;
+    public void setTasks(List<TaskWithTags> newTasks) {
+        List<TaskWithTags> oldTasks = mTasks;
         mTasks = newTasks;
         if (oldTasks == null) {
             notifyItemRangeChanged(0, newTasks.size());
@@ -85,8 +103,27 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 
-    public void setViewModel(TaskListViewModel viewModel) {
+    /**
+     * Master list of Tags to use when Tags are displayed in the list.
+     *
+     * @param tags List of all available Tags
+     */
+    public void setTags(List<Tag> tags) {
+        mTags = tags;
+    }
+
+    /**
+     * @param viewModel TaskListViewModel for Adapter to use
+     */
+    void setViewModel(TaskListViewModel viewModel) {
         mViewModel = viewModel;
+    }
+
+    /**
+     * @param listener TagChipListener to use for handling all tag chip clicks
+     */
+    void setTagChipClickListener(TagChipClickListener listener) {
+        mTagChipClickListener = listener;
     }
 
     /**
@@ -107,7 +144,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in the Task list to add the item
      * @param task     Task to add to the list
      */
-    private void addItem(int position, Task task) {
+    private void addItem(int position, TaskWithTags task) {
         mTasks.add(position, task);
         notifyItemInserted(position);
     }
@@ -124,7 +161,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to complete
      */
-    private void complete(Task task, int position, View v) {
+    private void complete(TaskWithTags task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
@@ -132,7 +169,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
-                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(task);
+                        if (event != DISMISS_EVENT_ACTION) mViewModel.complete(task.getTask());
                     }
                 }).show();
     }
@@ -148,7 +185,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to delete
      */
-    private void delete(Task task, int position, View v) {
+    private void delete(TaskWithTags task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
@@ -156,7 +193,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
-                        if (event != DISMISS_EVENT_ACTION) mViewModel.delete(task);
+                        if (event != DISMISS_EVENT_ACTION) mViewModel.delete(task.getTask());
                     }
                 }).show();
     }
@@ -164,7 +201,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public class TaskViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, ItemTouchSwipeTarget {
 
-        private Task mTask;
+        private TaskWithTags mTask;
         private Context mContext;
 
         @BindView(R.id.listItemLayout) FrameLayout mListItemLayout;
@@ -172,6 +209,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @BindView(R.id.taskName) TextView mTaskName;
         @BindView(R.id.dueDateRow) TextView mDueDateRow;
         @BindView(R.id.durationRow) TextView mDurationRow;
+        @BindView(R.id.tagsRow) HorizontalScrollView mTagsRow;
+        @BindView(R.id.tagsChipGroup) ChipGroup mTagsChipGroup;
         @BindView(R.id.dueStatus) TextView mDueStatus;
         @BindView(R.id.swipeIconLeft) ImageView mSwipeIconLeft;
         @BindView(R.id.swipeIconRight) ImageView mSwipeIconRight;
@@ -187,9 +226,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
          *
          * @param task Task to bind to this ViewHolder
          */
-        void bindTask(Task task) {
+        void bindTask(TaskWithTags task) {
             mTask = task;
-            DueStatus dueStatus = new DueStatus(mContext, mTask.getDuePriority());
+            DueStatus dueStatus = new DueStatus(mContext, mTask.getTask().getDuePriority());
 
             if (dueStatus.isDefault()) {
                 mDueStatus.setVisibility(View.GONE);
@@ -199,36 +238,87 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 mDueStatus.setVisibility(View.VISIBLE);
             }
 
-            String dueDateRow = task.getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
+            String dueDateRow = task.getTask().getDueDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
 
             String durationRow = mContext.getString(R.string.durationLabel) + " ";
 
-            if (task.getDuration() == 1) {
-                durationRow += DurationUnit.build(mContext, task.getDurationUnit())
+            if (task.getTask().getDuration() == 1) {
+                durationRow += DurationUnit.build(mContext, task.getTask().getDurationUnit())
                         .getNameSingular().toLowerCase();
             } else {
-                durationRow += task.getDuration() + " "
-                        + DurationUnit.build(mContext, task.getDurationUnit())
+                durationRow += task.getTask().getDuration() + " "
+                        + DurationUnit.build(mContext, task.getTask().getDurationUnit())
                         .getName().toLowerCase();
             }
 
-            mTaskName.setText(task.getName());
+            mTaskName.setText(task.getTask().getName());
             mDueDateRow.setText(dueDateRow);
             mDurationRow.setText(durationRow);
+
+            buildTagChips();
         }
 
         @Override
         @OnClick
         public void onClick(View v) {
-            ((TaskActivity) mContext).showTaskDetailFragment(mTask.getId());
+            ((TaskActivity) mContext).showTaskDetailFragment(mTask.getTask().getId());
         }
 
         @OnClick(R.id.completeCheckBox)
-        public void onCompleteCheckBoxClick(View v) {
+        void onCompleteCheckBoxClick(View v) {
             final int position = getAdapterPosition();
 
             complete(mTask, position, v);
             ((CheckBox) v).setChecked(false);
+        }
+
+        @OnTouch(R.id.tagsRow)
+        boolean onTagsRowTouched(View view, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                // block swipe to dismiss in favor of horizontal scroll if Tag Chips don't fit in viewport
+                if (mTagsRow.findViewById(R.id.tagsChipGroup).getWidth() > mTagsRow.getWidth()) {
+                    mTagsRow.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * Creates a Chip for each Tag associated with the Task. Uses TaskWithTag's tagId list and
+         * mTags to build a list of Tags for the Task, then builds a Chip for each Tag in that list.
+         * The Task's Tag list is sorted alphabetically to ensure the Chips are displayed in order.
+         */
+        private void buildTagChips() {
+            if (mTask.getTagIds() == null) return;
+
+            List<Tag> taskTags = new ArrayList<>();
+
+            // build List<Tag> from the TaskWithTag's taskIds
+            for (int tagId : mTask.getTagIds()) {
+                for (Tag tag : mTags) {
+                    if (tag.getId() == tagId) {
+                        taskTags.add(tag);
+                        break;
+                    }
+                }
+            }
+
+            Collections.sort(taskTags, new Tag.TagComparator());
+
+            // create Chips and add to ChipGroup for each Tag in taskTags
+            for (Tag tag : taskTags) {
+                Chip chip = (Chip)
+                        ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                        .inflate(R.layout.task_list_tag_chip, null);
+                chip.setText(tag.getName());
+                chip.setTag(tag);
+                chip.setOnTouchListener(this::onTagsRowTouched);
+                if (mTagChipClickListener != null) {
+                    chip.setOnClickListener(v -> mTagChipClickListener.onTagChipClick((Tag) v.getTag()));
+                }
+                mTagsChipGroup.addView(chip);
+            }
         }
 
         @Override
@@ -254,10 +344,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public class TaskListDiffCallback extends DiffUtil.Callback {
 
-        private final List<Task> mOldTaskList;
-        private final List<Task> mNewTaskList;
+        private final List<TaskWithTags> mOldTaskList;
+        private final List<TaskWithTags> mNewTaskList;
 
-        TaskListDiffCallback(List<Task> oldTaskList, List<Task> newTaskList) {
+        TaskListDiffCallback(List<TaskWithTags> oldTaskList, List<TaskWithTags> newTaskList) {
             mOldTaskList = oldTaskList;
             mNewTaskList = newTaskList;
         }
@@ -274,8 +364,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         @Override
         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return mOldTaskList.get(oldItemPosition).getId()
-                    == mNewTaskList.get(newItemPosition).getId();
+            return mOldTaskList.get(oldItemPosition).getTask().getId()
+                    == mNewTaskList.get(newItemPosition).getTask().getId();
         }
 
         @Override

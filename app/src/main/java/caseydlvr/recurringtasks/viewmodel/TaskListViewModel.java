@@ -9,16 +9,16 @@ import java.util.List;
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.Task;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 
 /**
  * ViewModel for the task list view
  */
 public class TaskListViewModel extends TaskViewModel {
 
-    private LiveData<List<Task>> mAllTasks;
-    private LiveData<List<Task>> mFilteredTasks;
-    private LiveData<List<Tag>> mObservableTags;
+    private LiveData<List<TaskWithTags>> mAllTasksWithTags;
+    private LiveData<List<TaskWithTags>> mFilteredTasksWithTags;
+    private LiveData<List<Tag>> mAllTags;
     private LiveData<Tag> mFilterTag;
     private DataRepository mRepository;
     private int mFilterTagId;
@@ -31,36 +31,34 @@ public class TaskListViewModel extends TaskViewModel {
     public TaskListViewModel(@NonNull Application app) {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
-        mObservableTags = mRepository.loadAllTags();
-        mAllTasks = mRepository.loadOutstandingTasks();
+        mAllTags = mRepository.loadAllTags();
+        mAllTasksWithTags = mRepository.loadAllTasksAsTaskWithTags();
     }
 
+    /**
+     * @param tagId id of the Tag to use to filter the list of Tasks
+     */
     public void setFilterTagId(int tagId) {
         if (tagId != mFilterTagId) {
             mFilterTagId = tagId;
-            mFilteredTasks = mRepository.loadTasksForTag(mFilterTagId);
+            mFilteredTasksWithTags = mRepository.loadTasksAsTasksWithTagForTag(mFilterTagId);
             mFilterTag = mRepository.loadTagById(tagId);
         }
     }
 
-    /**
-     * Outstanding Tasks are tasks that haven't been completed.
-     *
-     * @return List of outstanding tasks wrapped in LiveData
-     */
-    public LiveData<List<Task>> getAllTasks() {
-        return mAllTasks;
-    }
-
-    public LiveData<List<Task>> getFilteredTasks() {
-        return mFilteredTasks;
+    public LiveData<List<TaskWithTags>> getFilteredTasksWithTags() {
+        return mFilteredTasksWithTags;
     }
 
     public LiveData<List<Tag>> getAllTags() {
-        return mObservableTags;
+        return mAllTags;
     }
 
     public LiveData<Tag> getFilterTag() {
         return mFilterTag;
+    }
+
+    public LiveData<List<TaskWithTags>> getAllTasksWithTags() {
+        return mAllTasksWithTags;
     }
 }

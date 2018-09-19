@@ -4,15 +4,12 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 
@@ -93,7 +90,7 @@ public class NotificationService extends JobIntentService {
     private void handleSendNotifications() {
         List<Task> tasks = ((RecurringTaskApp) getApplication())
                 .getRepository()
-                .loadOutstandingTasksWithNotifications();
+                .loadTasksWithNotifications();
 
 
         createNotificationTasks(tasks);

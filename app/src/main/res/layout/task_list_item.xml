@@ -5,12 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp">
+    android:layout_height="@dimen/task_list_item_height">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/swipeBackgroundLayout"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/task_list_item_height"
         android:background="@color/deleteColor">
 
         <ImageView
@@ -38,27 +38,47 @@
     <FrameLayout
         android:id="@+id/listItemLayout"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/task_list_item_height"
         android:background="?android:colorBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="@dimen/task_list_item_height"
             android:background="?android:selectableItemBackground">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/screenLeftMargin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="16dp"/>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/screenRightMargin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="16dp"/>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/contentLeftMargin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="72dp"/>
 
             <TextView
                 android:id="@+id/taskName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="72dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:singleLine="true"
                 android:text=""
                 android:textColor="?android:textColorPrimary"
                 android:textSize="18sp"
-                android:singleLine="true"
                 app:layout_constraintEnd_toStartOf="@+id/dueDateRow"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/contentLeftMargin"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Test Task"/>
 
@@ -66,11 +86,10 @@
                 android:id="@+id/dueDateRow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
-                android:textSize="14sp"
                 android:textColor="?android:textColorSecondary"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="10/18/2018"/>
 
@@ -78,30 +97,42 @@
                 android:id="@+id/durationRow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="72dp"
                 android:textColor="?android:textColorSecondary"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/dueDateRow"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/contentLeftMargin"
                 app:layout_constraintTop_toBottomOf="@+id/taskName"
                 tools:text="Every 10 weeks"/>
+
+            <HorizontalScrollView
+                android:id="@+id/tagsRow"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
+                app:layout_constraintStart_toEndOf="@+id/contentLeftMargin"
+                app:layout_constraintTop_toBottomOf="@+id/durationRow">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/tagsChipGroup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:singleLine="true"/>
+
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/dueStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
                 android:background="@color/overdueColor"
-                android:paddingEnd="4dp"
                 android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/screenRightMargin"
                 app:layout_constraintTop_toBottomOf="@+id/dueDateRow"
                 tools:text="Overdue"/>
 
@@ -109,9 +140,8 @@
                 android:id="@+id/completeCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/screenLeftMargin"
                 app:layout_constraintTop_toTopOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

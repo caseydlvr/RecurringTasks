@@ -12,6 +12,7 @@ import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 
 /**
  * Singleton that handles CRUD for database storage. Single point of access to the data. Handles
@@ -38,13 +39,14 @@ public class DataRepository {
     }
 
     /**
-     * Persists (inserts or updates) the provided Task
-     *
-     * @param task Task to save
+     * @return AppDatabase singleton
      */
-    public void saveTask(Task task) {
-        new SaveTaskTask(this).execute(task);
+    public AppDatabase getDb() {
+        return mDb;
     }
+
+
+    // TaskDao related operations
 
     /**
      * Loads a single Task with the provided ID from persistent storage. Task returned is returned
@@ -58,12 +60,22 @@ public class DataRepository {
     }
 
     /**
-     * Loads all Tasks that haven't been completed. List of Tasks is returned wrapped in LiveData.
+     * Loads all Tasks. List of Tasks is returned wrapped in LiveData.
      *
      * @return LiveData holding a List of Tasks
      */
-    public LiveData<List<Task>> loadOutstandingTasks() {
-        return mDb.taskDao().loadAllOutstanding();
+    public LiveData<List<Task>> loadAllTasks() {
+        return mDb.taskDao().loadAll();
+    }
+
+    /**
+     * Loads all Tasks wrapped in a TaskWithTags object (which also includes a list of tagIds
+     * for all Tags associated with the Task
+     *
+     * @return LiveData holding a List of TaskWithTags
+     */
+    public LiveData<List<TaskWithTags>> loadAllTasksAsTaskWithTags() {
+        return mDb.taskDao().loadAllAsTasksWithTags();
     }
 
     /**
@@ -71,14 +83,32 @@ public class DataRepository {
      *
      * @return List of Tasks
      */
-    public List<Task> loadOutstandingTasksWithNotifications() {
+    public List<Task> loadTasksWithNotifications() {
         try {
-            return new LoadOutstandingTasksWithNotificationsTask(this).execute().get();
+            return new LoadTasksWithNotificationsTask(this).execute().get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
         return new ArrayList<>();
+    }
+
+    /**
+     * Persists (inserts or updates) the provided Task
+     *
+     * @param task Task to save
+     */
+    public void saveTask(Task task) {
+        new SaveTaskTask(this).execute(task);
+    }
+
+    /**
+     * Deletes the provided Task
+     *
+     * @param task Task to deleteTask
+     */
+    public void deleteTask(Task task) {
+        new DeleteTaskTask(this).execute(task);
     }
 
     /**
@@ -99,58 +129,100 @@ public class DataRepository {
         new CompleteByIdTask(this).execute(id);
     }
 
+
+    // TagDao related operations
+
     /**
-     * Deletes the provided Task
+     * Loads all Tags in alphabetical order by tag name.
      *
-     * @param task Task to delete
+     * @return LiveData holding a List of Tags
      */
-    public void delete(Task task) {
-        new DeleteTask(this).execute(task);
-    }
-
-    /**
-      * @return AppDatabase singleton
-     */
-    public AppDatabase getDb() {
-        return mDb;
-    }
-
     public LiveData<List<Tag>> loadAllTags() {
         return mDb.tagDao().loadAllTags();
     }
 
-    public void saveTag(Tag tag) {
-        new SaveTagTask(this).execute(tag);
-    }
-
-    public void deleteTag(Tag tag) {
-        new DeleteTagTask(this).execute(tag);
-    }
-
-
-    public void addTaskTag(TaskTag taskTag) {
-        new AddTaskTagTask(this).execute(taskTag);
-    }
-
-    public void removeTaskTag(TaskTag taskTag) {
-        new RemoveTaskTagTask(this).execute(taskTag);
-    }
-
-    public LiveData<List<Tag>> loadTagsForTask(long taskId) {
-        return mDb.taskTagDao().loadTagsForTask(taskId);
-    }
-
-    public LiveData<List<Task>> loadTasksForTag(int tagFilterId) {
-        return mDb.taskTagDao().loadTasksForTag(tagFilterId);
-    }
-
+    /**
+     * @param tagId id of the Tag to load
+     * @return      LiveData holding a Tag
+     */
     public LiveData<Tag> loadTagById(int tagId) {
         return mDb.tagDao().loadTagById(tagId);
     }
 
     /**
-     * AsyncTask for persisting a Task to the local Room DB. Helper function for saveTask(Task).
-     * Either updates the existing DB record if the task already exists, or inserts a new record.
+     * Persists (inserts or updates) the provided Tag
+     *
+     * @param tag Tag to save
+     */
+    public void saveTag(Tag tag) {
+        new SaveTagTask(this).execute(tag);
+    }
+
+    /**
+     * Deletes the provided Tag
+     *
+     * @param tag Tag to deleteTask
+     */
+    public void deleteTag(Tag tag) {
+        new DeleteTagTask(this).execute(tag);
+    }
+
+
+    // TaskTagDao related operations
+
+    /**
+     * Loads Tags that are are used to tag the Task represented by the given taskId.
+     *
+     * @param taskId id of Task to load Tags for
+     * @return       LiveData holding a List of Tags
+     */
+    public LiveData<List<Tag>> loadTagsForTask(long taskId) {
+        return mDb.taskTagDao().loadTagsForTask(taskId);
+    }
+
+    /**
+     * Loads Tasks that are tagged with the Tag represented by the the given tagId
+     *
+     * @param tagId id of Tag to load Tasks for
+     * @return      LiveData holding a List of Tasks
+     */
+    public LiveData<List<Task>> loadTasksForTag(int tagId) {
+        return mDb.taskTagDao().loadTasksForTag(tagId);
+    }
+
+    /**
+     * Loads Tasks (as TaskWithTags) that are tagged with the Tag represented by the given tagId
+     *
+     * @param tagId id of Tag to load Tasks for
+     * @return      LiveData holding a List of TaskWithTags
+     */
+    public LiveData<List<TaskWithTags>> loadTasksAsTasksWithTagForTag(int tagId) {
+        return mDb.taskTagDao().loadTasksAsTasksWithTagForTag(tagId);
+    }
+
+    /**
+     * Persists (inserts or updates) the given TaskTag
+     *
+     * @param taskTag TaskTag to save
+     */
+    public void saveTaskTag(TaskTag taskTag) {
+        new SaveTaskTagTask(this).execute(taskTag);
+    }
+
+    /**
+     * Deletes the given TaskTag
+     *
+     * @param taskTag TaskTag to deleteTask
+     */
+    public void deleteTaskTag(TaskTag taskTag) {
+        new DeleteTaskTagTask(this).execute(taskTag);
+    }
+
+    /**
+     * AsyncTask for persisting a Task to the local Room DB. Helper for saveTask(Task). Either
+     * updates the existing DB record if the task already exists, or inserts a new record.
+     *
+     * @see #saveTask(Task)
      */
     private static class SaveTaskTask extends AsyncTask<Task, Void, Void> {
         DataRepository mDr;
@@ -172,9 +244,29 @@ public class DataRepository {
     }
 
     /**
-     * AsyncTask for completing a Task in the local Room DB. Helper function for complete(Task).
+     * AsyncTask for deleting a Task. Helper for deleteTask(Task).
      *
-     * @see #completeTask(AppDatabase, Task)
+     * @see #deleteTask(Task)
+     */
+    private static class DeleteTaskTask extends AsyncTask<Task, Void, Void> {
+        DataRepository mDr;
+
+        DeleteTaskTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected Void doInBackground(Task... tasks) {
+            mDr.getDb().taskDao().delete(tasks[0]);
+
+            return null;
+        }
+    }
+
+    /**
+     * AsyncTask for completing a Task in the local Room DB. Helper for complete(Task).
+     *
+     * @see #complete(Task)
      */
     private static class CompleteTask extends AsyncTask<Task, Void, Void> {
         DataRepository mDr;
@@ -192,8 +284,7 @@ public class DataRepository {
     }
 
     /**
-     * AsyncTask for completing a Task by Task ID in the local Room DB. Helper function for
-     * completeById(long)
+     * AsyncTask for completing a Task by Task ID in the local Room DB. Helper for completeById(long).
      *
      * @see #completeTask(AppDatabase, Task)
      */
@@ -206,7 +297,7 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Long... longs) {
-            Task task = mDr.getDb().taskDao().loadByIdTask(longs[0]);
+            Task task = mDr.getDb().taskDao().loadByIdAsTask(longs[0]);
 
             if (task != null) completeTask(mDr.getDb(), task);
 
@@ -216,10 +307,11 @@ public class DataRepository {
 
     /**
      * Completes a Task in the local Room DB. Helper function for the complete related AsyncTasks.
-     * Complete is a two step process if the task is set to repeat. The completed task record is
+     * Complete is a 3 step process if the task is set to repeat. The completed task record is
      * deleted and a new task record is inserted. The new task record has the same data as the
-     * completed task, except for startDate which is set to today (by the Task constructor). The
-     * two step process is run in a transaction.
+     * completed task, except for startDate which is set to today (by the Task constructor). Finally,
+     * if the completed task had any TaskTags, those TaskTags are inserted again using the taskId of
+     * the new task. The 3 step process is run in a transaction.
      *
      * @param db   AppDatabase to use for query execution
      * @param task Task to complete
@@ -253,23 +345,10 @@ public class DataRepository {
     }
 
     /**
-     * AsyncTask for deleting a Task. Helper function for delete(Task).
+     * AsyncTask for saving a Tag. Helper for saveTag(Tag).
+     *
+     * @see #saveTag(Tag)
      */
-    private static class DeleteTask extends AsyncTask<Task, Void, Void> {
-        DataRepository mDr;
-
-        DeleteTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            mDr.getDb().taskDao().delete(tasks[0]);
-
-            return null;
-        }
-    }
-
     private static class SaveTagTask extends AsyncTask<Tag, Void, Void> {
         DataRepository mDr;
 
@@ -289,6 +368,11 @@ public class DataRepository {
         }
     }
 
+    /**
+     * AsyncTask for deleting a Tag. Helper for deleteTag(Tag).
+     *
+     * @see #deleteTag(Tag)
+     */
     private static class DeleteTagTask extends AsyncTask<Tag, Void, Void> {
         DataRepository mDr;
 
@@ -304,10 +388,15 @@ public class DataRepository {
         }
     }
 
-    private static class AddTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
+    /**
+     * AsyncTask for saving a TaskTag. Helper for saveTaskTag(TaskTag).
+     *
+     * @see #saveTaskTag(TaskTag)
+     */
+    private static class SaveTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
         DataRepository mDr;
 
-        AddTaskTagTask(DataRepository dr) {
+        SaveTaskTagTask(DataRepository dr) {
             mDr = dr;
         }
 
@@ -319,10 +408,15 @@ public class DataRepository {
         }
     }
 
-    private static class RemoveTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
+    /**
+     * AsyncTask for deleting a TaskTag. Helper for deleteTaskTag(TaskTag).
+     *
+     * @see #deleteTaskTag(TaskTag)
+     */
+    private static class DeleteTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
         DataRepository mDr;
 
-        RemoveTaskTagTask(DataRepository dr) {
+        DeleteTaskTagTask(DataRepository dr) {
             mDr = dr;
         }
 
@@ -334,16 +428,22 @@ public class DataRepository {
         }
     }
 
-    private static class LoadOutstandingTasksWithNotificationsTask extends AsyncTask<Void, Void, List<Task>> {
+    /**
+     * AsyncTask for loading Tasks that have notifications enabled. Helper for
+     * loadTasksWithNotifications().
+     *
+     * @see #loadTasksWithNotifications()
+     */
+    private static class LoadTasksWithNotificationsTask extends AsyncTask<Void, Void, List<Task>> {
         DataRepository mDr;
 
-        LoadOutstandingTasksWithNotificationsTask(DataRepository dr) {
+        LoadTasksWithNotificationsTask(DataRepository dr) {
             mDr = dr;
         }
 
         @Override
         protected List<Task> doInBackground(Void... voids) {
-            return mDr.getDb().taskDao().loadOutstandingWithNotifications();
+            return mDr.getDb().taskDao().loadAllWithNotifications();
         }
     }
 }

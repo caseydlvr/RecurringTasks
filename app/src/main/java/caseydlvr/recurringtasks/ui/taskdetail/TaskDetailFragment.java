@@ -399,15 +399,13 @@ public class TaskDetailFragment extends Fragment
     private void createTagChips(List<Tag> tags) {
         if (tags == null) return;
 
-        for (int i = 0; i < tags.size(); i++) {
-            Tag tag = tags.get(i);
-            Chip chip = new Chip(getContext());
+        for (Tag tag : tags) {
+            Chip chip = (Chip) ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                    .inflate(R.layout.task_detail_tag_chip, null);
             chip.setText(tag.getName());
             chip.setTag(tag);
-            chip.setClickable(false);
-            chip.setCloseIconEnabled(true);
             chip.setOnCloseIconClickListener(view -> mViewModel.removeTag((Tag) view.getTag()));
-            mTagsChipGroup.addView(chip, i + 1);
+            mTagsChipGroup.addView(chip);
         }
     }
 
