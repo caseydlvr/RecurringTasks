@@ -46,14 +46,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         implements ItemTouchSwipeListener {
     private static final String TAG = TaskAdapter.class.getSimpleName();
 
+    public interface TagChipClickListener {
+        void onTagChipClick(Tag tag);
+    }
+
     private List<TaskWithTags> mTasks;
     private List<Tag> mTags;
     private TaskListViewModel mViewModel;
-    private TaskListFragment mTaskListFragment;
-
-    TaskAdapter(TaskListFragment fragment) {
-        mTaskListFragment = fragment;
-    }
+    private TagChipClickListener mTagChipClickListener;
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -109,6 +109,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public void setViewModel(TaskListViewModel viewModel) {
         mViewModel = viewModel;
+    }
+
+    public void setTagChipClickListener(TagChipClickListener listener) {
+        mTagChipClickListener = listener;
     }
 
     /**
@@ -250,7 +254,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
 
         @OnClick(R.id.completeCheckBox)
-        public void onCompleteCheckBoxClick(View v) {
+        void onCompleteCheckBoxClick(View v) {
             final int position = getAdapterPosition();
 
             complete(mTask, position, v);
@@ -258,7 +262,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
 
         @OnTouch(R.id.tagsRow)
-        public boolean onTagsRowTouched(View view, MotionEvent event) {
+        boolean onTagsRowTouched(View view, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_MOVE) {
                 // block swipe to dismiss in favor of horizontal scroll if Tag Chips don't fit in viewport
                 if (mTagsRow.findViewById(R.id.tagsChipGroup).getWidth() > mTagsRow.getWidth()) {
@@ -292,9 +296,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 chip.setText(tag.getName());
                 chip.setTag(tag);
                 chip.setOnTouchListener(this::onTagsRowTouched);
-                chip.setOnClickListener(v -> {
-                    mTaskListFragment.navigateToFilterView((Tag) v.getTag());
-                });
+                if (mTagChipClickListener != null) {
+                    chip.setOnClickListener(v -> mTagChipClickListener.onTagChipClick((Tag) v.getTag()));
+                }
                 mTagsChipGroup.addView(chip);
             }
         }

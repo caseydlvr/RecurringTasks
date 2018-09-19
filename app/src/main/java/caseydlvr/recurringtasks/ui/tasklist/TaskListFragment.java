@@ -42,7 +42,8 @@ import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
-public class TaskListFragment extends Fragment implements TaskActivity.BackPressedListener {
+public class TaskListFragment extends Fragment
+        implements TaskActivity.BackPressedListener, TaskAdapter.TagChipClickListener {
     private static final String TAG = TaskListFragment.class.getSimpleName();
 
     public static final String EXTRA_TAG_ID = "TaskListFragment_Tag_Id";
@@ -145,6 +146,11 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
         ((TaskActivity) getActivity()).showTaskDetailFragment(0);
     }
 
+    @Override
+    public void onTagChipClick(Tag tag) {
+        navigateToFilterView(tag);
+    }
+
     private void setModeFromArgs() {
         if (getArguments() == null) return;
 
@@ -169,7 +175,8 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
     }
 
     private void initRecyclerView() {
-        mTaskAdapter = new TaskAdapter(this);
+        mTaskAdapter = new TaskAdapter();
+        mTaskAdapter.setTagChipClickListener(this);
         mRecyclerView.setAdapter(mTaskAdapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -211,7 +218,7 @@ public class TaskListFragment extends Fragment implements TaskActivity.BackPress
         });
     }
 
-    protected void navigateToFilterView(Tag tag) {
+    private void navigateToFilterView(Tag tag) {
         // re-use this fragment if it is already in filter mode
         if (mFilterMode) {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
