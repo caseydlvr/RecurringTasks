@@ -151,6 +151,10 @@ public class TaskListFragment extends Fragment
         navigateToFilterView(tag);
     }
 
+    /**
+     * Determines if the list should be filtered by a Tag by looking in the arguments Bundle for a
+     * tagId.
+     */
     private void setModeFromArgs() {
         if (getArguments() == null) return;
 
@@ -218,6 +222,13 @@ public class TaskListFragment extends Fragment
         });
     }
 
+    /**
+     * Handles request to navigate to a Tag filtered Task list. If a filtered task list is already
+     * showing, the current fragment is reused. Otherwise, the request to show a filtered task list
+     * is passed to the Activity.
+     *
+     * @param tag Tag to use for filtering the Task list
+     */
     private void navigateToFilterView(Tag tag) {
         // re-use this fragment if it is already in filter mode
         if (mFilterMode) {
@@ -227,7 +238,6 @@ public class TaskListFragment extends Fragment
             mViewModel.setFilterTagId(tag.getId());
             mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
         } else {
-
             ((TaskActivity) getActivity()).showTaskListFragmentWithTagFilter(tag);
         }
     }
@@ -250,6 +260,12 @@ public class TaskListFragment extends Fragment
         }
     }
 
+    /**
+     * Handles changes (i.e. a Task is added, removed or changed) to the list of Tasks to display
+     * (provided by the ViewModel).
+     *
+     * @param tasks new list of Tasks
+     */
     private void handleTasksChanged(List<TaskWithTags> tasks) {
         if (tasks == null || tasks.size() == 0) {
             mRecyclerView.setVisibility(View.GONE);
@@ -262,11 +278,23 @@ public class TaskListFragment extends Fragment
         mTaskAdapter.setTasks(tasks);
     }
 
+    /**
+     * Handles changes (i.e. a Tag is added, removed or changed) to the list of Tags to display
+     * (provided by the ViewModel).
+     *
+     * @param tags new list of Tags
+     */
     private void handleTagsChanged(List<Tag> tags) {
         mTaskAdapter.setTags(tags);
         populateNavViewTagSubMenu(tags);
     }
 
+    /**
+     * Populates the Tag section of the navigation menu with menu items built from the supplied
+     * list of Tags.
+     *
+     * @param tags list of Tags to display in the navigation menu
+     */
     private void populateNavViewTagSubMenu(List<Tag> tags) {
         SubMenu tagMenu = mNavigationView.getMenu().findItem(R.id.tagsMenu).getSubMenu();
         tagMenu.clear();
