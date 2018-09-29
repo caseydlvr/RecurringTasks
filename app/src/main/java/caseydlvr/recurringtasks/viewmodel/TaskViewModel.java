@@ -19,7 +19,7 @@ public abstract class TaskViewModel extends AndroidViewModel {
      * @param task Task to complete
      */
     public void complete(@NonNull Task task) {
-        TaskActions.complete(getApplication(),task);
+        TaskActions.complete(getApplication(), task);
     }
 
     /**
