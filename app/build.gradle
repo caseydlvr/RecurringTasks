@@ -38,10 +38,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
-    implementation 'androidx.preference:preference:1.0.0-rc02'
-    implementation 'com.google.android.material:material:1.0.0-rc01'
+    implementation 'androidx.preference:preference:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
@@ -57,10 +57,10 @@ dependencies {
     testImplementation 'androidx.room:room-testing:2.0.0-rc01'
     androidTestImplementation 'androidx.room:room-testing:2.0.0-rc01'
     // ViewModel and LiveData
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
-    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
     // Test helpers for LiveData
-    testImplementation 'androidx.arch.core:core-testing:2.0.0-rc01'
+    testImplementation 'androidx.arch.core:core-testing:2.0.0'
     // ThreeTen Android Backport
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 }
