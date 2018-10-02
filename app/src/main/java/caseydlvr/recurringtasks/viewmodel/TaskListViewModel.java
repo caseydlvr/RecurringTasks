@@ -32,7 +32,6 @@ public class TaskListViewModel extends TaskViewModel {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
         mAllTags = mRepository.loadAllTags();
-        mAllTasksWithTags = mRepository.loadAllTasksAsTaskWithTags();
     }
 
     /**
@@ -59,6 +58,10 @@ public class TaskListViewModel extends TaskViewModel {
     }
 
     public LiveData<List<TaskWithTags>> getAllTasksWithTags() {
+        if (mAllTasksWithTags == null) {
+            mAllTasksWithTags = mRepository.loadAllTasksAsTaskWithTags();
+        }
+
         return mAllTasksWithTags;
     }
 
