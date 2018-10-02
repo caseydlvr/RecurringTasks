@@ -74,11 +74,6 @@ public class TaskListFragment extends Fragment
         View rootView = inflater.inflate(R.layout.task_list, container, false);
         ButterKnife.bind(this, rootView);
 
-        setModeFromArgs();
-        initActionBar();
-        initRecyclerView();
-        initNavDrawer();
-
         return rootView;
     }
 
@@ -87,11 +82,10 @@ public class TaskListFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(TaskListViewModel.class);
 
-        if (mFilterMode) {
-            mViewModel.setFilterTagId(getArguments().getInt(KEY_TAG_ID));
-        }
-
-        mTaskAdapter.setViewModel(mViewModel);
+        setMode();
+        initActionBar();
+        initRecyclerView();
+        initNavDrawer();
         subscribeUi();
     }
 
@@ -151,16 +145,22 @@ public class TaskListFragment extends Fragment
     }
 
     /**
-     * Determines if the list should be filtered by a Tag by looking in the arguments Bundle for a
-     * tagId.
+     * Determines if the list is in all tasks mode or tag filtered mode. First checks the ViewModel,
+     * then the Fragment's arguments.
      */
-    private void setModeFromArgs() {
-        if (getArguments() == null) return;
-
-        int tagId = getArguments().getInt(KEY_TAG_ID, 0);
-
-        if (tagId > 0) {
+    private void setMode() {
+        // if ViewModel already has a filter set, use that
+        if (mViewModel.getFilterTagId() > 0) {
             mFilterMode = true;
+        } else {
+            if (getArguments() == null) return;
+
+            int tagId = getArguments().getInt(KEY_TAG_ID, 0);
+
+            if (tagId > 0) {
+                mFilterMode = true;
+                mViewModel.setFilterTagId(tagId);
+            }
         }
     }
 
@@ -179,6 +179,7 @@ public class TaskListFragment extends Fragment
 
     private void initRecyclerView() {
         mTaskAdapter = new TaskAdapter();
+        mTaskAdapter.setViewModel(mViewModel);
         mTaskAdapter.setTagChipClickListener(this);
         mRecyclerView.setAdapter(mTaskAdapter);
 
