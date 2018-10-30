@@ -63,4 +63,8 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.0.0'
     // ThreeTen Android Backport
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.4'
 }
+
+apply plugin: 'com.google.gms.google-services'

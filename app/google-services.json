@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "447731250720",
+    "firebase_url": "https://recurring-tasks-f659b.firebaseio.com",
+    "project_id": "recurring-tasks-f659b",
+    "storage_bucket": "recurring-tasks-f659b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447731250720:android:38d4e97d9beea254",
+        "android_client_info": {
+          "package_name": "caseydlvr.recurringtasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447731250720-g51trf3l7pqjm572jdv7qjuefao2skka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "caseydlvr.recurringtasks",
+            "certificate_hash": "d84f927a09167a81472540bc0b4814f848fcc2e1"
+          }
+        },
+        {
+          "client_id": "447731250720-htuc5rap419ov65l381acm45d6gbcv3j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfq6m1X9t5MXL_hwrMknFLqArRz622_kU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447731250720-htuc5rap419ov65l381acm45d6gbcv3j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
