@@ -2,6 +2,8 @@ package caseydlvr.recurringtasks.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,7 +11,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
@@ -25,6 +32,7 @@ import caseydlvr.recurringtasks.ui.tasklist.TaskListFragment;
 
 public class TaskActivity extends AppCompatActivity {
     private static String TAG = TaskActivity.class.getSimpleName();
+    private static final int RC_SIGN_IN = 1;
 
     /**
      * Interface to allow Fragments to override the Activity's onBackPressed handling.
@@ -47,6 +55,8 @@ public class TaskActivity extends AppCompatActivity {
     private static final String TAG_TAG_LIST = "tag_list";
 
     private List<BackPressedListener> mBackPressedListeners = new ArrayList<>();
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,9 +64,23 @@ public class TaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task);
         ButterKnife.bind(this);
 
+        initAuth();
+
         if (savedInstanceState != null) return;
 
         parseIntent();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 
     @Override
@@ -168,6 +192,34 @@ public class TaskActivity extends AppCompatActivity {
 
     private long getTaskIdExtra() {
         return getIntent().getLongExtra(EXTRA_TASK_ID, 0);
+    }
+
+    private void initAuth() {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+
+            if (user != null) {
+                // TODO: initialize user
+            } else {
+                // TODO: do signout cleanup
+                startAuthFlow();
+            }
+        };
+    }
+
+    private void startAuthFlow() {
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build());
+
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
+                        .setAvailableProviders(providers)
+                        .build(),
+                RC_SIGN_IN);
     }
 
     /**
