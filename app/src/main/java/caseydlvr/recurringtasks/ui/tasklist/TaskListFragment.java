@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -236,7 +237,7 @@ public class TaskListFragment extends Fragment
                     startActivity(intent);
                     return true;
                 case R.id.navSignOut:
-                    FirebaseAuth.getInstance().signOut();
+                    AuthUI.getInstance().signOut(getContext());
                     return true;
                 default: // assumed to be a tag filter
                     if (mFilterMode) checkNavMenuItem(menuItem);
