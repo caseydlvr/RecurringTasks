@@ -27,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +44,9 @@ import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
 public class TaskListFragment extends Fragment
-        implements TaskActivity.BackPressedListener, TaskAdapter.TagChipClickListener {
+        implements TaskActivity.BackPressedListener,
+        TaskActivity.SignOnListener,
+        TaskAdapter.TagChipClickListener {
     private static final String TAG = TaskListFragment.class.getSimpleName();
 
     public static final String EXTRA_TAG_ID = "TaskListFragment_Tag_Id";
@@ -54,6 +58,7 @@ public class TaskListFragment extends Fragment
 
     private TaskAdapter mTaskAdapter;
     private TaskListViewModel mViewModel;
+    private TextView mNavUserEmail;
     private boolean mFilterMode = false;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -144,6 +149,16 @@ public class TaskListFragment extends Fragment
         navigateToFilterView(tag);
     }
 
+    @Override
+    public void onSignedIn() {
+        setUserEmail();
+    }
+
+    @Override
+    public void onSignedOut() {
+        setUserEmail();
+    }
+
     /**
      * Determines if the list is in all tasks mode or tag filtered mode. First checks the ViewModel,
      * then the Fragment's arguments.
@@ -197,6 +212,9 @@ public class TaskListFragment extends Fragment
         if (!mFilterMode) {
             checkNavMenuItem(mNavigationView.getMenu().findItem(R.id.navAllTasks));
         }
+
+        mNavUserEmail = mNavigationView.getHeaderView(0).findViewById(R.id.navUserEmail);
+        setUserEmail();
 
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -343,6 +361,16 @@ public class TaskListFragment extends Fragment
                 menuItem.setChecked(false);
             }
 
+        }
+    }
+
+    private void setUserEmail() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            mNavUserEmail.setText(user.getEmail());
+        } else {
+            mNavUserEmail.setText("");
         }
     }
 }
