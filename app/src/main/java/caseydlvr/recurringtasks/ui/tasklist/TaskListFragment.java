@@ -59,6 +59,7 @@ public class TaskListFragment extends Fragment
     private TaskAdapter mTaskAdapter;
     private TaskListViewModel mViewModel;
     private TextView mNavUserEmail;
+    private MenuItem mNavSignOut;
     private boolean mFilterMode = false;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -151,12 +152,12 @@ public class TaskListFragment extends Fragment
 
     @Override
     public void onSignedIn() {
-        setUserEmail();
+        setSignOnViews();
     }
 
     @Override
     public void onSignedOut() {
-        setUserEmail();
+        setSignOnViews();
     }
 
     /**
@@ -214,7 +215,8 @@ public class TaskListFragment extends Fragment
         }
 
         mNavUserEmail = mNavigationView.getHeaderView(0).findViewById(R.id.navUserEmail);
-        setUserEmail();
+        mNavSignOut = mNavigationView.getMenu().findItem(R.id.navSignOut);
+        setSignOnViews();
 
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -232,6 +234,9 @@ public class TaskListFragment extends Fragment
                 case R.id.navSettings:
                     Intent intent = new Intent(getContext(), SettingsActivity.class);
                     startActivity(intent);
+                    return true;
+                case R.id.navSignOut:
+                    FirebaseAuth.getInstance().signOut();
                     return true;
                 default: // assumed to be a tag filter
                     if (mFilterMode) checkNavMenuItem(menuItem);
@@ -364,13 +369,15 @@ public class TaskListFragment extends Fragment
         }
     }
 
-    private void setUserEmail() {
+    private void setSignOnViews() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
             mNavUserEmail.setText(user.getEmail());
+            mNavSignOut.setVisible(true);
         } else {
             mNavUserEmail.setText("");
+            mNavSignOut.setVisible(false);
         }
     }
 }
