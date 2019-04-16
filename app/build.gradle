@@ -25,10 +25,12 @@ android {
             minifyEnabled false
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [usesCleartextTraffic:"false"]
             buildConfigField "String", "SERVER_URL", '"https://rt-api.herokuapp.com"'
         }
 
         debug {
+            manifestPlaceholders = [usesCleartextTraffic:"true"]
             buildConfigField "String", "SERVER_URL", '"http://10.0.2.2:5000"'
         }
     }
