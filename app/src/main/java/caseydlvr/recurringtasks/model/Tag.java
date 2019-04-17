@@ -1,5 +1,8 @@
 package caseydlvr.recurringtasks.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Comparator;
 
 import androidx.room.ColumnInfo;
@@ -17,9 +20,13 @@ public class Tag {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
+    @SerializedName("id")
+    @Expose
     private int mId;
 
     @ColumnInfo(name = "name")
+    @SerializedName("name")
+    @Expose
     private String mName;
 
     public Tag(int id, String name) {

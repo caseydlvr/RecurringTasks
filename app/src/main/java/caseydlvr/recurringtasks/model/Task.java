@@ -1,5 +1,8 @@
 package caseydlvr.recurringtasks.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -21,27 +24,41 @@ public class Task {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
+    @Expose
+    @SerializedName("id")
     private long mId;
 
     @ColumnInfo(name = "name")
+    @SerializedName("name")
+    @Expose
     private String mName;
 
     @ColumnInfo(name = "duration")
+    @SerializedName("duration")
+    @Expose
     private int mDuration;
 
     @ColumnInfo(name = "duration_unit")
+    @SerializedName("duration_unit")
+    @Expose
     private String mDurationUnit;
 
     @ColumnInfo(name = "start_date")
+    @SerializedName("start_date")
+    @Expose
     private LocalDate mStartDate;
 
     @ColumnInfo(name = "end_date")
     private LocalDate mEndDate;
 
     @ColumnInfo(name = "repeating")
+    @SerializedName("repeating")
+    @Expose
     private boolean mRepeating;
 
     @ColumnInfo(name = "notification_option")
+    @SerializedName("notification_option")
+    @Expose
     private String mNotificationOption;
 
     // cache for calculated fields
