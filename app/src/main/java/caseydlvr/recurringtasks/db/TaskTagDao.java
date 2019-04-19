@@ -8,6 +8,7 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import androidx.room.Transaction;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
@@ -23,6 +24,7 @@ public interface TaskTagDao {
             "WHERE tasks_tags.tag_id = :tagId")
     LiveData<List<Task>> loadTasksForTag(int tagId);
 
+    @Transaction
     @Query("SELECT tasks.* FROM tasks " +
             "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
             "WHERE tasks_tags.tag_id = :tagId")
