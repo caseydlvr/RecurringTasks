@@ -315,8 +315,6 @@ public class Task {
                 ", mStartDate=" + mStartDate +
                 ", mRepeating=" + mRepeating +
                 ", mNotificationOption='" + mNotificationOption + '\'' +
-                ", mDueDate=" + mDueDate +
-                ", mDuePriority=" + mDuePriority +
                 '}';
     }
 
