@@ -305,6 +305,21 @@ public class Task {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "mId=" + mId +
+                ", mName='" + mName + '\'' +
+                ", mDuration=" + mDuration +
+                ", mDurationUnit='" + mDurationUnit + '\'' +
+                ", mStartDate=" + mStartDate +
+                ", mRepeating=" + mRepeating +
+                ", mNotificationOption='" + mNotificationOption + '\'' +
+                ", mDueDate=" + mDueDate +
+                ", mDuePriority=" + mDuePriority +
+                '}';
+    }
+
     /**
      * Comparator for Task. A Task is less than another Task if its duePriority is less than the
      * other's duePriority. If the due priorities are equal, then a Task is less than another Task

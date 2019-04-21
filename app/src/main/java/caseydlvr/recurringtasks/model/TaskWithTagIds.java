@@ -40,6 +40,14 @@ public class TaskWithTagIds {
         return (other.getTask().equals(mTask) && other.getTagIds().equals(mTagIds));
     }
 
+    @Override
+    public String toString() {
+        return "TaskWithTagIds{" +
+                "mTask=" + mTask +
+                ", mTagIds=" + mTagIds +
+                '}';
+    }
+
     public static class TaskWithTagsComparator implements Comparator<TaskWithTagIds> {
 
         @Override

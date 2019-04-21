@@ -71,6 +71,14 @@ public class Tag {
             && other.getName().equals(mName));
     }
 
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "mId=" + mId +
+                ", mName='" + mName + '\'' +
+                '}';
+    }
+
     public static class TagComparator implements Comparator<Tag> {
 
         @Override

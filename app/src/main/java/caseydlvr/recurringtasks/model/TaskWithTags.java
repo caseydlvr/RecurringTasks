@@ -22,4 +22,11 @@ public class TaskWithTags extends Task {
     public void setTags(List<Tag> tags) {
         mTags = tags;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\nTaskWithTags{" +
+                "mTags=" + mTags +
+                '}';
+    }
 }
