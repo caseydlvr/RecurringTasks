@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TaskWithTagIds;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
@@ -294,12 +294,12 @@ public class TaskListFragment extends Fragment
      *
      * @param tasks new list of Tasks
      */
-    private void handleTasksChanged(List<TaskWithTags> tasks) {
+    private void handleTasksChanged(List<TaskWithTagIds> tasks) {
         if (tasks == null || tasks.size() == 0) {
             mRecyclerView.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
-            Collections.sort(tasks, new TaskWithTags.TaskWithTagsComparator());
+            Collections.sort(tasks, new TaskWithTagIds.TaskWithTagsComparator());
             mRecyclerView.setVisibility(View.VISIBLE);
             mEmptyView.setVisibility(View.GONE);
         }

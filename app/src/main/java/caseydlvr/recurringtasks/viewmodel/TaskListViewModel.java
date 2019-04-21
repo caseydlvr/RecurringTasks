@@ -9,15 +9,15 @@ import java.util.List;
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TaskWithTagIds;
 
 /**
  * ViewModel for the task list view
  */
 public class TaskListViewModel extends TaskViewModel {
 
-    private LiveData<List<TaskWithTags>> mAllTasksWithTags;
-    private LiveData<List<TaskWithTags>> mFilteredTasksWithTags;
+    private LiveData<List<TaskWithTagIds>> mAllTasksWithTags;
+    private LiveData<List<TaskWithTagIds>> mFilteredTasksWithTags;
     private LiveData<List<Tag>> mAllTags;
     private LiveData<Tag> mFilterTag;
     private DataRepository mRepository;
@@ -45,7 +45,7 @@ public class TaskListViewModel extends TaskViewModel {
         }
     }
 
-    public LiveData<List<TaskWithTags>> getFilteredTasksWithTags() {
+    public LiveData<List<TaskWithTagIds>> getFilteredTasksWithTags() {
         return mFilteredTasksWithTags;
     }
 
@@ -57,7 +57,7 @@ public class TaskListViewModel extends TaskViewModel {
         return mFilterTag;
     }
 
-    public LiveData<List<TaskWithTags>> getAllTasksWithTags() {
+    public LiveData<List<TaskWithTagIds>> getAllTasksWithTags() {
         if (mAllTasksWithTags == null) {
             mAllTasksWithTags = mRepository.loadAllTasksAsTaskWithTags();
         }

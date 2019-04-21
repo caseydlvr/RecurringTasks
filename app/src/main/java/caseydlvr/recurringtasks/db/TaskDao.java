@@ -21,7 +21,7 @@ public interface TaskDao {
 
     @Transaction
     @Query("SELECT * FROM tasks WHERE end_date IS NULL")
-    LiveData<List<TaskWithTags>> loadAllAsTasksWithTags();
+    LiveData<List<TaskWithTagIds>> loadAllAsTasksWithTags();
 
     @Query("SELECT * FROM tasks WHERE end_date IS NULL AND notification_option != 'never'")
     List<Task> loadAllWithNotifications();

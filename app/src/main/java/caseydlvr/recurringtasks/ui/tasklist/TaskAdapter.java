@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,7 +37,7 @@ import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TaskWithTagIds;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
@@ -50,7 +49,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         void onTagChipClick(Tag tag);
     }
 
-    private List<TaskWithTags> mTasks;
+    private List<TaskWithTagIds> mTasks;
     private List<Tag> mTags;
     private TaskListViewModel mViewModel;
     private TagChipClickListener mTagChipClickListener;
@@ -76,7 +75,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onItemSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getAdapterPosition();
-        final TaskWithTags task = mTasks.get(position);
+        final TaskWithTagIds task = mTasks.get(position);
 
         if (direction == ItemTouchHelper.LEFT) {
             delete(task, position, viewHolder.itemView);
@@ -92,8 +91,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      *
      * @param newTasks List of Tasks to display
      */
-    public void setTasks(List<TaskWithTags> newTasks) {
-        List<TaskWithTags> oldTasks = mTasks;
+    public void setTasks(List<TaskWithTagIds> newTasks) {
+        List<TaskWithTagIds> oldTasks = mTasks;
         mTasks = newTasks;
         if (oldTasks == null) {
             notifyItemRangeChanged(0, newTasks.size());
@@ -144,7 +143,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in the Task list to add the item
      * @param task     Task to add to the list
      */
-    private void addItem(int position, TaskWithTags task) {
+    private void addItem(int position, TaskWithTagIds task) {
         mTasks.add(position, task);
         notifyItemInserted(position);
     }
@@ -161,7 +160,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to complete
      */
-    private void complete(TaskWithTags task, int position, View v) {
+    private void complete(TaskWithTagIds task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
@@ -185,7 +184,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to delete
      */
-    private void delete(TaskWithTags task, int position, View v) {
+    private void delete(TaskWithTagIds task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
@@ -201,7 +200,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public class TaskViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, ItemTouchSwipeTarget {
 
-        private TaskWithTags mTask;
+        private TaskWithTagIds mTask;
         private Context mContext;
 
         @BindView(R.id.listItemLayout) FrameLayout mListItemLayout;
@@ -226,7 +225,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
          *
          * @param task Task to bind to this ViewHolder
          */
-        void bindTask(TaskWithTags task) {
+        void bindTask(TaskWithTagIds task) {
             mTask = task;
             DueStatus dueStatus = new DueStatus(mContext, mTask.getTask().getDuePriority());
 
@@ -346,10 +345,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public class TaskListDiffCallback extends DiffUtil.Callback {
 
-        private final List<TaskWithTags> mOldTaskList;
-        private final List<TaskWithTags> mNewTaskList;
+        private final List<TaskWithTagIds> mOldTaskList;
+        private final List<TaskWithTagIds> mNewTaskList;
 
-        TaskListDiffCallback(List<TaskWithTags> oldTaskList, List<TaskWithTags> newTaskList) {
+        TaskListDiffCallback(List<TaskWithTagIds> oldTaskList, List<TaskWithTagIds> newTaskList) {
             mOldTaskList = oldTaskList;
             mNewTaskList = newTaskList;
         }

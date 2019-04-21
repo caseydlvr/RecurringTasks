@@ -12,7 +12,7 @@ import androidx.room.Transaction;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
-import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TaskWithTagIds;
 
 import static androidx.room.OnConflictStrategy.IGNORE;
 
@@ -28,7 +28,7 @@ public interface TaskTagDao {
     @Query("SELECT tasks.* FROM tasks " +
             "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
             "WHERE tasks_tags.tag_id = :tagId")
-    LiveData<List<TaskWithTags>> loadTasksAsTasksWithTagForTag(int tagId);
+    LiveData<List<TaskWithTagIds>> loadTasksAsTasksWithTagForTag(int tagId);
 
     @Query("SELECT tags.* FROM tags " +
             "JOIN tasks_tags ON tags.id = tasks_tags.tag_id " +

@@ -12,7 +12,7 @@ import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
-import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TaskWithTagIds;
 
 /**
  * Singleton that handles CRUD for database storage. Single point of access to the data. Handles
@@ -69,12 +69,12 @@ public class DataRepository {
     }
 
     /**
-     * Loads all Tasks wrapped in a TaskWithTags object (which also includes a list of tagIds
+     * Loads all Tasks wrapped in a TaskWithTagIds object (which also includes a list of tagIds
      * for all Tags associated with the Task
      *
-     * @return LiveData holding a List of TaskWithTags
+     * @return LiveData holding a List of TaskWithTagIds
      */
-    public LiveData<List<TaskWithTags>> loadAllTasksAsTaskWithTags() {
+    public LiveData<List<TaskWithTagIds>> loadAllTasksAsTaskWithTags() {
         return mDb.taskDao().loadAllAsTasksWithTags();
     }
 
@@ -191,12 +191,12 @@ public class DataRepository {
     }
 
     /**
-     * Loads Tasks (as TaskWithTags) that are tagged with the Tag represented by the given tagId
+     * Loads Tasks (as TaskWithTagIds) that are tagged with the Tag represented by the given tagId
      *
      * @param tagId id of Tag to load Tasks for
-     * @return      LiveData holding a List of TaskWithTags
+     * @return      LiveData holding a List of TaskWithTagIds
      */
-    public LiveData<List<TaskWithTags>> loadTasksAsTasksWithTagForTag(int tagId) {
+    public LiveData<List<TaskWithTagIds>> loadTasksAsTasksWithTagForTag(int tagId) {
         return mDb.taskTagDao().loadTasksAsTasksWithTagForTag(tagId);
     }
 
