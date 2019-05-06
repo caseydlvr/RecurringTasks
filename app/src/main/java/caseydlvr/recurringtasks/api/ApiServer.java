@@ -14,6 +14,7 @@ import caseydlvr.recurringtasks.BuildConfig;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TasksAndTags;
 import okhttp3.OkHttpClient;
 import okio.Buffer;
 import retrofit2.Call;
@@ -274,6 +275,27 @@ public class ApiServer {
                     Log.d(TAG, "delete successful");
                 } else {
                     handleErrorResponse(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                handleFailure(t);
+            }
+        });
+    }
+
+    /************* Full data methods *************/
+
+    public void fullExport(TasksAndTags tasksAndTags) {
+        mService.fullExport(tasksAndTags).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "data exported");
+                } else {
+                    handleErrorResponse(response);
+                    logRequestJson(call);
                 }
             }
 

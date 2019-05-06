@@ -5,6 +5,7 @@ import java.util.List;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TasksAndTags;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -14,6 +15,9 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface DataWebservice {
+    @POST("/")
+    Call<Void> fullExport(@Body TasksAndTags tasksAndTags);
+
     @GET("/tasks")
     Call<List<Task>> getTasks();
 
