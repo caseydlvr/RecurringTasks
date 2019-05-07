@@ -29,6 +29,15 @@ public class Tag {
     @Expose
     private String mName;
 
+    @ColumnInfo(name = "server_id")
+    private int mServerId;
+
+    @ColumnInfo(name = "synced")
+    private boolean mSynced;
+
+    @ColumnInfo(name = "deleted")
+    private boolean mDeleted;
+
     public Tag(int id, String name) {
         mId = id;
         mName = name;
@@ -58,6 +67,30 @@ public class Tag {
 
     public void setName(String name) {
         mName = name.trim();
+    }
+
+    public int getServerId() {
+        return mServerId;
+    }
+
+    public void setServerId(int serverId) {
+        mServerId = serverId;
+    }
+
+    public boolean isSynced() {
+        return mSynced;
+    }
+
+    public void setSynced(boolean synced) {
+        mSynced = synced;
+    }
+
+    public boolean isDeleted() {
+        return mDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        mDeleted = deleted;
     }
 
     @Override

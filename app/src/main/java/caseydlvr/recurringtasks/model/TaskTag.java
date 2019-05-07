@@ -34,6 +34,12 @@ public class TaskTag {
     @ColumnInfo(name = "tag_id")
     private int mTagId;
 
+    @ColumnInfo(name = "synced")
+    private boolean mSynced;
+
+    @ColumnInfo(name = "deleted")
+    private boolean mDeleted;
+
     public TaskTag(long taskId, int tagId) {
         mTaskId = taskId;
         mTagId = tagId;
@@ -53,5 +59,21 @@ public class TaskTag {
 
     public void setTagId(int tagId) {
         this.mTagId = tagId;
+    }
+
+    public boolean isSynced() {
+        return mSynced;
+    }
+
+    public void setSynced(boolean synced) {
+        mSynced = synced;
+    }
+
+    public boolean isDeleted() {
+        return mDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        mDeleted = deleted;
     }
 }
