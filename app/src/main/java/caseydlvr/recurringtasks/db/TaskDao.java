@@ -16,14 +16,14 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
 public interface TaskDao {
-    @Query("SELECT * FROM tasks WHERE end_date IS NULL")
+    @Query("SELECT * FROM tasks WHERE NOT deleted")
     LiveData<List<Task>> loadAll();
 
     @Transaction
-    @Query("SELECT * FROM tasks WHERE end_date IS NULL")
+    @Query("SELECT * FROM tasks WHERE NOT deleted")
     LiveData<List<TaskWithTagIds>> loadAllAsTasksWithTags();
 
-    @Query("SELECT * FROM tasks WHERE end_date IS NULL AND notification_option != 'never'")
+    @Query("SELECT * FROM tasks WHERE notification_option != 'never' AND NOT deleted")
     List<Task> loadAllWithNotifications();
 
     @Query("SELECT * FROM tasks WHERE id = :id")
