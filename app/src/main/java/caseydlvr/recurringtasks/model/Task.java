@@ -48,9 +48,6 @@ public class Task {
     @Expose
     private LocalDate mStartDate;
 
-    @ColumnInfo(name = "end_date")
-    private LocalDate mEndDate;
-
     @ColumnInfo(name = "repeating")
     @SerializedName("repeating")
     @Expose
@@ -196,14 +193,6 @@ public class Task {
     public void setStartDate(LocalDate startDate) {
         mStartDate = startDate;
         setDueDateFields();
-    }
-
-    public LocalDate getEndDate() {
-        return mEndDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        mEndDate = endDate;
     }
 
     /**

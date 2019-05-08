@@ -59,7 +59,7 @@ public class Migration_3_4Test {
         assertEquals("duration not equal", 1, tasks.getInt(tasks.getColumnIndex("duration")));
         assertEquals("duration_unit not equal", "week", tasks.getString(tasks.getColumnIndex("duration_unit")));
         assertEquals("start_date not equal", "2018-01-05", tasks.getString(tasks.getColumnIndex("start_date")));
-        assertEquals("end_date not equal", "", tasks.getString(tasks.getColumnIndex("end_date")));
+        assertEquals("end_date still exists", -1, tasks.getColumnIndex("end_date"));
         assertEquals("repeating not equal", 1, tasks.getInt(tasks.getColumnIndex("repeating")));
         assertEquals("notification_option not equal", "overdue", tasks.getString(tasks.getColumnIndex("notification_option")));
         // verify new columns
@@ -74,7 +74,7 @@ public class Migration_3_4Test {
         assertEquals("duration not equal", 10, tasks.getInt(tasks.getColumnIndex("duration")));
         assertEquals("duration_unit not equal", "day", tasks.getString(tasks.getColumnIndex("duration_unit")));
         assertEquals("start_date not equal", "2018-05-30", tasks.getString(tasks.getColumnIndex("start_date")));
-        assertEquals("end_date not equal", "", tasks.getString(tasks.getColumnIndex("end_date")));
+        assertEquals("end_date still exists", -1, tasks.getColumnIndex("end_date"));
         assertEquals("repeating not equal", 0, tasks.getInt(tasks.getColumnIndex("repeating")));
         assertEquals("notification_option not equal", "never", tasks.getString(tasks.getColumnIndex("notification_option")));
         // verify new columns

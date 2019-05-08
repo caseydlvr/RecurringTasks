@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "1665d3ae1cf38a0ae02e638ddc1d6316",
+    "identityHash": "7dc2bee607b6461e36a247376590508a",
     "entities": [
       {
         "tableName": "tasks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `duration` INTEGER NOT NULL, `duration_unit` TEXT, `start_date` TEXT, `end_date` TEXT, `repeating` INTEGER NOT NULL, `notification_option` TEXT, `server_id` INTEGER NOT NULL, `synced` INTEGER NOT NULL, `deleted` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `duration` INTEGER NOT NULL, `duration_unit` TEXT, `start_date` TEXT, `repeating` INTEGER NOT NULL, `notification_option` TEXT, `server_id` INTEGER NOT NULL, `synced` INTEGER NOT NULL, `deleted` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "mId",
@@ -35,12 +35,6 @@
           {
             "fieldPath": "mStartDate",
             "columnName": "start_date",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "mEndDate",
-            "columnName": "end_date",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -202,7 +196,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1665d3ae1cf38a0ae02e638ddc1d6316\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7dc2bee607b6461e36a247376590508a\")"
     ]
   }
 }
