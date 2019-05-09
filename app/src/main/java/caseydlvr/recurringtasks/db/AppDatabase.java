@@ -11,7 +11,7 @@ import caseydlvr.recurringtasks.db.migrations.Migration_2_3;
 import caseydlvr.recurringtasks.db.migrations.Migration_3_4;
 import caseydlvr.recurringtasks.model.*;
 
-@Database(entities = { Task.class, Tag.class, TaskTag.class }, version = 4)
+@Database(entities = { Task.class, Tag.class, TaskTag.class, Deletion.class }, version = 4)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -20,6 +20,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
     public abstract TagDao tagDao();
     public abstract TaskTagDao taskTagDao();
+    public abstract DeletionDao deletionDao();
 
     public static AppDatabase getInstance(Context context) {
         if (sInstance == null) {

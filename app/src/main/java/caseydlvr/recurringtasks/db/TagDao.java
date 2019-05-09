@@ -16,7 +16,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface TagDao {
 
-    @Query("Select * FROM tags WHERE NOT deleted ORDER BY name")
+    @Query("Select * FROM tags ORDER BY name")
     LiveData<List<Tag>> loadAllTags();
 
     @Query("SELECT * FROM tags WHERE id = :tagId")

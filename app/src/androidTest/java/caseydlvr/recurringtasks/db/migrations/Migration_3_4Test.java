@@ -18,6 +18,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import caseydlvr.recurringtasks.db.AppDatabase;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class Migration_3_4Test {
@@ -46,6 +47,7 @@ public class Migration_3_4Test {
         Cursor tasks = db.query("SELECT * FROM tasks");
         Cursor tags = db.query("SELECT * FROM tags");
         Cursor tasksTags = db.query("SELECT * FROM tasks_tags");
+        Cursor deletions = db.query("SELECT * FROM deletions");
 
         /* ---- verify task data ---- */
 
@@ -65,7 +67,6 @@ public class Migration_3_4Test {
         // verify new columns
         assertEquals("server_id not 0", 0, tasks.getInt(tasks.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tasks.getInt(tasks.getColumnIndex("synced")));
-        assertEquals("deleted not 0", 0, tasks.getInt(tasks.getColumnIndex("deleted")));
 
         // verify Task 2
         tasks.moveToNext();
@@ -80,7 +81,6 @@ public class Migration_3_4Test {
         // verify new columns
         assertEquals("server_id not 0", 0, tasks.getInt(tasks.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tasks.getInt(tasks.getColumnIndex("synced")));
-        assertEquals("deleted not 0", 0, tasks.getInt(tasks.getColumnIndex("deleted")));
 
         /* ---- verify tag data ---- */
 
@@ -94,7 +94,6 @@ public class Migration_3_4Test {
         // verify new columns
         assertEquals("server_id not 0", 0, tags.getInt(tags.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tags.getInt(tags.getColumnIndex("synced")));
-        assertEquals("deleted not 0", 0, tags.getInt(tags.getColumnIndex("deleted")));
 
         // verify Tag 2
         tags.moveToNext();
@@ -103,7 +102,6 @@ public class Migration_3_4Test {
         // verify new columns
         assertEquals("server_id not 0", 0, tags.getInt(tags.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tags.getInt(tags.getColumnIndex("synced")));
-        assertEquals("deleted not 0", 0, tags.getInt(tags.getColumnIndex("deleted")));
 
         /* ---- verify task_tag data ---- */
 
@@ -116,16 +114,18 @@ public class Migration_3_4Test {
         assertEquals("tag_id not equal", 1, tasksTags.getInt(tasksTags.getColumnIndex("tag_id")));
         // verify new columns
         assertEquals("synced not 0", 0, tasksTags.getInt(tasksTags.getColumnIndex("synced")));
-        assertEquals("deleted not 0", 0, tasksTags.getInt(tasksTags.getColumnIndex("deleted")));
 
         // verify TaskTag 2
         tasksTags.moveToNext();
         assertEquals("task_id not equal", 1, tasksTags.getInt(tasksTags.getColumnIndex("task_id")));
         assertEquals("tag_id not equal", 2, tasksTags.getInt(tasksTags.getColumnIndex("tag_id")));
         // verify new columns
-        assertEquals("is_synced not 0", 0, tasksTags.getInt(tasksTags.getColumnIndex("synced")));
-        assertEquals("is_deleted not 0", 0, tasksTags.getInt(tasksTags.getColumnIndex("deleted")));
+        assertEquals("synced not 0", 0, tasksTags.getInt(tasksTags.getColumnIndex("synced")));
 
+        /* ---- verify deletions table created ---- */
+        assertEquals("deletions should be empty", 0, deletions.getCount());
+        assertNotEquals("task_id column missing", -1, deletions.getColumnIndex("task_id"));
+        assertNotEquals("tag_id column missing", -1, deletions.getColumnIndex("tag_id"));
     }
 
     private void populateTestTasks(SupportSQLiteDatabase db) {

@@ -64,9 +64,6 @@ public class Task {
     @ColumnInfo(name = "synced")
     private boolean mSynced;
 
-    @ColumnInfo(name = "deleted")
-    private boolean mDeleted;
-
     // cache for calculated fields
     private transient LocalDate mDueDate;
     private transient int mDuePriority;
@@ -228,14 +225,6 @@ public class Task {
 
     public void setSynced(boolean synced) {
         mSynced = synced;
-    }
-
-    public boolean isDeleted() {
-        return mDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        mDeleted = deleted;
     }
 
     /**

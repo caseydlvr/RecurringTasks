@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import caseydlvr.recurringtasks.db.AppDatabase;
+import caseydlvr.recurringtasks.model.Deletion;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
@@ -233,6 +234,8 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Task... tasks) {
+            tasks[0].setSynced(false);
+
             if (tasks[0].getId() > 0) {
                 mDr.getDb().taskDao().update(tasks[0]);
             } else {
@@ -257,10 +260,32 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Task... tasks) {
-            mDr.getDb().taskDao().delete(tasks[0]);
+            deleteTask(mDr.getDb(), tasks[0]);
 
             return null;
         }
+    }
+
+    /**
+     * Deletes a task from the local Room DB. Helper function for Async tasks that need to delete a
+     * task.
+     *
+     * @param db   AppDatabase to use for query execution
+     * @param task Task to delete
+     */
+    @WorkerThread
+    private static void deleteTask(AppDatabase db, Task task) {
+        db.runInTransaction(() -> {
+            db.taskDao().delete(task);
+
+            // if task has synced with server, queue the deletion for sync
+            if (task.getServerId() > 0) {
+                db.deletionDao().insert(Deletion.taskDeletion(task));
+
+                // no longer need to sync any deleted relations for the task
+                db.deletionDao().deleteRelationsForTask(task.getId());
+            }
+        });
     }
 
     /**
@@ -321,7 +346,7 @@ public class DataRepository {
         db.runInTransaction(() -> {
             List<TaskTag> taskTags = db.taskTagDao().loadTaskTagsForTask(task.getId());
 
-            db.taskDao().delete(task);
+            deleteTask(db, task);
 
             if (task.isRepeating()) {
                 Task newTask = new Task();
@@ -358,6 +383,8 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Tag... tags) {
+            tags[0].setSynced(false);
+
             if (tags[0].getId() >  0) {
                 mDr.getDb().tagDao().update(tags[0]);
             } else {
@@ -382,7 +409,19 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Tag... tags) {
-            mDr.getDb().tagDao().delete(tags[0]);
+            AppDatabase db = mDr.getDb();
+
+            db.runInTransaction(() -> {
+                db.tagDao().delete(tags[0]);
+
+                // if tag has synced with server, queue the deletion for syncing
+                if (tags[0].getServerId() > 0) {
+                    db.deletionDao().insert(Deletion.tagDeletion(tags[0]));
+
+                    // no longer need to sync any deleted relations for the tag
+                    db.deletionDao().deleteRelationsForTag(tags[0].getId());
+                }
+            });
 
             return null;
         }
@@ -422,7 +461,17 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(TaskTag... taskTags) {
-            mDr.getDb().taskTagDao().delete(taskTags[0]);
+            AppDatabase db = mDr.getDb();
+
+            db.runInTransaction(() -> {
+                db.taskTagDao().delete(taskTags[0]);
+
+                // if relation is synced to server, queue this deletion for sync
+                if (taskTags[0].isSynced()) {
+                    db.deletionDao().insert(Deletion.taskTagDeletion(taskTags[0]));
+                }
+
+            });
 
             return null;
         }

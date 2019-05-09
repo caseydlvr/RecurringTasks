@@ -1,5 +1,6 @@
 package caseydlvr.recurringtasks.model;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class TaskWithTagIds {
     private Task mTask;
 
     @Relation(parentColumn = "id", entityColumn = "task_id", entity = TaskTag.class, projection = "tag_id")
-    private List<Integer> mTagIds;
+    private List<Integer> mTagIds = new ArrayList<>();
 
     public Task getTask() {
         return mTask;

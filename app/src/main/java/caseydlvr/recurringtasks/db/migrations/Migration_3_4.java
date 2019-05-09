@@ -35,16 +35,19 @@ public class Migration_3_4 extends Migration {
         // add new columns
         database.execSQL("ALTER TABLE tasks ADD COLUMN server_id INTEGER NOT NULL DEFAULT 0");
         database.execSQL("ALTER TABLE tasks ADD COLUMN synced INTEGER NOT NULL DEFAULT 0");
-        database.execSQL("ALTER TABLE tasks ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0");
 
         database.execSQL("ALTER TABLE tags ADD COLUMN server_id INTEGER NOT NULL DEFAULT 0");
         database.execSQL("ALTER TABLE tags ADD COLUMN synced INTEGER NOT NULL DEFAULT 0");
-        database.execSQL("ALTER TABLE tags ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0");
 
         database.execSQL("ALTER TABLE tasks_tags ADD COLUMN synced INTEGER NOT NULL DEFAULT 0");
-        database.execSQL("ALTER TABLE tasks_tags ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0");
 
         database.setTransactionSuccessful();
         database.endTransaction();
+
+        // new table for syncing deletions
+        database.execSQL("CREATE TABLE deletions (" +
+                "`task_id` INTEGER NOT NULL DEFAULT 0, " +
+                "`tag_id` INTEGER NOT NULL DEFAULT 0," +
+                "PRIMARY KEY (task_id, tag_id))");
     }
 }
