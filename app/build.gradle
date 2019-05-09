@@ -61,6 +61,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
     testImplementation 'androidx.arch.core:core-testing:2.0.1'
+    // WorkManager
+    implementation 'androidx.work:work-runtime:2.0.1'
+    androidTestImplementation 'androidx.work:work-testing:2.0.1'
     // ButterKnife
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
