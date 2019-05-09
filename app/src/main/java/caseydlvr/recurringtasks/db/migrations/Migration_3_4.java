@@ -41,13 +41,13 @@ public class Migration_3_4 extends Migration {
 
         database.execSQL("ALTER TABLE tasks_tags ADD COLUMN synced INTEGER NOT NULL DEFAULT 0");
 
-        database.setTransactionSuccessful();
-        database.endTransaction();
-
         // new table for syncing deletions
         database.execSQL("CREATE TABLE deletions (" +
                 "`task_id` INTEGER NOT NULL DEFAULT 0, " +
                 "`tag_id` INTEGER NOT NULL DEFAULT 0," +
                 "PRIMARY KEY (task_id, tag_id))");
+
+        database.setTransactionSuccessful();
+        database.endTransaction();
     }
 }
