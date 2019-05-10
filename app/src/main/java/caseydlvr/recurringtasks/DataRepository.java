@@ -57,7 +57,7 @@ public class DataRepository {
      * @return   LiveData holding a Task.
      */
     public LiveData<Task> loadTaskById(final long id) {
-        return mDb.taskDao().loadById(id);
+        return mDb.taskDao().observeById(id);
     }
 
     /**
@@ -66,7 +66,7 @@ public class DataRepository {
      * @return LiveData holding a List of Tasks
      */
     public LiveData<List<Task>> loadAllTasks() {
-        return mDb.taskDao().loadAll();
+        return mDb.taskDao().observeAll();
     }
 
     /**
@@ -76,7 +76,7 @@ public class DataRepository {
      * @return LiveData holding a List of TaskWithTagIds
      */
     public LiveData<List<TaskWithTagIds>> loadAllTasksAsTaskWithTags() {
-        return mDb.taskDao().loadAllWithTagIds();
+        return mDb.taskDao().observeAllWithTagIds();
     }
 
     /**
@@ -139,7 +139,7 @@ public class DataRepository {
      * @return LiveData holding a List of Tags
      */
     public LiveData<List<Tag>> loadAllTags() {
-        return mDb.tagDao().loadAll();
+        return mDb.tagDao().observeAll();
     }
 
     /**
@@ -147,7 +147,7 @@ public class DataRepository {
      * @return      LiveData holding a Tag
      */
     public LiveData<Tag> loadTagById(int tagId) {
-        return mDb.tagDao().loadById(tagId);
+        return mDb.tagDao().observeById(tagId);
     }
 
     /**
@@ -178,7 +178,7 @@ public class DataRepository {
      * @return       LiveData holding a List of Tags
      */
     public LiveData<List<Tag>> loadTagsForTask(long taskId) {
-        return mDb.tagDao().loadForTask(taskId);
+        return mDb.tagDao().observeByTask(taskId);
     }
 
     /**
@@ -188,7 +188,7 @@ public class DataRepository {
      * @return      LiveData holding a List of Tasks
      */
     public LiveData<List<Task>> loadTasksForTag(int tagId) {
-        return mDb.taskDao().loadForTag(tagId);
+        return mDb.taskDao().observeByTag(tagId);
     }
 
     /**
@@ -198,7 +198,7 @@ public class DataRepository {
      * @return      LiveData holding a List of TaskWithTagIds
      */
     public LiveData<List<TaskWithTagIds>> loadTasksAsTasksWithTagForTag(int tagId) {
-        return mDb.taskDao().loadWithTagIdsForTag(tagId);
+        return mDb.taskDao().observeByTagWithTagIds(tagId);
     }
 
     /**
@@ -322,7 +322,7 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(Long... longs) {
-            Task task = mDr.getDb().taskDao().loadByIdAsTask(longs[0]);
+            Task task = mDr.getDb().taskDao().loadById(longs[0]);
 
             if (task != null) completeTask(mDr.getDb(), task);
 
@@ -344,7 +344,7 @@ public class DataRepository {
     @WorkerThread
     private static void completeTask(AppDatabase db, Task task) {
         db.runInTransaction(() -> {
-            List<TaskTag> taskTags = db.taskTagDao().loadForTask(task.getId());
+            List<TaskTag> taskTags = db.taskTagDao().loadByTask(task.getId());
 
             deleteTask(db, task);
 

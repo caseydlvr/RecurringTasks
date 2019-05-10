@@ -15,10 +15,10 @@ import static androidx.room.OnConflictStrategy.IGNORE;
 public interface TaskTagDao {
 
     @Query("SELECT * FROM tasks_tags WHERE task_id = :taskId")
-    List<TaskTag> loadForTask(long taskId);
+    List<TaskTag> loadByTask(long taskId);
 
     @Insert(onConflict = IGNORE)
-    void insert(TaskTag... taskTag);
+    void insert(TaskTag... taskTags);
 
     @Delete
     void delete(TaskTag... taskTags);

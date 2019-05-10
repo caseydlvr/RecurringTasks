@@ -17,22 +17,22 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 public interface TagDao {
 
     @Query("Select * FROM tags ORDER BY name")
-    LiveData<List<Tag>> loadAll();
-
-    @Query("SELECT * FROM tags WHERE id = :tagId")
-    LiveData<Tag> loadById(int tagId);
+    LiveData<List<Tag>> observeAll();
 
     @Query("SELECT tags.* FROM tags " +
             "JOIN tasks_tags ON tags.id = tasks_tags.tag_id " +
             "WHERE tasks_tags.task_id = :taskId " +
             "ORDER BY tags.name")
-    LiveData<List<Tag>> loadForTask(long taskId);
+    LiveData<List<Tag>> observeByTask(long taskId);
+
+    @Query("SELECT * FROM tags WHERE id = :tagId")
+    LiveData<Tag> observeById(int tagId);
 
     @Insert(onConflict = REPLACE)
-    long insert(Tag tag);
+    long insert(Tag... tags);
 
     @Update
-    void update(Tag tag);
+    void update(Tag... tags);
 
     @Delete
     void delete(Tag... tags);
