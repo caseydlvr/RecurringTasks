@@ -76,7 +76,7 @@ public class DataRepository {
      * @return LiveData holding a List of TaskWithTagIds
      */
     public LiveData<List<TaskWithTagIds>> loadAllTasksAsTaskWithTags() {
-        return mDb.taskDao().loadAllAsTasksWithTags();
+        return mDb.taskDao().loadAllWithTagIds();
     }
 
     /**
@@ -139,7 +139,7 @@ public class DataRepository {
      * @return LiveData holding a List of Tags
      */
     public LiveData<List<Tag>> loadAllTags() {
-        return mDb.tagDao().loadAllTags();
+        return mDb.tagDao().loadAll();
     }
 
     /**
@@ -147,7 +147,7 @@ public class DataRepository {
      * @return      LiveData holding a Tag
      */
     public LiveData<Tag> loadTagById(int tagId) {
-        return mDb.tagDao().loadTagById(tagId);
+        return mDb.tagDao().loadById(tagId);
     }
 
     /**
@@ -178,7 +178,7 @@ public class DataRepository {
      * @return       LiveData holding a List of Tags
      */
     public LiveData<List<Tag>> loadTagsForTask(long taskId) {
-        return mDb.tagDao().loadTagsForTask(taskId);
+        return mDb.tagDao().loadForTask(taskId);
     }
 
     /**
@@ -188,7 +188,7 @@ public class DataRepository {
      * @return      LiveData holding a List of Tasks
      */
     public LiveData<List<Task>> loadTasksForTag(int tagId) {
-        return mDb.taskDao().loadTasksForTag(tagId);
+        return mDb.taskDao().loadForTag(tagId);
     }
 
     /**
@@ -198,7 +198,7 @@ public class DataRepository {
      * @return      LiveData holding a List of TaskWithTagIds
      */
     public LiveData<List<TaskWithTagIds>> loadTasksAsTasksWithTagForTag(int tagId) {
-        return mDb.taskDao().loadTasksAsTasksWithTagForTag(tagId);
+        return mDb.taskDao().loadWithTagIdsForTag(tagId);
     }
 
     /**
@@ -344,7 +344,7 @@ public class DataRepository {
     @WorkerThread
     private static void completeTask(AppDatabase db, Task task) {
         db.runInTransaction(() -> {
-            List<TaskTag> taskTags = db.taskTagDao().loadTaskTagsForTask(task.getId());
+            List<TaskTag> taskTags = db.taskTagDao().loadForTask(task.getId());
 
             deleteTask(db, task);
 
