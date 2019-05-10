@@ -178,7 +178,7 @@ public class DataRepository {
      * @return       LiveData holding a List of Tags
      */
     public LiveData<List<Tag>> loadTagsForTask(long taskId) {
-        return mDb.taskTagDao().loadTagsForTask(taskId);
+        return mDb.tagDao().loadTagsForTask(taskId);
     }
 
     /**
@@ -188,7 +188,7 @@ public class DataRepository {
      * @return      LiveData holding a List of Tasks
      */
     public LiveData<List<Task>> loadTasksForTag(int tagId) {
-        return mDb.taskTagDao().loadTasksForTag(tagId);
+        return mDb.taskDao().loadTasksForTag(tagId);
     }
 
     /**
@@ -198,7 +198,7 @@ public class DataRepository {
      * @return      LiveData holding a List of TaskWithTagIds
      */
     public LiveData<List<TaskWithTagIds>> loadTasksAsTasksWithTagForTag(int tagId) {
-        return mDb.taskTagDao().loadTasksAsTasksWithTagForTag(tagId);
+        return mDb.taskDao().loadTasksAsTasksWithTagForTag(tagId);
     }
 
     /**

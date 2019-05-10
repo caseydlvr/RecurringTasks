@@ -23,6 +23,17 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks")
     LiveData<List<TaskWithTagIds>> loadAllAsTasksWithTags();
 
+    @Query("SELECT tasks.* FROM tasks " +
+            "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
+            "WHERE tasks_tags.tag_id = :tagId")
+    LiveData<List<Task>> loadTasksForTag(int tagId);
+
+    @Transaction
+    @Query("SELECT tasks.* FROM tasks " +
+            "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
+            "WHERE tasks_tags.tag_id = :tagId ")
+    LiveData<List<TaskWithTagIds>> loadTasksAsTasksWithTagForTag(int tagId);
+
     @Query("SELECT * FROM tasks WHERE notification_option != 'never'")
     List<Task> loadAllWithNotifications();
 

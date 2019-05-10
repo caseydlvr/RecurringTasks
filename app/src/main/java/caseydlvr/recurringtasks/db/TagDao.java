@@ -22,6 +22,12 @@ public interface TagDao {
     @Query("SELECT * FROM tags WHERE id = :tagId")
     LiveData<Tag> loadTagById(int tagId);
 
+    @Query("SELECT tags.* FROM tags " +
+            "JOIN tasks_tags ON tags.id = tasks_tags.tag_id " +
+            "WHERE tasks_tags.task_id = :taskId " +
+            "ORDER BY tags.name")
+    LiveData<List<Tag>> loadTagsForTask(long taskId);
+
     @Insert(onConflict = REPLACE)
     long insert(Tag tag);
 
