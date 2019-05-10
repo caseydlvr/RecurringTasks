@@ -29,7 +29,7 @@ public interface TagDao {
     LiveData<Tag> observeById(int tagId);
 
     @Insert(onConflict = REPLACE)
-    long insert(Tag... tags);
+    long[] insert(Tag... tags);
 
     @Update
     void update(Tag... tags);

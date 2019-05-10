@@ -50,22 +50,11 @@ public class DataRepository {
     // TaskDao related operations
 
     /**
-     * Loads a single Task with the provided ID from persistent storage. Task returned is returned
-     * wrapped in LiveData.
-     *
-     * @param id ID of Task to load
-     * @return   LiveData holding a Task.
-     */
-    public LiveData<Task> loadTaskById(final long id) {
-        return mDb.taskDao().observeById(id);
-    }
-
-    /**
      * Loads all Tasks. List of Tasks is returned wrapped in LiveData.
      *
      * @return LiveData holding a List of Tasks
      */
-    public LiveData<List<Task>> loadAllTasks() {
+    public LiveData<List<Task>> observeAllTasks() {
         return mDb.taskDao().observeAll();
     }
 
@@ -75,8 +64,39 @@ public class DataRepository {
      *
      * @return LiveData holding a List of TaskWithTagIds
      */
-    public LiveData<List<TaskWithTagIds>> loadAllTasksAsTaskWithTags() {
+    public LiveData<List<TaskWithTagIds>> observeAllTasksWithTagIds() {
         return mDb.taskDao().observeAllWithTagIds();
+    }
+
+    /**
+     * Loads Tasks that are tagged with the Tag represented by the the given tagId
+     *
+     * @param tagId id of Tag to load Tasks for
+     * @return      LiveData holding a List of Tasks
+     */
+    public LiveData<List<Task>> observeTasksByTag(int tagId) {
+        return mDb.taskDao().observeByTag(tagId);
+    }
+
+    /**
+     * Loads Tasks (as TaskWithTagIds) that are tagged with the Tag represented by the given tagId
+     *
+     * @param tagId id of Tag to load Tasks for
+     * @return      LiveData holding a List of TaskWithTagIds
+     */
+    public LiveData<List<TaskWithTagIds>> observeTasksByTagWithTagIds(int tagId) {
+        return mDb.taskDao().observeByTagWithTagIds(tagId);
+    }
+
+    /**
+     * Loads a single Task with the provided ID from persistent storage. Task returned is returned
+     * wrapped in LiveData.
+     *
+     * @param id ID of Task to load
+     * @return   LiveData holding a Task.
+     */
+    public LiveData<Task> observeTaskById(final long id) {
+        return mDb.taskDao().observeById(id);
     }
 
     /**
@@ -138,15 +158,25 @@ public class DataRepository {
      *
      * @return LiveData holding a List of Tags
      */
-    public LiveData<List<Tag>> loadAllTags() {
+    public LiveData<List<Tag>> observeAllTags() {
         return mDb.tagDao().observeAll();
+    }
+
+    /**
+     * Loads Tags that are are used to tag the Task represented by the given taskId.
+     *
+     * @param taskId id of Task to load Tags for
+     * @return       LiveData holding a List of Tags
+     */
+    public LiveData<List<Tag>> observeTagsByTask(long taskId) {
+        return mDb.tagDao().observeByTask(taskId);
     }
 
     /**
      * @param tagId id of the Tag to load
      * @return      LiveData holding a Tag
      */
-    public LiveData<Tag> loadTagById(int tagId) {
+    public LiveData<Tag> observeTagById(int tagId) {
         return mDb.tagDao().observeById(tagId);
     }
 
@@ -170,36 +200,6 @@ public class DataRepository {
 
 
     // TaskTagDao related operations
-
-    /**
-     * Loads Tags that are are used to tag the Task represented by the given taskId.
-     *
-     * @param taskId id of Task to load Tags for
-     * @return       LiveData holding a List of Tags
-     */
-    public LiveData<List<Tag>> loadTagsForTask(long taskId) {
-        return mDb.tagDao().observeByTask(taskId);
-    }
-
-    /**
-     * Loads Tasks that are tagged with the Tag represented by the the given tagId
-     *
-     * @param tagId id of Tag to load Tasks for
-     * @return      LiveData holding a List of Tasks
-     */
-    public LiveData<List<Task>> loadTasksForTag(int tagId) {
-        return mDb.taskDao().observeByTag(tagId);
-    }
-
-    /**
-     * Loads Tasks (as TaskWithTagIds) that are tagged with the Tag represented by the given tagId
-     *
-     * @param tagId id of Tag to load Tasks for
-     * @return      LiveData holding a List of TaskWithTagIds
-     */
-    public LiveData<List<TaskWithTagIds>> loadTasksAsTasksWithTagForTag(int tagId) {
-        return mDb.taskDao().observeByTagWithTagIds(tagId);
-    }
 
     /**
      * Persists (inserts or updates) the given TaskTag
@@ -356,7 +356,7 @@ public class DataRepository {
                 newTask.setRepeating(task.isRepeating());
                 newTask.setNotificationOption(task.getNotificationOption());
 
-                long newTaskId = db.taskDao().insert(newTask);
+                long newTaskId = db.taskDao().insert(newTask)[0];
 
                 if (taskTags != null) {
                     for (TaskTag taskTag : taskTags) {

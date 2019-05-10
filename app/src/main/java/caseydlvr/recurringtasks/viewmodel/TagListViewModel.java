@@ -26,13 +26,13 @@ public class TagListViewModel extends AndroidViewModel {
     public TagListViewModel(Application app) {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
-        mAllTags = mRepository.loadAllTags();
+        mAllTags = mRepository.observeAllTags();
     }
 
     public void initTaskMode(long taskId) {
         mTaskMode = true;
         mTaskId = taskId;
-        mTagsForTask = mRepository.loadTagsForTask(mTaskId);
+        mTagsForTask = mRepository.observeTagsByTask(mTaskId);
     }
 
     public LiveData<List<Tag>> getAllTags() {

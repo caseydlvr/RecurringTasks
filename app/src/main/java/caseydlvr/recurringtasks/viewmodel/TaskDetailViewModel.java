@@ -38,8 +38,8 @@ public class TaskDetailViewModel extends TaskViewModel {
      */
     public void init(long taskId) {
         mTaskId = taskId;
-        mTask = mRepository.loadTaskById(taskId);
-        mTags = mRepository.loadTagsForTask(taskId);
+        mTask = mRepository.observeTaskById(taskId);
+        mTags = mRepository.observeTagsByTask(taskId);
     }
 
     /**

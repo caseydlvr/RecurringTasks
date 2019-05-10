@@ -44,7 +44,7 @@ public interface TaskDao {
     Task loadById(long id);
 
     @Insert(onConflict = REPLACE)
-    long insert(Task... tasks);
+    long[] insert(Task... tasks);
 
     @Update
     void update(Task... tasks);

@@ -31,7 +31,7 @@ public class TaskListViewModel extends TaskViewModel {
     public TaskListViewModel(@NonNull Application app) {
         super(app);
         mRepository = ((RecurringTaskApp) app).getRepository();
-        mAllTags = mRepository.loadAllTags();
+        mAllTags = mRepository.observeAllTags();
     }
 
     /**
@@ -40,8 +40,8 @@ public class TaskListViewModel extends TaskViewModel {
     public void setFilterTagId(int tagId) {
         if (tagId != mFilterTagId) {
             mFilterTagId = tagId;
-            mFilteredTasksWithTags = mRepository.loadTasksAsTasksWithTagForTag(mFilterTagId);
-            mFilterTag = mRepository.loadTagById(tagId);
+            mFilteredTasksWithTags = mRepository.observeTasksByTagWithTagIds(mFilterTagId);
+            mFilterTag = mRepository.observeTagById(tagId);
         }
     }
 
@@ -59,7 +59,7 @@ public class TaskListViewModel extends TaskViewModel {
 
     public LiveData<List<TaskWithTagIds>> getAllTasksWithTags() {
         if (mAllTasksWithTags == null) {
-            mAllTasksWithTags = mRepository.loadAllTasksAsTaskWithTags();
+            mAllTasksWithTags = mRepository.observeAllTasksWithTagIds();
         }
 
         return mAllTasksWithTags;
