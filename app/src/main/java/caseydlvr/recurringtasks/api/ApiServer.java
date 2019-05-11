@@ -128,11 +128,11 @@ public class ApiServer {
         });
     }
 
-    public void createTask(Task task) {
-        mService.createTask(task).enqueue(new Callback<Task>() {
+    public void createTask(TaskWithTags task) {
+        mService.createTask(task).enqueue(new Callback<TaskWithTags>() {
 
             @Override
-            public void onResponse(Call<Task> call, Response<Task> response) {
+            public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
                 if (response.isSuccessful()) {
                     Task task = response.body();
                     Log.d(TAG, "task created: " + task);
@@ -142,17 +142,17 @@ public class ApiServer {
             }
 
             @Override
-            public void onFailure(Call<Task> call, Throwable t) {
+            public void onFailure(Call<TaskWithTags> call, Throwable t) {
                 handleFailure(t);
             }
         });
     }
 
-    public void updateTask(long id, Task task) {
-        mService.updateTask(id, task).enqueue(new Callback<Task>() {
+    public void updateTask(long id, TaskWithTags task) {
+        mService.updateTask(id, task).enqueue(new Callback<TaskWithTags>() {
 
             @Override
-            public void onResponse(Call<Task> call, Response<Task> response) {
+            public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
                 if (response.isSuccessful()) {
                     Task task = response.body();
                     Log.d(TAG, "task updated: " + task);
@@ -162,7 +162,7 @@ public class ApiServer {
             }
 
             @Override
-            public void onFailure(Call<Task> call, Throwable t) {
+            public void onFailure(Call<TaskWithTags> call, Throwable t) {
                 handleFailure(t);
             }
         });

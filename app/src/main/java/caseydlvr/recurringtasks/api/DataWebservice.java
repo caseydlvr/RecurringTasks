@@ -31,13 +31,13 @@ public interface DataWebservice {
     Call<TaskWithTags> getTaskWithTags(@Path("id") long taskId);
 
     @POST("/tasks")
-    Call<Task> createTask(@Body Task task);
+    Call<TaskWithTags> createTask(@Body TaskWithTags task);
 
     @POST("/tasks/{id}/complete")
     Call<Task> completeTask(@Path("id") long taskId);
 
     @PATCH("/tasks/{id}")
-    Call<Task> updateTask(@Path("id") long taskId, @Body Task task);
+    Call<TaskWithTags> updateTask(@Path("id") long taskId, @Body TaskWithTags task);
 
     @DELETE("/tasks/{id}")
     Call<Void> deleteTask(@Path("id") long taskId);
