@@ -24,8 +24,6 @@ public class Task {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    @Expose
-    @SerializedName("id")
     private long mId;
 
     @ColumnInfo(name = "name")
@@ -59,6 +57,8 @@ public class Task {
     private String mNotificationOption;
 
     @ColumnInfo(name = "server_id")
+    @SerializedName("id")
+    @Expose
     private int mServerId;
 
     @ColumnInfo(name = "synced")
@@ -79,6 +79,25 @@ public class Task {
         setDueDateFields();
         mRepeating = true;
         mNotificationOption = NotificationOption.KEY_OVERDUE_DUE;
+    }
+
+
+    /**
+     * Copy constructor
+     *
+     * @param task Task to copy
+     */
+    public Task(Task task) {
+        mId = task.getId();
+        mName = task.getName();
+        mDuration = task.getDuration();
+        mDurationUnit = task.getDurationUnit();
+        mStartDate = task.getStartDate();
+        mRepeating = task.isRepeating();
+        mServerId = task.getServerId();
+        mSynced = task.isSynced();
+
+        setDueDateFields();
     }
 
     /**

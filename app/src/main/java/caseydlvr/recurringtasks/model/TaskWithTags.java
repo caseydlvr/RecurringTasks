@@ -7,13 +7,22 @@ import java.util.List;
 
 public class TaskWithTags extends Task {
 
+    @SerializedName("tags")
+    @Expose
+    private List<Tag> mTags;
+
     public TaskWithTags() {
         super();
     }
 
-    @SerializedName("tags")
-    @Expose
-    private List<Tag> mTags;
+    public TaskWithTags(Task task) {
+        super(task);
+    }
+
+    public TaskWithTags(Task task, List<Tag> tags) {
+        this(task);
+        mTags = tags;
+    }
 
     public List<Tag> getTags() {
         return mTags;
