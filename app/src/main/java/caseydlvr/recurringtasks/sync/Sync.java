@@ -2,11 +2,10 @@ package caseydlvr.recurringtasks.sync;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import caseydlvr.recurringtasks.DataRepository;
+import caseydlvr.recurringtasks.RecurringTaskApp;
 import caseydlvr.recurringtasks.api.ApiServer;
-import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Deletion;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
@@ -16,30 +15,19 @@ public class Sync {
     private DataRepository mDr;
     private ApiServer mServer;
 
-    public Sync(AppDatabase db) {
-        mDr = DataRepository.getInstance(db);
+    public Sync(RecurringTaskApp app) {
+        mDr = app.getRepository();
         mServer = new ApiServer();
     }
 
     public void startTaskSync() {
-        List<Task> unsyncedTasks;
-
-        try {
-            unsyncedTasks = mDr.loadUnsyncedTasks();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
+        List<Task> unsyncedTasks = mDr.loadUnsyncedTasksSync();
 
         List<TaskWithTags> unsyncedTasksWithTags = new ArrayList<>();
 
         for (Task task : unsyncedTasks) {
-            try {
-                List<Tag> tags = mDr.loadTagsByTask(task.getId());
-                unsyncedTasksWithTags.add(new TaskWithTags(task, tags));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            List<Tag> tags = mDr.loadTagsByTaskSync(task.getId());
+            unsyncedTasksWithTags.add(new TaskWithTags(task, tags));
         }
 
         for (TaskWithTags task : unsyncedTasksWithTags) {
@@ -52,14 +40,7 @@ public class Sync {
     }
 
     public void startTagSync() {
-        List<Tag> unsyncedTags;
-
-        try {
-            unsyncedTags = mDr.loadUnsyncedTags();
-        } catch (Exception e){
-            e.printStackTrace();
-            return;
-        }
+        List<Tag> unsyncedTags = mDr.loadUnsyncedTagsSync();;
 
         for (Tag tag : unsyncedTags) {
             if (tag.getServerId() > 0) {
@@ -71,24 +52,16 @@ public class Sync {
     }
 
     public void startDeleteSync() {
-        try {
-            List<Deletion> deletedTags = mDr.loadDeletedTags();
+        List<Deletion> deletedTags = mDr.loadDeletedTagsSync();
 
-            for (Deletion deletedTag : deletedTags) {
-                mServer.deleteTag(deletedTag.getTagId());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (Deletion deletedTag : deletedTags) {
+            mServer.deleteTag(deletedTag.getTagId());
         }
 
-        try {
-            List<Deletion> deletedTasks = mDr.loadDeletedTasks();
+        List<Deletion> deletedTasks = mDr.loadDeletedTasksSync();
 
-            for (Deletion deletedTask : deletedTasks) {
-                mServer.deleteTask(deletedTask.getTaskId());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (Deletion deletedTask : deletedTasks) {
+            mServer.deleteTask(deletedTask.getTaskId());
         }
     }
 

@@ -27,13 +27,16 @@ public class DataRepository {
 
     private final AppDatabase mDb;
 
-    private DataRepository(final AppDatabase db) {
+    private AppExecutors mAppExecutors;
+
+    private DataRepository(final AppDatabase db, AppExecutors appExecutors) {
         mDb = db;
+        mAppExecutors = appExecutors;
     }
 
-    public static DataRepository getInstance(AppDatabase db) {
+    public static DataRepository getInstance(AppDatabase db, AppExecutors appExecutors) {
         if (sInstance == null) {
-            sInstance = new DataRepository(db);
+            sInstance = new DataRepository(db, appExecutors);
         }
 
         return sInstance;
@@ -114,12 +117,26 @@ public class DataRepository {
         return new ArrayList<>();
     }
 
-    public List<Task> loadUnsyncedTasks() throws ExecutionException, InterruptedException {
-        return new LoadUnsyncedTasksTask(this).execute().get();
+    /**
+     * Synchronously loads all unsynced Tasks. The DB query is performed on the same thread as the
+     * caller, therefore this method cannot be called from the main thread.
+     *
+     * @return List of unsynced Tasks
+     */
+    @WorkerThread
+    public List<Task> loadUnsyncedTasksSync() {
+        return mDb.taskDao().loadUnsynced();
     }
 
-    public List<Deletion> loadDeletedTasks() throws ExecutionException, InterruptedException {
-        return new LoadDeletedTasksTask(this).execute().get();
+    /**
+     * Synchronously loads all task Deletions. The DB query is performed on the same thread as the
+     * caller, therefore this method cannot be called from the main thread.
+     *
+     * @return List of task Deletions
+     */
+    @WorkerThread
+    public List<Deletion> loadDeletedTasksSync() {
+        return mDb.deletionDao().loadTaskDeletionsWithServerId();
     }
 
     /**
@@ -128,16 +145,26 @@ public class DataRepository {
      * @param task Task to save
      */
     public void saveTask(Task task) {
-        new SaveTaskTask(this).execute(task);
+        mAppExecutors.diskIO().execute(() -> {
+            task.setSynced(false);
+
+            if (task.getId() > 0) {
+                mDb.taskDao().update(task);
+            } else {
+                mDb.taskDao().insert(task);
+            }
+        });
     }
 
     /**
      * Deletes the provided Task
      *
-     * @param task Task to deleteTask
+     * @param task Task to delete
      */
     public void deleteTask(Task task) {
-        new DeleteTaskTask(this).execute(task);
+        mAppExecutors.diskIO().execute(() -> {
+            deleteTaskFromDb(task);
+        });
     }
 
     /**
@@ -146,7 +173,9 @@ public class DataRepository {
      * @param task Task to complete
      */
     public void complete(Task task) {
-        new CompleteTask(this).execute(task);
+        mAppExecutors.diskIO().execute(() -> {
+            completeTaskInDb(task);
+        });
     }
 
     /**
@@ -155,7 +184,11 @@ public class DataRepository {
      * @param id ID of the Task to complete
      */
     public void completeById(long id) {
-        new CompleteByIdTask(this).execute(id);
+        mAppExecutors.diskIO().execute(() -> {
+            Task task = mDb.taskDao().loadById(id);
+
+            if (task != null) completeTaskInDb(task);
+        });
     }
 
 
@@ -188,16 +221,39 @@ public class DataRepository {
         return mDb.tagDao().observeById(tagId);
     }
 
-    public List<Tag> loadUnsyncedTags() throws ExecutionException, InterruptedException {
-        return new LoadUnsyncedTagsTask(this).execute().get();
+    /**
+     * Synchronously loads all unsynced Tags. The DB query is performed on the same thread as the
+     * caller, therefore this method cannot be called from the main thread.
+     *
+     * @return List of unsynced Tags
+     */
+    @WorkerThread
+    public List<Tag> loadUnsyncedTagsSync() {
+        return mDb.tagDao().loadUnsynced();
     }
 
-    public List<Deletion> loadDeletedTags() throws ExecutionException, InterruptedException {
-        return new LoadDeletedTagsTask(this).execute().get();
+    /**
+     * Synchronously loads all tag Deletions. The DB query is performed on the same thread as the
+     * caller, therefore this method cannot be called from the main thread.
+     *
+     * @return List of tag Deletions
+     */
+    @WorkerThread
+    public List<Deletion> loadDeletedTagsSync() {
+        return mDb.deletionDao().loadTagDeletionsWithServerId();
     }
 
-    public List<Tag> loadTagsByTask(long taskId) throws ExecutionException, InterruptedException {
-        return new LoadTagsByTaskTask(this).execute(taskId).get();
+    /**
+     * Synchronously loads all Tags that are related to the provided Task ID. The DB query is
+     * performed on the same thread as the caller, therefore this method cannot be called from the
+     * main thread.
+     *
+     * @param taskId ID of Task to load Tags for
+     * @return       List of Tags related to the provided taskId
+     */
+    @WorkerThread
+    public List<Tag> loadTagsByTaskSync(long taskId) {
+        return mDb.tagDao().loadByTask(taskId);
     }
 
     /**
@@ -206,16 +262,36 @@ public class DataRepository {
      * @param tag Tag to save
      */
     public void saveTag(Tag tag) {
-        new SaveTagTask(this).execute(tag);
+        mAppExecutors.diskIO().execute(() -> {
+            tag.setSynced(false);
+
+            if (tag.getId() >  0) {
+                mDb.tagDao().update(tag);
+            } else {
+                mDb.tagDao().insert(tag);
+            }
+        });
     }
 
     /**
      * Deletes the provided Tag
      *
-     * @param tag Tag to deleteTask
+     * @param tag Tag to delete
      */
     public void deleteTag(Tag tag) {
-        new DeleteTagTask(this).execute(tag);
+        mAppExecutors.diskIO().execute(() -> {
+            mDb.runInTransaction(() -> {
+                mDb.tagDao().delete(tag);
+
+                // if tag has synced with server, queue the deletion for syncing
+                if (tag.getServerId() > 0) {
+                    mDb.deletionDao().insert(Deletion.tagDeletion(tag));
+
+                    // no longer need to sync any deleted relations for the tag
+                    mDb.deletionDao().deleteRelationsForTag(tag.getId());
+                }
+            });
+        });
     }
 
 
@@ -227,146 +303,67 @@ public class DataRepository {
      * @param taskTag TaskTag to save
      */
     public void saveTaskTag(TaskTag taskTag) {
-        new SaveTaskTagTask(this).execute(taskTag);
+        mAppExecutors.diskIO().execute(() -> {
+            mDb.taskTagDao().insert(taskTag);
+        });
     }
 
     /**
      * Deletes the given TaskTag
      *
-     * @param taskTag TaskTag to deleteTask
+     * @param taskTag TaskTag to delete
      */
     public void deleteTaskTag(TaskTag taskTag) {
-        new DeleteTaskTagTask(this).execute(taskTag);
+        mAppExecutors.diskIO().execute(() -> {
+            mDb.runInTransaction(() -> {
+                mDb.taskTagDao().delete(taskTag);
+
+                // if relation is synced to server, queue this deletion for sync
+                if (taskTag.isSynced()) {
+                    mDb.deletionDao().insert(Deletion.taskTagDeletion(taskTag));
+                }
+
+            });
+        });
     }
 
     /**
-     * AsyncTask for persisting a Task to the local Room DB. Helper for saveTask(Task). Either
-     * updates the existing DB record if the task already exists, or inserts a new record.
+     * Deletes a task from the local Room DB. Cannot be called from the main thread.
      *
-     * @see #saveTask(Task)
-     */
-    private static class SaveTaskTask extends AsyncTask<Task, Void, Void> {
-        DataRepository mDr;
-
-        SaveTaskTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            tasks[0].setSynced(false);
-
-            if (tasks[0].getId() > 0) {
-                mDr.getDb().taskDao().update(tasks[0]);
-            } else {
-                mDr.getDb().taskDao().insert(tasks[0]);
-            }
-
-            return null;
-        }
-    }
-
-    /**
-     * AsyncTask for deleting a Task. Helper for deleteTask(Task).
-     *
-     * @see #deleteTask(Task)
-     */
-    private static class DeleteTaskTask extends AsyncTask<Task, Void, Void> {
-        DataRepository mDr;
-
-        DeleteTaskTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            deleteTask(mDr.getDb(), tasks[0]);
-
-            return null;
-        }
-    }
-
-    /**
-     * Deletes a task from the local Room DB. Helper function for Async tasks that need to delete a
-     * task.
-     *
-     * @param db   AppDatabase to use for query execution
      * @param task Task to delete
      */
     @WorkerThread
-    private static void deleteTask(AppDatabase db, Task task) {
-        db.runInTransaction(() -> {
-            db.taskDao().delete(task);
+    private void deleteTaskFromDb(Task task) {
+        mDb.runInTransaction(() -> {
+            mDb.taskDao().delete(task);
 
             // if task has synced with server, queue the deletion for sync
             if (task.getServerId() > 0) {
-                db.deletionDao().insert(Deletion.taskDeletion(task));
+                mDb.deletionDao().insert(Deletion.taskDeletion(task));
 
                 // no longer need to sync any deleted relations for the task
-                db.deletionDao().deleteRelationsForTask(task.getId());
+                mDb.deletionDao().deleteRelationsForTask(task.getId());
             }
         });
     }
 
     /**
-     * AsyncTask for completing a Task in the local Room DB. Helper for complete(Task).
+     * Completes a Task in the local Room DB. Cannot be called from the main thread.
      *
-     * @see #complete(Task)
-     */
-    private static class CompleteTask extends AsyncTask<Task, Void, Void> {
-        DataRepository mDr;
-
-        CompleteTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            completeTask(mDr.getDb(), tasks[0]);
-
-            return null;
-        }
-    }
-
-    /**
-     * AsyncTask for completing a Task by Task ID in the local Room DB. Helper for completeById(long).
-     *
-     * @see #completeTask(AppDatabase, Task)
-     */
-    private static class CompleteByIdTask extends AsyncTask<Long, Void, Void> {
-        DataRepository mDr;
-
-        CompleteByIdTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(Long... longs) {
-            Task task = mDr.getDb().taskDao().loadById(longs[0]);
-
-            if (task != null) completeTask(mDr.getDb(), task);
-
-            return null;
-        }
-    }
-
-    /**
-     * Completes a Task in the local Room DB. Helper function for the complete related AsyncTasks.
      * Complete is a 3 step process if the task is set to repeat. The completed task record is
      * deleted and a new task record is inserted. The new task record has the same data as the
      * completed task, except for startDate which is set to today (by the Task constructor). Finally,
      * if the completed task had any TaskTags, those TaskTags are inserted again using the taskId of
      * the new task. The 3 step process is run in a transaction.
      *
-     * @param db   AppDatabase to use for query execution
      * @param task Task to complete
      */
     @WorkerThread
-    private static void completeTask(AppDatabase db, Task task) {
-        db.runInTransaction(() -> {
-            List<TaskTag> taskTags = db.taskTagDao().loadByTask(task.getId());
+    private void completeTaskInDb(Task task) {
+        mDb.runInTransaction(() -> {
+            List<TaskTag> taskTags = mDb.taskTagDao().loadByTask(task.getId());
 
-            deleteTask(db, task);
+            deleteTaskFromDb(task);
 
             if (task.isRepeating()) {
                 Task newTask = new Task();
@@ -376,125 +373,17 @@ public class DataRepository {
                 newTask.setRepeating(task.isRepeating());
                 newTask.setNotificationOption(task.getNotificationOption());
 
-                long newTaskId = db.taskDao().insert(newTask)[0];
+                long newTaskId = mDb.taskDao().insert(newTask)[0];
 
                 if (taskTags != null) {
                     for (TaskTag taskTag : taskTags) {
                         taskTag.setTaskId(newTaskId);
                     }
 
-                    db.taskTagDao().insert(taskTags.toArray(new TaskTag[0]));
+                    mDb.taskTagDao().insert(taskTags.toArray(new TaskTag[0]));
                 }
             }
         });
-    }
-
-    /**
-     * AsyncTask for saving a Tag. Helper for saveTag(Tag).
-     *
-     * @see #saveTag(Tag)
-     */
-    private static class SaveTagTask extends AsyncTask<Tag, Void, Void> {
-        DataRepository mDr;
-
-        SaveTagTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(Tag... tags) {
-            tags[0].setSynced(false);
-
-            if (tags[0].getId() >  0) {
-                mDr.getDb().tagDao().update(tags[0]);
-            } else {
-                mDr.getDb().tagDao().insert(tags[0]);
-            }
-
-            return null;
-        }
-    }
-
-    /**
-     * AsyncTask for deleting a Tag. Helper for deleteTag(Tag).
-     *
-     * @see #deleteTag(Tag)
-     */
-    private static class DeleteTagTask extends AsyncTask<Tag, Void, Void> {
-        DataRepository mDr;
-
-        DeleteTagTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(Tag... tags) {
-            AppDatabase db = mDr.getDb();
-
-            db.runInTransaction(() -> {
-                db.tagDao().delete(tags[0]);
-
-                // if tag has synced with server, queue the deletion for syncing
-                if (tags[0].getServerId() > 0) {
-                    db.deletionDao().insert(Deletion.tagDeletion(tags[0]));
-
-                    // no longer need to sync any deleted relations for the tag
-                    db.deletionDao().deleteRelationsForTag(tags[0].getId());
-                }
-            });
-
-            return null;
-        }
-    }
-
-    /**
-     * AsyncTask for saving a TaskTag. Helper for saveTaskTag(TaskTag).
-     *
-     * @see #saveTaskTag(TaskTag)
-     */
-    private static class SaveTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
-        DataRepository mDr;
-
-        SaveTaskTagTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(TaskTag... taskTags) {
-            mDr.getDb().taskTagDao().insert(taskTags[0]);
-
-            return null;
-        }
-    }
-
-    /**
-     * AsyncTask for deleting a TaskTag. Helper for deleteTaskTag(TaskTag).
-     *
-     * @see #deleteTaskTag(TaskTag)
-     */
-    private static class DeleteTaskTagTask extends AsyncTask<TaskTag, Void, Void> {
-        DataRepository mDr;
-
-        DeleteTaskTagTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected Void doInBackground(TaskTag... taskTags) {
-            AppDatabase db = mDr.getDb();
-
-            db.runInTransaction(() -> {
-                db.taskTagDao().delete(taskTags[0]);
-
-                // if relation is synced to server, queue this deletion for sync
-                if (taskTags[0].isSynced()) {
-                    db.deletionDao().insert(Deletion.taskTagDeletion(taskTags[0]));
-                }
-
-            });
-
-            return null;
-        }
     }
 
     /**
@@ -513,71 +402,6 @@ public class DataRepository {
         @Override
         protected List<Task> doInBackground(Void... voids) {
             return mDr.getDb().taskDao().loadAllWithNotifications();
-        }
-    }
-
-    private static class LoadUnsyncedTasksTask extends AsyncTask<Void, Void, List<Task>> {
-        DataRepository mDr;
-
-        LoadUnsyncedTasksTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected List<Task> doInBackground(Void... voids) {
-            return mDr.getDb().taskDao().loadUnsynced();
-        }
-    }
-
-    private static class LoadDeletedTasksTask extends AsyncTask<Void, Void, List<Deletion>> {
-        DataRepository mDr;
-
-        LoadDeletedTasksTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected List<Deletion> doInBackground(Void... voids) {
-            return mDr.getDb().deletionDao().loadTaskDeletionsWithServerId();
-        }
-    }
-
-    private static class LoadUnsyncedTagsTask extends AsyncTask<Void, Void, List<Tag>> {
-        DataRepository mDr;
-
-        LoadUnsyncedTagsTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected List<Tag> doInBackground(Void... voids) {
-            return mDr.getDb().tagDao().loadUnsynced();
-        }
-    }
-
-    private static class LoadDeletedTagsTask extends AsyncTask<Void, Void, List<Deletion>> {
-        DataRepository mDr;
-
-        LoadDeletedTagsTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected List<Deletion> doInBackground(Void... voids) {
-            return mDr.getDb().deletionDao().loadTagDeletionsWithServerId();
-        }
-    }
-
-    private static class LoadTagsByTaskTask extends AsyncTask<Long, Void, List<Tag>> {
-        DataRepository mDr;
-
-        LoadTagsByTaskTask(DataRepository dr) {
-            mDr = dr;
-        }
-
-        @Override
-        protected List<Tag> doInBackground(Long... longs) {
-            return mDr.getDb().tagDao().loadByTask(longs[0]);
         }
     }
 }

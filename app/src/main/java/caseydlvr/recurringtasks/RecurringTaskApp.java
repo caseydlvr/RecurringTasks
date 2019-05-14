@@ -24,9 +24,12 @@ public class RecurringTaskApp extends Application {
 
     private static final String TAG = RecurringTaskApp.class.getSimpleName();
 
+    private AppExecutors mAppExecutors;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        mAppExecutors = new AppExecutors();
         AndroidThreeTen.init(this);
         initNotifications();
     }
@@ -42,7 +45,7 @@ public class RecurringTaskApp extends Application {
      * @return DataRepository singleton
      */
     public DataRepository getRepository() {
-        return DataRepository.getInstance(getDb());
+        return DataRepository.getInstance(getDb(), mAppExecutors);
     }
 
     /**
