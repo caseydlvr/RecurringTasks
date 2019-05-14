@@ -40,6 +40,9 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks WHERE notification_option != 'never'")
     List<Task> loadAllWithNotifications();
 
+    @Query("SELECT * FROM tasks WHERE NOT synced")
+    List<Task> loadUnsynced();
+
     @Query("SELECT * FROM tasks WHERE id = :id")
     Task loadById(long id);
 

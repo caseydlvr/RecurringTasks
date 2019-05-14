@@ -114,6 +114,14 @@ public class DataRepository {
         return new ArrayList<>();
     }
 
+    public List<Task> loadUnsyncedTasks() throws ExecutionException, InterruptedException {
+        return new LoadUnsyncedTasksTask(this).execute().get();
+    }
+
+    public List<Deletion> loadDeletedTasks() throws ExecutionException, InterruptedException {
+        return new LoadDeletedTasksTask(this).execute().get();
+    }
+
     /**
      * Persists (inserts or updates) the provided Task
      *
@@ -178,6 +186,18 @@ public class DataRepository {
      */
     public LiveData<Tag> observeTagById(int tagId) {
         return mDb.tagDao().observeById(tagId);
+    }
+
+    public List<Tag> loadUnsyncedTags() throws ExecutionException, InterruptedException {
+        return new LoadUnsyncedTagsTask(this).execute().get();
+    }
+
+    public List<Deletion> loadDeletedTags() throws ExecutionException, InterruptedException {
+        return new LoadDeletedTagsTask(this).execute().get();
+    }
+
+    public List<Tag> loadTagsByTask(long taskId) throws ExecutionException, InterruptedException {
+        return new LoadTagsByTaskTask(this).execute(taskId).get();
     }
 
     /**
@@ -493,6 +513,71 @@ public class DataRepository {
         @Override
         protected List<Task> doInBackground(Void... voids) {
             return mDr.getDb().taskDao().loadAllWithNotifications();
+        }
+    }
+
+    private static class LoadUnsyncedTasksTask extends AsyncTask<Void, Void, List<Task>> {
+        DataRepository mDr;
+
+        LoadUnsyncedTasksTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected List<Task> doInBackground(Void... voids) {
+            return mDr.getDb().taskDao().loadUnsynced();
+        }
+    }
+
+    private static class LoadDeletedTasksTask extends AsyncTask<Void, Void, List<Deletion>> {
+        DataRepository mDr;
+
+        LoadDeletedTasksTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected List<Deletion> doInBackground(Void... voids) {
+            return mDr.getDb().deletionDao().loadTaskDeletionsWithServerId();
+        }
+    }
+
+    private static class LoadUnsyncedTagsTask extends AsyncTask<Void, Void, List<Tag>> {
+        DataRepository mDr;
+
+        LoadUnsyncedTagsTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected List<Tag> doInBackground(Void... voids) {
+            return mDr.getDb().tagDao().loadUnsynced();
+        }
+    }
+
+    private static class LoadDeletedTagsTask extends AsyncTask<Void, Void, List<Deletion>> {
+        DataRepository mDr;
+
+        LoadDeletedTagsTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected List<Deletion> doInBackground(Void... voids) {
+            return mDr.getDb().deletionDao().loadTagDeletionsWithServerId();
+        }
+    }
+
+    private static class LoadTagsByTaskTask extends AsyncTask<Long, Void, List<Tag>> {
+        DataRepository mDr;
+
+        LoadTagsByTaskTask(DataRepository dr) {
+            mDr = dr;
+        }
+
+        @Override
+        protected List<Tag> doInBackground(Long... longs) {
+            return mDr.getDb().tagDao().loadByTask(longs[0]);
         }
     }
 }

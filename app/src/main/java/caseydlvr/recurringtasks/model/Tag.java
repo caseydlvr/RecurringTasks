@@ -20,8 +20,6 @@ public class Tag {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    @SerializedName("id")
-    @Expose
     private int mId;
 
     @ColumnInfo(name = "name")
@@ -30,6 +28,8 @@ public class Tag {
     private String mName;
 
     @ColumnInfo(name = "server_id")
+    @SerializedName("id")
+    @Expose
     private int mServerId;
 
     @ColumnInfo(name = "synced")
