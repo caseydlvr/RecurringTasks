@@ -1,6 +1,7 @@
 package caseydlvr.recurringtasks.ui.taglist;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -69,6 +70,11 @@ public class TagDialogFragment extends DialogFragment {
                 }));
 
         return dialog;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        mViewModel.setTagPendingEdit(null);
     }
 
     private void setModeFromArgs() {
