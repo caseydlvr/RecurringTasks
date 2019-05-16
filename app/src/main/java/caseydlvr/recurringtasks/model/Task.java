@@ -94,6 +94,7 @@ public class Task {
         mDurationUnit = task.getDurationUnit();
         mStartDate = task.getStartDate();
         mRepeating = task.isRepeating();
+        mNotificationOption = task.getNotificationOption();
         mServerId = task.getServerId();
         mSynced = task.isSynced();
 
@@ -345,6 +346,8 @@ public class Task {
                 ", mStartDate=" + mStartDate +
                 ", mRepeating=" + mRepeating +
                 ", mNotificationOption='" + mNotificationOption + '\'' +
+                ", mServerId=" + mServerId +
+                ", mSynced=" + mSynced +
                 '}';
     }
 
