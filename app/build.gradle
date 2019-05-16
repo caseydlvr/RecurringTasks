@@ -79,6 +79,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     // OkHttp
     implementation 'com.squareup.okhttp3:okhttp:3.14.1'
+    // Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

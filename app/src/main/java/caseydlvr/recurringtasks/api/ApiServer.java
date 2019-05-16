@@ -1,7 +1,5 @@
 package caseydlvr.recurringtasks.api;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -24,9 +22,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class ApiServer {
-    private static final String TAG = ApiServer.class.getSimpleName();
 
     private DataWebservice mService;
     private DataRepository mRepository;
@@ -60,7 +58,7 @@ public class ApiServer {
             public void onResponse(Call<List<Task>> call, Response<List<Task>> response) {
                 if (response.isSuccessful()) {
                     List<Task> tasks = response.body();
-                    Log.d(TAG, tasks.toString());
+                    Timber.d("%s", tasks);
                 } else {
                     handleErrorResponse(response);
                 }
@@ -80,7 +78,7 @@ public class ApiServer {
             public void onResponse(Call<List<TaskWithTags>> call, Response<List<TaskWithTags>> response) {
                 if (response.isSuccessful()) {
                     List<TaskWithTags> tasks = response.body();
-                    Log.d(TAG, tasks.toString());
+                    Timber.d("%s", tasks);
                 } else {
                     handleErrorResponse(response);
                 }
@@ -100,7 +98,7 @@ public class ApiServer {
             public void onResponse(Call<Task> call, Response<Task> response) {
                 if (response.isSuccessful()) {
                     Task task = response.body();
-                    Log.d(TAG, task.toString());
+                    Timber.d("%s", task);
                 } else {
                     handleErrorResponse(response);
                 }
@@ -119,7 +117,7 @@ public class ApiServer {
             public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
                 if (response.isSuccessful()) {
                     TaskWithTags task = response.body();
-                    Log.d(TAG, task.toString());
+                    Timber.d("%s", task);
                 } else {
                     handleErrorResponse(response);
                 }
@@ -146,7 +144,7 @@ public class ApiServer {
 
                         mRepository.syncTask(responseTask);
 
-                        Log.d(TAG, "task created: " + responseTask);
+                        Timber.d("task created: %s", responseTask);
                     }
                 } else {
                     handleErrorResponse(response);
@@ -174,7 +172,7 @@ public class ApiServer {
 
                         mRepository.syncTask(responseTask);
 
-                        Log.d(TAG, "task updated: " + responseTask);
+                        Timber.d("task updated: %s", responseTask);
                     }
                 } else {
                     handleErrorResponse(response);
@@ -194,7 +192,7 @@ public class ApiServer {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "delete successful");
+                    Timber.d("delete successful");
                     mRepository.deleteDeletion(Deletion.taskDeletion(id));
                 } else {
                     handleErrorResponse(response);
@@ -213,7 +211,7 @@ public class ApiServer {
             @Override
             public void onResponse(Call<Task> call, Response<Task> response) {
                 Task task = response.body();
-                Log.d(TAG, "task completed, new task: " + task);
+                Timber.d("task completed, new task: %s", task);
             }
 
             @Override
@@ -232,7 +230,7 @@ public class ApiServer {
             public void onResponse(Call<List<Tag>> call, Response<List<Tag>> response) {
                 if (response.isSuccessful()) {
                     List<Tag> tags = response.body();
-                    Log.d(TAG, tags.toString());
+                    Timber.d("%s", tags);
                 } else {
                     handleErrorResponse(response);
                 }
@@ -257,11 +255,11 @@ public class ApiServer {
                         responseTag.setId(tag.getId());
                         responseTag.setSynced(true);
 
-                        Log.d(TAG, "tag created: " + responseTag);
+                        Timber.d("tag created: %s", responseTag);
 
                         mRepository.syncTag(responseTag);
                     } else {
-                        Log.e(TAG, "bad data returned from create");
+                        Timber.e("bad data returned from create");
                     }
                 } else {
                     handleErrorResponse(response);
@@ -290,9 +288,9 @@ public class ApiServer {
 
                         mRepository.syncTag(responseTag);
 
-                        Log.d(TAG, "tag updated: " + responseTag);
+                        Timber.d("tag updated: %s", responseTag);
                     } else {
-                        Log.e(TAG, "bad data returned from create");
+                        Timber.e("bad data returned from create");
                     }
                 } else {
                     handleErrorResponse(response);
@@ -313,7 +311,7 @@ public class ApiServer {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "delete successful");
+                    Timber.d("delete successful");
                     mRepository.deleteDeletion(Deletion.tagDeletion(id));
                 } else {
                     handleErrorResponse(response);
@@ -334,7 +332,7 @@ public class ApiServer {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "data exported");
+                    Timber.d("data exported");
                 } else {
                     handleErrorResponse(response);
                     logRequestJson(call);
@@ -351,11 +349,11 @@ public class ApiServer {
     /************* Error handlers *************/
 
     private void handleErrorResponse(Response<?> response) {
-        Log.e(TAG, response.code() + ": " + response.message());
+        Timber.e("%d: %s", response.code(), response.message());
     }
 
     private void handleFailure(Throwable t) {
-        Log.e(TAG, t.getMessage());
+        Timber.e(t);
     }
 
     /************* Logging *************/
@@ -365,7 +363,7 @@ public class ApiServer {
 
         try {
             call.request().body().writeTo(buffer);
-            Log.d(TAG, buffer.readUtf8());
+            Timber.d(buffer.readUtf8());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
@@ -26,10 +25,9 @@ import caseydlvr.recurringtasks.notifications.NotificationReceiver;
 import caseydlvr.recurringtasks.sync.SyncWorker;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.ui.settings.TimePreference;
+import timber.log.Timber;
 
 public class RecurringTaskApp extends Application {
-
-    private static final String TAG = RecurringTaskApp.class.getSimpleName();
 
     private AppExecutors mAppExecutors;
 
@@ -38,6 +36,7 @@ public class RecurringTaskApp extends Application {
         super.onCreate();
         mAppExecutors = new AppExecutors();
         AndroidThreeTen.init(this);
+        initTimber();
         initNotifications();
         initSync();
     }
@@ -152,5 +151,11 @@ public class RecurringTaskApp extends Application {
                         .build();
 
         WorkManager.getInstance().enqueue(syncRequest);
+    }
+
+    private void initTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 }
