@@ -15,42 +15,42 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface DataWebservice {
-    @POST("/")
+    @POST()
     Call<Void> fullExport(@Body TasksAndTags tasksAndTags);
 
-    @GET("/tasks")
+    @GET("tasks")
     Call<List<Task>> getTasks();
 
-    @GET("/tasks")
+    @GET("tasks")
     Call<List<TaskWithTags>> getTasksWithTags();
 
-    @GET("/tasks/{id}")
+    @GET("tasks/{id}")
     Call<Task> getTask(@Path("id") long taskId);
 
-    @GET("/tasks/{id}")
+    @GET("tasks/{id}")
     Call<TaskWithTags> getTaskWithTags(@Path("id") long taskId);
 
-    @POST("/tasks")
+    @POST("tasks")
     Call<TaskWithTags> createTask(@Body TaskWithTags task);
 
-    @POST("/tasks/{id}/complete")
+    @POST("tasks/{id}/complete")
     Call<Task> completeTask(@Path("id") long taskId);
 
-    @PATCH("/tasks/{id}")
+    @PATCH("tasks/{id}")
     Call<TaskWithTags> updateTask(@Path("id") long taskId, @Body TaskWithTags task);
 
-    @DELETE("/tasks/{id}")
+    @DELETE("tasks/{id}")
     Call<Void> deleteTask(@Path("id") long taskId);
 
-    @GET("/tags")
+    @GET("tags")
     Call<List<Tag>> getTags();
 
-    @POST("/tags")
+    @POST("tags")
     Call<Tag> createTag(@Body Tag tag);
 
-    @PATCH("/tags/{id}")
+    @PATCH("tags/{id}")
     Call<Tag> updateTag(@Path("id") int tagId, @Body Tag tag);
 
-    @DELETE("/tags/{id}")
+    @DELETE("tags/{id}")
     Call<Void> deleteTag(@Path("id") int tagId);
 }
