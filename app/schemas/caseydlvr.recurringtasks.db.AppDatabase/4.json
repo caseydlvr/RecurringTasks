@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "6e1ef781205c6785747704efaa54e040",
+    "identityHash": "5c20151d66504dd4558da09af7a7efd0",
     "entities": [
       {
         "tableName": "tasks",
@@ -177,25 +177,25 @@
       },
       {
         "tableName": "deletions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`task_id` INTEGER NOT NULL, `tag_id` INTEGER NOT NULL, PRIMARY KEY(`task_id`, `tag_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`task_server_id` INTEGER NOT NULL, `tag_server_id` INTEGER NOT NULL, PRIMARY KEY(`task_server_id`, `tag_server_id`))",
         "fields": [
           {
-            "fieldPath": "mTaskId",
-            "columnName": "task_id",
+            "fieldPath": "mTaskServerId",
+            "columnName": "task_server_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "mTagId",
-            "columnName": "tag_id",
+            "fieldPath": "mTagServerId",
+            "columnName": "tag_server_id",
             "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "task_id",
-            "tag_id"
+            "task_server_id",
+            "tag_server_id"
           ],
           "autoGenerate": false
         },
@@ -205,7 +205,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6e1ef781205c6785747704efaa54e040\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5c20151d66504dd4558da09af7a7efd0\")"
     ]
   }
 }

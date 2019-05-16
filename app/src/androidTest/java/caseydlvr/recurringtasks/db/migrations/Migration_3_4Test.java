@@ -124,8 +124,8 @@ public class Migration_3_4Test {
 
         /* ---- verify deletions table created ---- */
         assertEquals("deletions should be empty", 0, deletions.getCount());
-        assertNotEquals("task_id column missing", -1, deletions.getColumnIndex("task_id"));
-        assertNotEquals("tag_id column missing", -1, deletions.getColumnIndex("tag_id"));
+        assertNotEquals("task_server_id column missing", -1, deletions.getColumnIndex("task_server_id"));
+        assertNotEquals("tag_server_id column missing", -1, deletions.getColumnIndex("tag_server_id"));
     }
 
     private void populateTestTasks(SupportSQLiteDatabase db) {

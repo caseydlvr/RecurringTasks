@@ -5,13 +5,13 @@ import androidx.room.Entity;
 
 
 @Entity(tableName = "deletions",
-        primaryKeys = { "task_id", "tag_id" })
+        primaryKeys = { "task_server_id", "tag_server_id" })
 public class Deletion {
 
-    @ColumnInfo(name = "task_id")
+    @ColumnInfo(name = "task_server_id")
     private int mTaskServerId;
 
-    @ColumnInfo(name = "tag_id")
+    @ColumnInfo(name = "tag_server_id")
     private int mTagServerId;
 
     public static Deletion taskDeletion(int taskServerId) {
