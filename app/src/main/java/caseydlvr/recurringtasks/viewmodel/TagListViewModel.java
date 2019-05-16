@@ -21,6 +21,7 @@ public class TagListViewModel extends AndroidViewModel {
     private long mTaskId;
     private boolean mTaskMode = false;
     private List<Tag> mCheckedTags = new ArrayList<>();
+    private Tag mTagPendingEdit;
     private Tag mTagPendingDelete;
 
     public TagListViewModel(Application app) {
@@ -45,6 +46,10 @@ public class TagListViewModel extends AndroidViewModel {
 
     public List<Tag> getCheckedTags() {
         return mCheckedTags;
+    }
+
+    public Tag getTagPendingEdit() {
+        return mTagPendingEdit;
     }
 
     public void setCheckedTags(List<Tag> tags) {
@@ -76,6 +81,10 @@ public class TagListViewModel extends AndroidViewModel {
             deleteTag(mTagPendingDelete);
             mTagPendingDelete = null;
         }
+    }
+
+    public void setTagPendingEdit(Tag tagPendingEdit) {
+        mTagPendingEdit = tagPendingEdit;
     }
 
     public void setTagPendingDelete(Tag tagPendingDelete) {

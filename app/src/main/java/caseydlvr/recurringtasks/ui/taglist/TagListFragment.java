@@ -96,6 +96,7 @@ public class TagListFragment extends Fragment
 
     @Override
     public void onTagDialogConfirmed(Tag tag) {
+        mViewModel.setTagPendingEdit(null);
         mViewModel.saveTag(tag);
     }
 
@@ -189,6 +190,8 @@ public class TagListFragment extends Fragment
     }
 
     private void showEditDialog(Tag tag) {
+        mViewModel.setTagPendingEdit(new Tag(tag));
+
         Bundle args = new Bundle();
         if (tag != null) {
             args.putInt(TagDialogFragment.KEY_TAG_ID, tag.getId());

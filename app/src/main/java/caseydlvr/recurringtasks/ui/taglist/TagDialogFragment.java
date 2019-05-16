@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -35,13 +34,9 @@ public class TagDialogFragment extends DialogFragment {
     private boolean mCreateMode = true;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getTargetFragment()).get(TagListViewModel.class);
-    }
-
-    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        mViewModel = ViewModelProviders.of(getTargetFragment()).get(TagListViewModel.class);
+
         setModeFromArgs();
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.tag_dialog, null);
@@ -77,11 +72,10 @@ public class TagDialogFragment extends DialogFragment {
     }
 
     private void setModeFromArgs() {
-        int tagId = getArguments().getInt(KEY_TAG_ID, 0);
+        mTag = mViewModel.getTagPendingEdit();
 
-        if (tagId > 0) {
+        if (mTag != null) {
             mCreateMode = false;
-            mTag = new Tag(tagId, getArguments().getString(KEY_TAG_NAME, ""));
         } else {
             mTag = new Tag();
         }

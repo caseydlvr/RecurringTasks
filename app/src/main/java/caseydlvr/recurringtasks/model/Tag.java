@@ -50,6 +50,19 @@ public class Tag {
 
     }
 
+
+    /**
+     * Copy constructor
+     *
+     * @param tag Tag to copy
+     */
+    public Tag(Tag tag) {
+        mId = tag.getId();
+        mName = tag.getName();
+        mServerId = tag.getServerId();
+        mSynced = tag.isSynced();
+    }
+
     public int getId() {
         return mId;
     }
@@ -98,6 +111,8 @@ public class Tag {
         return "Tag{" +
                 "mId=" + mId +
                 ", mName='" + mName + '\'' +
+                ", mServerId=" + mServerId +
+                ", mSynced=" + mSynced +
                 '}';
     }
 
