@@ -1,7 +1,5 @@
 package caseydlvr.recurringtasks.model;
 
-import java.util.Objects;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
