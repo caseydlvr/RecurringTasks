@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.List;
 
 import caseydlvr.recurringtasks.BuildConfig;
+import caseydlvr.recurringtasks.DataRepository;
+import caseydlvr.recurringtasks.model.Deletion;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskWithTags;
@@ -27,8 +29,9 @@ public class ApiServer {
     private static final String TAG = ApiServer.class.getSimpleName();
 
     private DataWebservice mService;
+    private DataRepository mRepository;
 
-    public ApiServer() {
+    public ApiServer(DataRepository repository) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                 .excludeFieldsWithoutExposeAnnotation()
@@ -45,6 +48,7 @@ public class ApiServer {
                 .build();
 
         mService = retrofit.create(DataWebservice.class);
+        mRepository = repository;
     }
 
     /************* Task methods *************/
@@ -134,8 +138,16 @@ public class ApiServer {
             @Override
             public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
                 if (response.isSuccessful()) {
-                    Task task = response.body();
-                    Log.d(TAG, "task created: " + task);
+                    Task responseTask = response.body();
+
+                    if (responseTask != null) {
+                        responseTask.setId(task.getId());
+                        responseTask.setSynced(true);
+
+                        mRepository.syncTask(responseTask);
+
+                        Log.d(TAG, "task created: " + responseTask);
+                    }
                 } else {
                     handleErrorResponse(response);
                 }
@@ -154,8 +166,16 @@ public class ApiServer {
             @Override
             public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
                 if (response.isSuccessful()) {
-                    Task task = response.body();
-                    Log.d(TAG, "task updated: " + task);
+                    Task responseTask = response.body();
+
+                    if (responseTask != null) {
+                        responseTask.setId(task.getId());
+                        responseTask.setSynced(true);
+
+                        mRepository.syncTask(responseTask);
+
+                        Log.d(TAG, "task updated: " + responseTask);
+                    }
                 } else {
                     handleErrorResponse(response);
                 }
@@ -168,13 +188,14 @@ public class ApiServer {
         });
     }
 
-    public void deleteTask(long id) {
+    public void deleteTask(int id) {
         mService.deleteTask(id).enqueue(new Callback<Void>() {
 
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "delete successful");
+                    mRepository.deleteDeletion(Deletion.taskDeletion(id));
                 } else {
                     handleErrorResponse(response);
                 }
@@ -230,8 +251,18 @@ public class ApiServer {
             @Override
             public void onResponse(Call<Tag> call, Response<Tag> response) {
                 if (response.isSuccessful()) {
-                    Tag tag = response.body();
-                    Log.d(TAG, "Created tag: " + tag);
+                    Tag responseTag = response.body();
+
+                    if (responseTag != null) {
+                        responseTag.setId(tag.getId());
+                        responseTag.setSynced(true);
+
+                        Log.d(TAG, "tag created: " + responseTag);
+
+                        mRepository.syncTag(responseTag);
+                    } else {
+                        Log.e(TAG, "bad data returned from create");
+                    }
                 } else {
                     handleErrorResponse(response);
                 }
@@ -251,8 +282,18 @@ public class ApiServer {
             @Override
             public void onResponse(Call<Tag> call, Response<Tag> response) {
                 if (response.isSuccessful()) {
-                    Tag tag = response.body();
-                    Log.d(TAG, "tag updated: " + tag);
+                    Tag responseTag = response.body();
+
+                    if (responseTag != null) {
+                        responseTag.setId(tag.getId());
+                        responseTag.setSynced(true);
+
+                        mRepository.syncTag(responseTag);
+
+                        Log.d(TAG, "tag updated: " + responseTag);
+                    } else {
+                        Log.e(TAG, "bad data returned from create");
+                    }
                 } else {
                     handleErrorResponse(response);
                 }
@@ -273,6 +314,7 @@ public class ApiServer {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "delete successful");
+                    mRepository.deleteDeletion(Deletion.tagDeletion(id));
                 } else {
                     handleErrorResponse(response);
                 }

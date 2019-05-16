@@ -2,6 +2,7 @@ package caseydlvr.recurringtasks;
 
 import androidx.lifecycle.LiveData;
 import android.os.AsyncTask;
+
 import androidx.annotation.WorkerThread;
 
 import java.util.ArrayList;
@@ -129,17 +130,6 @@ public class DataRepository {
     }
 
     /**
-     * Synchronously loads all task Deletions. The DB query is performed on the same thread as the
-     * caller, therefore this method cannot be called from the main thread.
-     *
-     * @return List of task Deletions
-     */
-    @WorkerThread
-    public List<Deletion> loadDeletedTasksSync() {
-        return mDb.deletionDao().loadTaskDeletionsWithServerId();
-    }
-
-    /**
      * Persists (inserts or updates) the provided Task
      *
      * @param task Task to save
@@ -148,12 +138,14 @@ public class DataRepository {
         mAppExecutors.diskIO().execute(() -> {
             task.setSynced(false);
 
-            if (task.getId() > 0) {
-                mDb.taskDao().update(task);
-            } else {
-                mDb.taskDao().insert(task);
-            }
+            mAppExecutors.diskIO().execute(() -> saveTaskToDb(task));
         });
+    }
+
+    public void syncTask(Task task) {
+        task.setSynced(true);
+
+        mAppExecutors.diskIO().execute(() -> saveTaskToDb(task));
     }
 
     /**
@@ -162,9 +154,7 @@ public class DataRepository {
      * @param task Task to delete
      */
     public void deleteTask(Task task) {
-        mAppExecutors.diskIO().execute(() -> {
-            deleteTaskFromDb(task);
-        });
+        mAppExecutors.diskIO().execute(() -> deleteTaskFromDb(task));
     }
 
     /**
@@ -173,9 +163,7 @@ public class DataRepository {
      * @param task Task to complete
      */
     public void complete(Task task) {
-        mAppExecutors.diskIO().execute(() -> {
-            completeTaskInDb(task);
-        });
+        mAppExecutors.diskIO().execute(() -> completeTaskInDb(task));
     }
 
     /**
@@ -233,17 +221,6 @@ public class DataRepository {
     }
 
     /**
-     * Synchronously loads all tag Deletions. The DB query is performed on the same thread as the
-     * caller, therefore this method cannot be called from the main thread.
-     *
-     * @return List of tag Deletions
-     */
-    @WorkerThread
-    public List<Deletion> loadDeletedTagsSync() {
-        return mDb.deletionDao().loadTagDeletionsWithServerId();
-    }
-
-    /**
      * Synchronously loads all Tags that are related to the provided Task ID. The DB query is
      * performed on the same thread as the caller, therefore this method cannot be called from the
      * main thread.
@@ -262,15 +239,15 @@ public class DataRepository {
      * @param tag Tag to save
      */
     public void saveTag(Tag tag) {
-        mAppExecutors.diskIO().execute(() -> {
-            tag.setSynced(false);
+        tag.setSynced(false);
 
-            if (tag.getId() >  0) {
-                mDb.tagDao().update(tag);
-            } else {
-                mDb.tagDao().insert(tag);
-            }
-        });
+        mAppExecutors.diskIO().execute(() -> saveTagToDb(tag));
+    }
+
+    public void syncTag(Tag tag) {
+        tag.setSynced(true);
+
+        mAppExecutors.diskIO().execute(() -> saveTagToDb(tag));
     }
 
     /**
@@ -279,19 +256,14 @@ public class DataRepository {
      * @param tag Tag to delete
      */
     public void deleteTag(Tag tag) {
-        mAppExecutors.diskIO().execute(() -> {
-            mDb.runInTransaction(() -> {
-                mDb.tagDao().delete(tag);
+        mAppExecutors.diskIO().execute(() -> mDb.runInTransaction(() -> {
+            mDb.tagDao().delete(tag);
 
-                // if tag has synced with server, queue the deletion for syncing
-                if (tag.getServerId() > 0) {
-                    mDb.deletionDao().insert(Deletion.tagDeletion(tag));
-
-                    // no longer need to sync any deleted relations for the tag
-                    mDb.deletionDao().deleteRelationsForTag(tag.getId());
-                }
-            });
-        });
+            // if tag has synced with server, queue the deletion for syncing
+            if (tag.getServerId() > 0) {
+                mDb.deletionDao().insert(Deletion.tagDeletion(tag));
+            }
+        }));
     }
 
 
@@ -303,9 +275,7 @@ public class DataRepository {
      * @param taskTag TaskTag to save
      */
     public void saveTaskTag(TaskTag taskTag) {
-        mAppExecutors.diskIO().execute(() -> {
-            mDb.taskTagDao().insert(taskTag);
-        });
+        mAppExecutors.diskIO().execute(() -> mDb.taskTagDao().insert(taskTag));
     }
 
     /**
@@ -314,17 +284,56 @@ public class DataRepository {
      * @param taskTag TaskTag to delete
      */
     public void deleteTaskTag(TaskTag taskTag) {
-        mAppExecutors.diskIO().execute(() -> {
-            mDb.runInTransaction(() -> {
-                mDb.taskTagDao().delete(taskTag);
+        mAppExecutors.diskIO().execute(() -> mDb.runInTransaction(() -> {
+            mDb.taskTagDao().delete(taskTag);
 
-                // if relation is synced to server, queue this deletion for sync
-                if (taskTag.isSynced()) {
-                    mDb.deletionDao().insert(Deletion.taskTagDeletion(taskTag));
-                }
+            // if relation is synced to server, queue this deletion for sync
+//            if (taskTag.isSynced()) {
+//                mDb.deletionDao().insert(Deletion.taskTagDeletion(taskTag));
+//            }
 
-            });
-        });
+        }));
+    }
+
+
+    // DeletionDao related operations
+
+    /**
+     * Synchronously loads all task Deletions. The DB query is performed on the same thread as the
+     * caller, therefore this method cannot be called from the main thread.
+     *
+     * @return List of task Deletions
+     */
+    @WorkerThread
+    public List<Deletion> loadDeletedTasksSync() {
+        return mDb.deletionDao().loadTaskDeletions();
+    }
+
+    /**
+     * Synchronously loads all tag Deletions. The DB query is performed on the same thread as the
+     * caller, therefore this method cannot be called from the main thread.
+     *
+     * @return List of tag Deletions
+     */
+    @WorkerThread
+    public List<Deletion> loadDeletedTagsSync() {
+        return mDb.deletionDao().loadTagDeletions();
+    }
+
+    public void deleteDeletion(Deletion deletion) {
+        mAppExecutors.diskIO().execute(() -> mDb.deletionDao().delete(deletion));
+    }
+
+
+    // Task helper methods
+
+    @WorkerThread
+    private void saveTaskToDb(Task task) {
+        if (task.getId() > 0) {
+            mDb.taskDao().update(task);
+        } else {
+            mDb.taskDao().insert(task);
+        }
     }
 
     /**
@@ -340,9 +349,6 @@ public class DataRepository {
             // if task has synced with server, queue the deletion for sync
             if (task.getServerId() > 0) {
                 mDb.deletionDao().insert(Deletion.taskDeletion(task));
-
-                // no longer need to sync any deleted relations for the task
-                mDb.deletionDao().deleteRelationsForTask(task.getId());
             }
         });
     }
@@ -385,6 +391,20 @@ public class DataRepository {
             }
         });
     }
+
+
+    // Tag helper methods
+
+    private void saveTagToDb(Tag tag) {
+        if (tag.getId() > 0) {
+            mDb.tagDao().update(tag);
+        } else {
+            mDb.tagDao().insert(tag);
+        }
+    }
+
+
+    // TODO: migrate to Executor or make synchronous
 
     /**
      * AsyncTask for loading Tasks that have notifications enabled. Helper for
