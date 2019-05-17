@@ -66,4 +66,5 @@
     <string name="deleteTagMessage">Delete tag?</string>
     <string name="tagNameExistsError">Tag with this name already exists</string>
     <string name="rename">Rename</string>
+    <string name="signOut">Sign out</string>
 </resources>
