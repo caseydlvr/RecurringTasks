@@ -91,7 +91,7 @@ public class ApiServer {
         });
     }
 
-    public void getTask(long id) {
+    public void getTask(int id) {
         mService.getTask(id).enqueue(new Callback<Task>() {
 
             @Override
@@ -111,7 +111,7 @@ public class ApiServer {
         });
     }
 
-    public void getTaskWithTags(long id) {
+    public void getTaskWithTags(int id) {
         mService.getTaskWithTags(id).enqueue(new Callback<TaskWithTags>() {
             @Override
             public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
@@ -131,82 +131,67 @@ public class ApiServer {
     }
 
     public void createTask(TaskWithTags task) {
-        mService.createTask(task).enqueue(new Callback<TaskWithTags>() {
+        try {
+            Response<TaskWithTags> response = mService.createTask(task).execute();
 
-            @Override
-            public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
-                if (response.isSuccessful()) {
-                    Task responseTask = response.body();
+            if (response.isSuccessful()) {
+                Task responseTask = response.body();
 
-                    if (responseTask != null) {
-                        responseTask.setId(task.getId());
-                        responseTask.setSynced(true);
+                if (responseTask != null) {
+                    responseTask.setId(task.getId());
+                    responseTask.setSynced(true);
 
-                        mRepository.syncTask(responseTask);
+                    mRepository.syncTask(responseTask);
 
-                        Timber.d("task created: %s", responseTask);
-                    }
-                } else {
-                    handleErrorResponse(response);
+                    Timber.d("task created: %s", responseTask);
                 }
+            } else {
+                handleErrorResponse(response);
             }
-
-            @Override
-            public void onFailure(Call<TaskWithTags> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
+        } catch (IOException e) {
+            handleFailure(e);
+        }
     }
 
-    public void updateTask(long id, TaskWithTags task) {
-        mService.updateTask(id, task).enqueue(new Callback<TaskWithTags>() {
+    public void updateTask(int id, TaskWithTags task) {
+        try {
+            Response<TaskWithTags> response = mService.updateTask(id, task).execute();
 
-            @Override
-            public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
-                if (response.isSuccessful()) {
-                    Task responseTask = response.body();
+            if (response.isSuccessful()) {
+                Task responseTask = response.body();
 
-                    if (responseTask != null) {
-                        responseTask.setId(task.getId());
-                        responseTask.setSynced(true);
+                if (responseTask != null) {
+                    responseTask.setId(task.getId());
+                    responseTask.setSynced(true);
 
-                        mRepository.syncTask(responseTask);
+                    mRepository.syncTask(responseTask);
 
-                        Timber.d("task updated: %s", responseTask);
-                    }
-                } else {
-                    handleErrorResponse(response);
+                    Timber.d("task updated: %s", responseTask);
                 }
+            } else {
+                handleErrorResponse(response);
             }
-
-            @Override
-            public void onFailure(Call<TaskWithTags> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
+        } catch (IOException e) {
+            handleFailure(e);
+        }
     }
 
     public void deleteTask(int id) {
-        mService.deleteTask(id).enqueue(new Callback<Void>() {
+        try {
+            Response<Void> response = mService.deleteTask(id).execute();
 
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Timber.d("delete successful");
-                    mRepository.deleteDeletion(Deletion.taskDeletion(id));
-                } else {
-                    handleErrorResponse(response);
-                }
+            if (response.isSuccessful()) {
+                Timber.d("task %d delete successful", id);
+                mRepository.deleteDeletion(Deletion.taskDeletion(id));
+            } else {
+                handleErrorResponse(response);
             }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
+        } catch (IOException e) {
+            handleFailure(e);
+        }
     }
 
-    public void completeTask(long id) {
+    public void completeTask(int id) {
         mService.completeTask(id).enqueue(new Callback<Task>() {
             @Override
             public void onResponse(Call<Task> call, Response<Task> response) {
@@ -244,85 +229,68 @@ public class ApiServer {
     }
 
     public void createTag(Tag tag) {
-        mService.createTag(tag).enqueue(new Callback<Tag>() {
+        try {
+            Response<Tag> response = mService.createTag(tag).execute();
 
-            @Override
-            public void onResponse(Call<Tag> call, Response<Tag> response) {
-                if (response.isSuccessful()) {
-                    Tag responseTag = response.body();
+            if (response.isSuccessful()) {
+                Tag responseTag = response.body();
 
-                    if (responseTag != null) {
-                        responseTag.setId(tag.getId());
-                        responseTag.setSynced(true);
+                if (responseTag != null) {
+                    responseTag.setId(tag.getId());
+                    responseTag.setSynced(true);
 
-                        Timber.d("tag created: %s", responseTag);
+                    Timber.d("tag created: %s", responseTag);
 
-                        mRepository.syncTag(responseTag);
-                    } else {
-                        Timber.e("bad data returned from create");
-                    }
+                    mRepository.syncTag(responseTag);
                 } else {
-                    handleErrorResponse(response);
+                    Timber.e("bad data returned from create");
                 }
-
+            } else {
+                handleErrorResponse(response);
             }
-
-            @Override
-            public void onFailure(Call<Tag> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
+        } catch (IOException e) {
+            handleFailure(e);
+        }
     }
 
     public void updateTag(int id, Tag tag) {
-        mService.updateTag(id, tag).enqueue(new Callback<Tag>() {
+        try {
+            Response<Tag> response = mService.updateTag(id, tag).execute();
 
-            @Override
-            public void onResponse(Call<Tag> call, Response<Tag> response) {
-                if (response.isSuccessful()) {
-                    Tag responseTag = response.body();
+            if (response.isSuccessful()) {
+                Tag responseTag = response.body();
 
-                    if (responseTag != null) {
-                        responseTag.setId(tag.getId());
-                        responseTag.setSynced(true);
+                if (responseTag != null) {
+                    responseTag.setId(tag.getId());
+                    responseTag.setSynced(true);
 
-                        mRepository.syncTag(responseTag);
+                    Timber.d("tag updated: %s", responseTag);
 
-                        Timber.d("tag updated: %s", responseTag);
-                    } else {
-                        Timber.e("bad data returned from create");
-                    }
+                    mRepository.syncTag(responseTag);
                 } else {
-                    handleErrorResponse(response);
+                    Timber.e("bad data returned from update");
                 }
-
+            } else {
+                handleErrorResponse(response);
             }
-
-            @Override
-            public void onFailure(Call<Tag> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
+        } catch (IOException e) {
+            handleFailure(e);
+        }
     }
 
     public void deleteTag(int id) {
-        mService.deleteTag(id).enqueue(new Callback<Void>() {
+        try {
+            Response<Void> response = mService.deleteTag(id).execute();
 
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Timber.d("delete successful");
-                    mRepository.deleteDeletion(Deletion.tagDeletion(id));
-                } else {
-                    handleErrorResponse(response);
-                }
+            if (response.isSuccessful()) {
+                Timber.d("tag %d delete successful", id);
+                mRepository.deleteDeletion(Deletion.tagDeletion(id));
+            } else {
+                handleErrorResponse(response);
             }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
+        } catch (IOException e) {
+            handleFailure(e);
+        }
     }
 
     /************* Full data methods *************/
@@ -353,6 +321,7 @@ public class ApiServer {
     }
 
     private void handleFailure(Throwable t) {
+        t.printStackTrace();
         Timber.e(t);
     }
 

@@ -25,22 +25,22 @@ public interface DataWebservice {
     Call<List<TaskWithTags>> getTasksWithTags();
 
     @GET("tasks/{id}")
-    Call<Task> getTask(@Path("id") long taskId);
+    Call<Task> getTask(@Path("id") int taskId);
 
     @GET("tasks/{id}")
-    Call<TaskWithTags> getTaskWithTags(@Path("id") long taskId);
+    Call<TaskWithTags> getTaskWithTags(@Path("id") int taskId);
 
     @POST("tasks")
     Call<TaskWithTags> createTask(@Body TaskWithTags task);
 
     @POST("tasks/{id}/complete")
-    Call<Task> completeTask(@Path("id") long taskId);
+    Call<Task> completeTask(@Path("id") int taskId);
 
     @PATCH("tasks/{id}")
-    Call<TaskWithTags> updateTask(@Path("id") long taskId, @Body TaskWithTags task);
+    Call<TaskWithTags> updateTask(@Path("id") int taskId, @Body TaskWithTags task);
 
     @DELETE("tasks/{id}")
-    Call<Void> deleteTask(@Path("id") long taskId);
+    Call<Void> deleteTask(@Path("id") int taskId);
 
     @GET("tags")
     Call<List<Tag>> getTags();
