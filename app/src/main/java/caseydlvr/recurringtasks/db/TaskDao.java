@@ -37,6 +37,9 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks WHERE id = :id")
     LiveData<Task> observeById(long id);
 
+    @Query("SELECT * FROM tasks")
+    List<Task> loadAll();
+
     @Query("SELECT * FROM tasks WHERE notification_option != 'never'")
     List<Task> loadAllWithNotifications();
 

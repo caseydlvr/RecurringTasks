@@ -22,8 +22,6 @@ import caseydlvr.recurringtasks.model.TaskWithTagIds;
  */
 public class DataRepository {
 
-    private static final String TAG = DataRepository.class.getSimpleName();
-
     private static DataRepository sInstance;
 
     private final AppDatabase mDb;
@@ -104,6 +102,16 @@ public class DataRepository {
     }
 
     /**
+     * Synchronously loads all Tasks. The DB query is performed on the same thread as the caller,
+     * therefore this method cannot be called from the main thread.
+     *
+     * @return List of all Tasks
+     */
+    public List<Task> loadAllTasksSync() {
+        return mDb.taskDao().loadAll();
+    }
+
+    /**
      * Loads all Tasks that haven't been complete that have notifications enabled.
      *
      * @return List of Tasks
@@ -130,7 +138,8 @@ public class DataRepository {
     }
 
     /**
-     * Persists (inserts or updates) the provided Task
+     * Persists (inserts or updates) the provided Task. For use when the source of the Task data is
+     * the local app.
      *
      * @param task Task to save
      */
@@ -142,6 +151,12 @@ public class DataRepository {
         });
     }
 
+    /**
+     * Persists (inserts or updates) the provided Task. For use when the source of the Task data is
+     * the remote server.
+     *
+     * @param task Task to sync
+     */
     public void syncTask(Task task) {
         task.setSynced(true);
 
@@ -210,6 +225,16 @@ public class DataRepository {
     }
 
     /**
+     * Synchronously loads all Tags. The DB query is performed on the same thread as the  caller,
+     * therefore this method cannot be called from the main thread.
+     *
+     * @return Lost of all Tags
+     */
+    public List<Tag> loadAllTagsSync() {
+        return mDb.tagDao().loadAll();
+    }
+
+    /**
      * Synchronously loads all unsynced Tags. The DB query is performed on the same thread as the
      * caller, therefore this method cannot be called from the main thread.
      *
@@ -234,7 +259,8 @@ public class DataRepository {
     }
 
     /**
-     * Persists (inserts or updates) the provided Tag
+     * Persists (inserts or updates) the provided Tag. For use when the source of the Tag data is
+     * the local app.
      *
      * @param tag Tag to save
      */
@@ -244,6 +270,12 @@ public class DataRepository {
         mAppExecutors.diskIO().execute(() -> saveTagToDb(tag));
     }
 
+    /**
+     * Persists (inserts or updates) the provided Tag. For use when the source of the Tag data is
+     * the remote server.
+     *
+     * @param tag Tag to sync
+     */
     public void syncTag(Tag tag) {
         tag.setSynced(true);
 

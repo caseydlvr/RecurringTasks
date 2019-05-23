@@ -15,7 +15,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface DataWebservice {
-    @POST()
+    @POST("./")
     Call<Void> fullExport(@Body TasksAndTags tasksAndTags);
 
     @GET("tasks")

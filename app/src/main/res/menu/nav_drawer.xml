@@ -31,10 +31,15 @@
             android:title="@string/settings"
             android:orderInCategory="3"/>
         <item
+            android:id="@+id/navFullSync"
+            android:icon="@drawable/ic_action_sync"
+            android:title="@string/sync"
+            android:orderInCategory="4"/>
+        <item
             android:id="@+id/navSignOut"
             android:icon="@drawable/ic_action_signout"
             android:title="@string/signOut"
-            android:orderInCategory="4"/>
+            android:orderInCategory="5"/>
     </group>
 
 </menu>

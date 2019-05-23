@@ -10,6 +10,7 @@ import caseydlvr.recurringtasks.model.Deletion;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskWithTags;
+import caseydlvr.recurringtasks.model.TasksAndTags;
 
 public class Sync {
 
@@ -29,13 +30,7 @@ public class Sync {
 
     public void startTaskSync() {
         List<Task> unsyncedTasks = mDr.loadUnsyncedTasksSync();
-
-        List<TaskWithTags> unsyncedTasksWithTags = new ArrayList<>();
-
-        for (Task task : unsyncedTasks) {
-            List<Tag> tags = mDr.loadTagsByTaskSync(task.getId());
-            unsyncedTasksWithTags.add(new TaskWithTags(task, tags));
-        }
+        List<TaskWithTags> unsyncedTasksWithTags = buildTasksWithTags(unsyncedTasks);
 
         for (TaskWithTags task : unsyncedTasksWithTags) {
             if (task.getServerId() > 0) {
@@ -70,5 +65,28 @@ public class Sync {
         for (Deletion deletedTask : deletedTasks) {
             mServer.deleteTask(deletedTask.getTaskServerId());
         }
+    }
+
+    public void startFulLExport() {
+        List<Task> allTasks = mDr.loadAllTasksSync();
+        List<TaskWithTags> allTasksWithTags = buildTasksWithTags(allTasks);
+        List<Tag> allTags = mDr.loadAllTagsSync();
+
+        TasksAndTags tasksAndTags = new TasksAndTags();
+        tasksAndTags.setTaskWithTags(allTasksWithTags);
+        tasksAndTags.setTags(allTags);
+
+        mServer.fullExport(tasksAndTags);
+    }
+
+    private List<TaskWithTags> buildTasksWithTags(List<Task> tasks) {
+        List<TaskWithTags> tasksWithTags = new ArrayList<>();
+
+        for (Task task : tasks) {
+            List<Tag> tags = mDr.loadTagsByTaskSync(task.getId());
+            tasksWithTags.add(new TaskWithTags(task, tags));
+        }
+
+        return tasksWithTags;
     }
 }

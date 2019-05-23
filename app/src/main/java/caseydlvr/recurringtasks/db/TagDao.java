@@ -28,6 +28,9 @@ public interface TagDao {
     @Query("SELECT * FROM tags WHERE id = :tagId")
     LiveData<Tag> observeById(int tagId);
 
+    @Query("SELECT * FROM tags")
+    List<Tag> loadAll();
+
     @Query("SELECT * FROM tags WHERE NOT synced")
     List<Tag> loadUnsynced();
 
