@@ -19,6 +19,7 @@ import okhttp3.OkHttpClient;
 import okio.Buffer;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -295,23 +296,32 @@ public class ApiServer {
 
     /************* Full data methods *************/
 
-    public void fullExport(TasksAndTags tasksAndTags) {
-        mService.fullExport(tasksAndTags).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Timber.d("data exported");
-                } else {
-                    handleErrorResponse(response);
-                    logRequestJson(call);
-                }
+    public TasksAndTags fullExport(TasksAndTags tasksAndTags) throws IOException, HttpException {
+        Response<TasksAndTags> response = mService.fullExport(tasksAndTags).execute();
+
+        if (response.isSuccessful()) {
+            Timber.d("data exported");
+
+            TasksAndTags responseTasksAndTags = response.body();
+
+            for (Tag tag : responseTasksAndTags.getTags()) {
+                tag.setId(tasksAndTags.getTags()
+                        .get(responseTasksAndTags.getTags().indexOf(tag))
+                        .getId());
             }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                handleFailure(t);
+            for (TaskWithTags task : responseTasksAndTags.getTaskWithTags()) {
+                task.setId(tasksAndTags.getTaskWithTags()
+                        .get(responseTasksAndTags.getTaskWithTags().indexOf(task))
+                        .getId());
             }
-        });
+
+            return responseTasksAndTags;
+        } else {
+            handleErrorResponse(response);
+
+            throw new HttpException(response);
+        }
     }
 
     /************* Error handlers *************/

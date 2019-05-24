@@ -1,5 +1,6 @@
 package caseydlvr.recurringtasks.sync;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.model.TasksAndTags;
+import retrofit2.HttpException;
 
 public class Sync {
 
@@ -67,7 +69,7 @@ public class Sync {
         }
     }
 
-    public void startFulLExport() {
+    public void startFulLExport() throws IOException, HttpException {
         List<Task> allTasks = mDr.loadAllTasksSync();
         List<TaskWithTags> allTasksWithTags = buildTasksWithTags(allTasks);
         List<Tag> allTags = mDr.loadAllTagsSync();
@@ -76,7 +78,20 @@ public class Sync {
         tasksAndTags.setTaskWithTags(allTasksWithTags);
         tasksAndTags.setTags(allTags);
 
-        mServer.fullExport(tasksAndTags);
+        syncTasksAndTags(mServer.fullExport(tasksAndTags));
+    }
+
+    private void syncTasksAndTags(TasksAndTags tasksAndTags) {
+        List<TaskWithTags> tasks = tasksAndTags.getTaskWithTags();
+        List<Tag> tags = tasksAndTags.getTags();
+
+        for (Tag tag : tags) {
+            mDr.syncTag(tag);
+        }
+
+        for (TaskWithTags task : tasks) {
+            mDr.syncTask(task);
+        }
     }
 
     private List<TaskWithTags> buildTasksWithTags(List<Task> tasks) {
