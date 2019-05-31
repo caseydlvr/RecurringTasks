@@ -15,6 +15,7 @@ import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
 import caseydlvr.recurringtasks.model.TaskWithTagIds;
+import caseydlvr.recurringtasks.sync.SyncActions;
 
 /**
  * Singleton that handles CRUD for database storage. Single point of access to the data. Handles
@@ -294,6 +295,8 @@ public class DataRepository {
             // if tag has synced with server, queue the deletion for syncing
             if (tag.getServerId() > 0) {
                 mDb.deletionDao().insert(Deletion.tagDeletion(tag));
+
+                SyncActions.enqueueOneTimeSync();
             }
         }));
     }
@@ -366,6 +369,8 @@ public class DataRepository {
         } else {
             mDb.taskDao().insert(task);
         }
+
+        SyncActions.enqueueOneTimeSync();
     }
 
     /**
@@ -381,6 +386,8 @@ public class DataRepository {
             // if task has synced with server, queue the deletion for sync
             if (task.getServerId() > 0) {
                 mDb.deletionDao().insert(Deletion.taskDeletion(task));
+
+                SyncActions.enqueueOneTimeSync();
             }
         });
     }
@@ -420,6 +427,8 @@ public class DataRepository {
 
                     mDb.taskTagDao().insert(taskTags.toArray(new TaskTag[0]));
                 }
+
+                SyncActions.enqueueOneTimeSync();
             }
         });
     }
@@ -433,6 +442,8 @@ public class DataRepository {
         } else {
             mDb.tagDao().insert(tag);
         }
+
+        SyncActions.enqueueOneTimeSync();
     }
 
 

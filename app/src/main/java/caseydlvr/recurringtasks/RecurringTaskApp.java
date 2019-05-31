@@ -14,10 +14,9 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
 
-import androidx.work.WorkManager;
 import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.notifications.NotificationReceiver;
-import caseydlvr.recurringtasks.sync.SyncWorkRequests;
+import caseydlvr.recurringtasks.sync.SyncActions;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.ui.settings.TimePreference;
 import timber.log.Timber;
@@ -135,7 +134,7 @@ public class RecurringTaskApp extends Application {
     }
 
     private void initSync() {
-        WorkManager.getInstance().enqueue(SyncWorkRequests.recurringSyncWorkRequest());
+        SyncActions.enqueueRecurringSync();
     }
 
     private void initTimber() {

@@ -7,11 +7,9 @@ import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 
-public class SyncWorkRequests {
+class SyncWorkRequests {
 
-    public static final String FULL_EXPORT_WORK_NAME = "full_export_work";
-
-    public static PeriodicWorkRequest recurringSyncWorkRequest() {
+    static PeriodicWorkRequest recurringSyncWorkRequest() {
         Constraints constraints = baseConstraints()
                 .setRequiresBatteryNotLow(true)
                 .build();
@@ -21,7 +19,16 @@ public class SyncWorkRequests {
                 .build();
     }
 
-    public static OneTimeWorkRequest fullExportWorkRequest() {
+    static OneTimeWorkRequest oneTimeSyncWorkRequest() {
+        Constraints constraints = baseConstraints().build();
+
+        return new OneTimeWorkRequest.Builder(SyncWorker.class)
+                .setConstraints(constraints)
+                .setInitialDelay(1, TimeUnit.MINUTES)
+                .build();
+    }
+
+    static OneTimeWorkRequest fullExportWorkRequest() {
         Constraints constraints = baseConstraints().build();
 
         return new OneTimeWorkRequest.Builder(FullExportWorker.class)

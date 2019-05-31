@@ -35,15 +35,13 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.TaskWithTagIds;
-import caseydlvr.recurringtasks.sync.SyncWorkRequests;
+import caseydlvr.recurringtasks.sync.SyncActions;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
@@ -240,10 +238,7 @@ public class TaskListFragment extends Fragment
                     startActivity(intent);
                     return true;
                 case R.id.navFullSync:
-                    WorkManager.getInstance().enqueueUniqueWork(
-                            SyncWorkRequests.FULL_EXPORT_WORK_NAME,
-                            ExistingWorkPolicy.KEEP,
-                            SyncWorkRequests.fullExportWorkRequest());
+                    SyncActions.enqueueFullExport();
                     Toast.makeText(getContext(), "Full export queued", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.navSignOut:
