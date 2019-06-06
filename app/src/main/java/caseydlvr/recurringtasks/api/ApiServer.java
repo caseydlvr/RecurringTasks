@@ -183,10 +183,11 @@ public class ApiServer {
 
             if (response.isSuccessful()) {
                 Timber.d("task %d delete successful", id);
-                mRepository.deleteDeletion(Deletion.taskDeletion(id));
             } else {
                 handleErrorResponse(response);
             }
+
+            mRepository.deleteDeletion(Deletion.taskDeletion(id));
         } catch (IOException e) {
             handleFailure(e);
         }
@@ -285,10 +286,11 @@ public class ApiServer {
 
             if (response.isSuccessful()) {
                 Timber.d("tag %d delete successful", id);
-                mRepository.deleteDeletion(Deletion.tagDeletion(id));
             } else {
                 handleErrorResponse(response);
             }
+
+            mRepository.deleteDeletion(Deletion.tagDeletion(id));
         } catch (IOException e) {
             handleFailure(e);
         }
