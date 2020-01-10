@@ -45,32 +45,32 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha5'
-    implementation 'androidx.preference:preference:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
+    implementation 'androidx.preference:preference:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha03'
     // Room
-    implementation 'androidx.room:room-runtime:2.0.0'
-    annotationProcessor 'androidx.room:room-compiler:2.0.0'
-    testImplementation 'androidx.room:room-testing:2.0.0'
-    androidTestImplementation 'androidx.room:room-testing:2.0.0'
+    implementation 'androidx.room:room-runtime:2.2.3'
+    annotationProcessor 'androidx.room:room-compiler:2.2.3'
+    testImplementation 'androidx.room:room-testing:2.2.3'
+    androidTestImplementation 'androidx.room:room-testing:2.2.3'
     // ViewModel and LiveData
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
-    testImplementation 'androidx.arch.core:core-testing:2.0.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.1.0'
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     // WorkManager
-    implementation 'androidx.work:work-runtime:2.0.1'
-    androidTestImplementation 'androidx.work:work-testing:2.0.1'
+    implementation 'androidx.work:work-runtime:2.2.0'
+    androidTestImplementation 'androidx.work:work-testing:2.2.0'
     // ButterKnife
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
     // ThreeTen Android Backport
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     // Firebase
-    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-core:17.2.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
