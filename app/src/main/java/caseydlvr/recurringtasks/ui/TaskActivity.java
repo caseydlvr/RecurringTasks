@@ -184,7 +184,7 @@ public class TaskActivity extends AppCompatActivity {
 
     public void showTaskListFragmentWithTagFilter(Tag tag) {
         Bundle args = new Bundle();
-        args.putInt(TaskListFragment.KEY_TAG_ID, tag.getId());
+        args.putString(TaskListFragment.KEY_TAG_ID, tag.getId());
         args.putString(TaskListFragment.KEY_TAG_NAME, tag.getName());
 
         TaskListFragment fragment = new TaskListFragment();
@@ -193,9 +193,9 @@ public class TaskActivity extends AppCompatActivity {
         showFragment(fragment, TAG_TASK_LIST_FILTER, null);
     }
 
-    public void showTaskDetailFragment(long taskId) {
+    public void showTaskDetailFragment(String taskId) {
         Bundle args = new Bundle();
-        args.putLong(TaskDetailFragment.KEY_TASK_ID, taskId);
+        args.putString(TaskDetailFragment.KEY_TASK_ID, taskId);
 
         TaskDetailFragment fragment = new TaskDetailFragment();
         fragment.setArguments(args);
@@ -213,10 +213,10 @@ public class TaskActivity extends AppCompatActivity {
         showFragment(fragment, TAG_TAG_LIST, null);
     }
 
-    public void showTagListForTask(long taskId) {
+    public void showTagListForTask(String taskId) {
         Bundle args = new Bundle();
         args.putString(TagListFragment.KEY_MODE, TagListFragment.MODE_TASK);
-        args.putLong(TagListFragment.KEY_TASK_ID, taskId);
+        args.putString(TagListFragment.KEY_TASK_ID, taskId);
 
         TagListFragment fragment = new TagListFragment();
         fragment.setArguments(args);
@@ -235,8 +235,8 @@ public class TaskActivity extends AppCompatActivity {
         showFragment(fragment, null, null);
     }
 
-    private long getTaskIdExtra() {
-        return getIntent().getLongExtra(EXTRA_TASK_ID, 0);
+    private String getTaskIdExtra() {
+        return getIntent().getStringExtra(EXTRA_TASK_ID);
     }
 
     private void initAuth() {

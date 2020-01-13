@@ -18,7 +18,7 @@ public class TagListViewModel extends AndroidViewModel {
     private LiveData<List<Tag>> mAllTags;
     private LiveData<List<Tag>> mTagsForTask;
     private DataRepository mRepository;
-    private long mTaskId;
+    private String mTaskId;
     private boolean mTaskMode = false;
     private List<Tag> mCheckedTags = new ArrayList<>();
     private Tag mTagPendingEdit;
@@ -30,7 +30,7 @@ public class TagListViewModel extends AndroidViewModel {
         mAllTags = mRepository.observeAllTags();
     }
 
-    public void initTaskMode(long taskId) {
+    public void initTaskMode(String taskId) {
         mTaskMode = true;
         mTaskId = taskId;
         mTagsForTask = mRepository.observeTagsByTask(mTaskId);

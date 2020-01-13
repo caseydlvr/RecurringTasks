@@ -7,6 +7,7 @@ import androidx.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import caseydlvr.recurringtasks.db.AppDatabase;
@@ -87,7 +88,7 @@ public class DataRepository {
      * @param tagId id of Tag to load Tasks for
      * @return      LiveData holding a List of TaskWithTagIds
      */
-    public LiveData<List<TaskWithTagIds>> observeTasksByTagWithTagIds(int tagId) {
+    public LiveData<List<TaskWithTagIds>> observeTasksByTagWithTagIds(String tagId) {
         return mDb.taskDao().observeByTagWithTagIds(tagId);
     }
 
@@ -98,7 +99,7 @@ public class DataRepository {
      * @param id ID of Task to load
      * @return   LiveData holding a Task.
      */
-    public LiveData<Task> observeTaskById(final long id) {
+    public LiveData<Task> observeTaskById(final String id) {
         return mDb.taskDao().observeById(id);
     }
 
@@ -213,7 +214,7 @@ public class DataRepository {
      * @param taskId id of Task to load Tags for
      * @return       LiveData holding a List of Tags
      */
-    public LiveData<List<Tag>> observeTagsByTask(long taskId) {
+    public LiveData<List<Tag>> observeTagsByTask(String taskId) {
         return mDb.tagDao().observeByTask(taskId);
     }
 
@@ -221,7 +222,7 @@ public class DataRepository {
      * @param tagId id of the Tag to load
      * @return      LiveData holding a Tag
      */
-    public LiveData<Tag> observeTagById(int tagId) {
+    public LiveData<Tag> observeTagById(String tagId) {
         return mDb.tagDao().observeById(tagId);
     }
 
@@ -255,7 +256,7 @@ public class DataRepository {
      * @return       List of Tags related to the provided taskId
      */
     @WorkerThread
-    public List<Tag> loadTagsByTaskSync(long taskId) {
+    public List<Tag> loadTagsByTaskSync(String taskId) {
         return mDb.tagDao().loadByTask(taskId);
     }
 
@@ -293,7 +294,7 @@ public class DataRepository {
             mDb.tagDao().delete(tag);
 
             // if tag has synced with server, queue the deletion for syncing
-            if (tag.getServerId() > 0) {
+            if (tag.getId() != null) {
                 mDb.deletionDao().insert(Deletion.tagDeletion(tag));
 
                 SyncActions.enqueueOneTimeSync();
@@ -323,9 +324,9 @@ public class DataRepository {
             mDb.taskTagDao().delete(taskTag);
 
             // if relation is synced to server, queue this deletion for sync
-//            if (taskTag.isSynced()) {
-//                mDb.deletionDao().insert(Deletion.taskTagDeletion(taskTag));
-//            }
+            if (taskTag.isSynced()) {
+                mDb.deletionDao().insert(Deletion.taskTagDeletion(taskTag));
+            }
 
         }));
     }
@@ -360,14 +361,22 @@ public class DataRepository {
     }
 
 
+    // general helper methods
+
+    private String generateUuid() {
+        return UUID.randomUUID().toString();
+    }
+
+
     // Task helper methods
 
     @WorkerThread
     private void saveTaskToDb(Task task) {
-        if (task.getId() > 0) {
-            mDb.taskDao().update(task);
-        } else {
+        if (task.getId() == null) {
+            task.setId(generateUuid());
             mDb.taskDao().insert(task);
+        } else {
+            mDb.taskDao().update(task);
         }
 
         SyncActions.enqueueOneTimeSync();
@@ -384,7 +393,7 @@ public class DataRepository {
             mDb.taskDao().delete(task);
 
             // if task has synced with server, queue the deletion for sync
-            if (task.getServerId() > 0) {
+            if (task.getId() != null) {
                 mDb.deletionDao().insert(Deletion.taskDeletion(task));
 
                 SyncActions.enqueueOneTimeSync();
@@ -411,14 +420,18 @@ public class DataRepository {
             deleteTaskFromDb(task);
 
             if (task.isRepeating()) {
+
                 Task newTask = new Task();
+                newTask.setId(generateUuid());
                 newTask.setName(task.getName());
                 newTask.setDuration(task.getDuration());
                 newTask.setDurationUnit(task.getDurationUnit());
                 newTask.setRepeating(task.isRepeating());
                 newTask.setNotificationOption(task.getNotificationOption());
 
-                long newTaskId = mDb.taskDao().insert(newTask)[0];
+                String newTaskId = newTask.getId();
+
+                mDb.taskDao().insert(newTask);
 
                 if (taskTags != null) {
                     for (TaskTag taskTag : taskTags) {
@@ -437,10 +450,11 @@ public class DataRepository {
     // Tag helper methods
 
     private void saveTagToDb(Tag tag) {
-        if (tag.getId() > 0) {
-            mDb.tagDao().update(tag);
-        } else {
+        if (tag.getId() == null) {
+            tag.setId(generateUuid());
             mDb.tagDao().insert(tag);
+        } else {
+            mDb.tagDao().update(tag);
         }
 
         SyncActions.enqueueOneTimeSync();

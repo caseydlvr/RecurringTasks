@@ -35,8 +35,8 @@ public class Sync {
         List<TaskWithTags> unsyncedTasksWithTags = buildTasksWithTags(unsyncedTasks);
 
         for (TaskWithTags task : unsyncedTasksWithTags) {
-            if (task.getServerId() > 0) {
-                mServer.updateTask(task.getServerId(), task);
+            if (task.getId() != null) {
+                mServer.updateTask(task);
             } else {
                 mServer.createTask(task);
             }
@@ -47,8 +47,8 @@ public class Sync {
         List<Tag> unsyncedTags = mDr.loadUnsyncedTagsSync();
 
         for (Tag tag : unsyncedTags) {
-            if (tag.getServerId() > 0) {
-                mServer.updateTag(tag.getServerId(), tag);
+            if (tag.getId() != null) {
+                mServer.updateTag(tag);
             } else {
                 mServer.createTag(tag);
             }
@@ -59,13 +59,13 @@ public class Sync {
         List<Deletion> deletedTags = mDr.loadDeletedTagsSync();
 
         for (Deletion deletedTag : deletedTags) {
-            mServer.deleteTag(deletedTag.getTagServerId());
+            mServer.deleteTag(deletedTag.getTagId());
         }
 
         List<Deletion> deletedTasks = mDr.loadDeletedTasksSync();
 
         for (Deletion deletedTask : deletedTasks) {
-            mServer.deleteTask(deletedTask.getTaskServerId());
+            mServer.deleteTask(deletedTask.getTaskId());
         }
     }
 

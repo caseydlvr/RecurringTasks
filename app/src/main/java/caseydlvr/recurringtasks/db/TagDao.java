@@ -23,10 +23,10 @@ public interface TagDao {
             "JOIN tasks_tags ON tags.id = tasks_tags.tag_id " +
             "WHERE tasks_tags.task_id = :taskId " +
             "ORDER BY tags.name")
-    LiveData<List<Tag>> observeByTask(long taskId);
+    LiveData<List<Tag>> observeByTask(String taskId);
 
     @Query("SELECT * FROM tags WHERE id = :tagId")
-    LiveData<Tag> observeById(int tagId);
+    LiveData<Tag> observeById(String tagId);
 
     @Query("SELECT * FROM tags")
     List<Tag> loadAll();
@@ -38,7 +38,7 @@ public interface TagDao {
             "JOIN tasks_tags ON tags.id = tasks_tags.tag_id " +
             "WHERE tasks_tags.task_id = :taskId " +
             "ORDER BY tags.name")
-    List<Tag> loadByTask(long taskId);
+    List<Tag> loadByTask(String taskId);
 
     @Insert(onConflict = REPLACE)
     long[] insert(Tag... tags);

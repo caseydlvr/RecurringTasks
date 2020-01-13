@@ -3,6 +3,7 @@ package caseydlvr.recurringtasks.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -11,6 +12,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoUnit;
 
 import java.util.Comparator;
+import java.util.UUID;
 
 /**
  * Represents a Task. Room entity for the Tasks table.
@@ -22,9 +24,12 @@ public class Task {
     public static final int DURATION_MIN = 1;
     public static final int NAME_MAX_LENGTH = 25;
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     @ColumnInfo(name = "id")
-    private long mId;
+    @NonNull
+    @SerializedName("id")
+    @Expose
+    private String mId;
 
     @ColumnInfo(name = "name")
     @SerializedName("name")
@@ -55,11 +60,6 @@ public class Task {
     @SerializedName("notification_option")
     @Expose
     private String mNotificationOption;
-
-    @ColumnInfo(name = "server_id")
-    @SerializedName("id")
-    @Expose
-    private int mServerId;
 
     @ColumnInfo(name = "synced")
     private boolean mSynced;
@@ -95,7 +95,6 @@ public class Task {
         mStartDate = task.getStartDate();
         mRepeating = task.isRepeating();
         mNotificationOption = task.getNotificationOption();
-        mServerId = task.getServerId();
         mSynced = task.isSynced();
 
         setDueDateFields();
@@ -104,11 +103,11 @@ public class Task {
     /**
      * @return Unique ID for the Task. This is the DB key.
      */
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 
@@ -231,14 +230,6 @@ public class Task {
         mNotificationOption = notificationOption;
     }
 
-    public int getServerId() {
-        return mServerId;
-    }
-
-    public void setServerId(int serverId) {
-        mServerId = serverId;
-    }
-
     public boolean isSynced() {
         return mSynced;
     }
@@ -261,7 +252,7 @@ public class Task {
 
         final Task other = (Task) obj;
 
-        return (other.getId() == mId
+        return (other.getId().equals(mId)
                 && other.getName().equals(mName)
                 && other.getDuration() == mDuration
                 && other.getDurationUnit().equals(mDurationUnit)
@@ -346,7 +337,6 @@ public class Task {
                 ", mStartDate=" + mStartDate +
                 ", mRepeating=" + mRepeating +
                 ", mNotificationOption='" + mNotificationOption + '\'' +
-                ", mServerId=" + mServerId +
                 ", mSynced=" + mSynced +
                 '}';
     }

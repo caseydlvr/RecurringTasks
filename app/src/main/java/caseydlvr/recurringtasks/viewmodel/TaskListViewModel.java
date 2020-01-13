@@ -21,7 +21,7 @@ public class TaskListViewModel extends TaskViewModel {
     private LiveData<List<Tag>> mAllTags;
     private LiveData<Tag> mFilterTag;
     private DataRepository mRepository;
-    private int mFilterTagId;
+    private String mFilterTagId;
 
     /**
      * Constructor. This starts the async loading of Tasks by the repository.
@@ -37,7 +37,7 @@ public class TaskListViewModel extends TaskViewModel {
     /**
      * @param tagId id of the Tag to use to filter the list of Tasks
      */
-    public void setFilterTagId(int tagId) {
+    public void setFilterTagId(String tagId) {
         if (tagId != mFilterTagId) {
             mFilterTagId = tagId;
             mFilteredTasksWithTags = mRepository.observeTasksByTagWithTagIds(mFilterTagId);
@@ -65,7 +65,7 @@ public class TaskListViewModel extends TaskViewModel {
         return mAllTasksWithTags;
     }
 
-    public int getFilterTagId() {
+    public String getFilterTagId() {
         return mFilterTagId;
     }
 }

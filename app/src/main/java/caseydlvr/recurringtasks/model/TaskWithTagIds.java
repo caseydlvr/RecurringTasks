@@ -13,7 +13,7 @@ public class TaskWithTagIds {
     private Task mTask;
 
     @Relation(parentColumn = "id", entityColumn = "task_id", entity = TaskTag.class, projection = "tag_id")
-    private List<Integer> mTagIds = new ArrayList<>();
+    private List<String> mTagIds = new ArrayList<>();
 
     public Task getTask() {
         return mTask;
@@ -23,11 +23,11 @@ public class TaskWithTagIds {
         mTask = task;
     }
 
-    public List<Integer> getTagIds() {
+    public List<String> getTagIds() {
         return mTagIds;
     }
 
-    public void setTagIds(List<Integer> tagIds) {
+    public void setTagIds(List<String> tagIds) {
         mTagIds = tagIds;
     }
 

@@ -20,7 +20,7 @@ import caseydlvr.recurringtasks.model.TaskTag;
  */
 public class TaskDetailViewModel extends TaskViewModel {
 
-    private long mTaskId;
+    private String mTaskId;
     private LiveData<Task> mTask;
     private LiveData<List<Tag>> mTags;
     private DataRepository mRepository;
@@ -36,7 +36,7 @@ public class TaskDetailViewModel extends TaskViewModel {
      *
      * @param taskId Task ID to use with this ViewModel
      */
-    public void init(long taskId) {
+    public void init(String taskId) {
         mTaskId = taskId;
         mTask = mRepository.observeTaskById(taskId);
         mTags = mRepository.observeTagsByTask(taskId);

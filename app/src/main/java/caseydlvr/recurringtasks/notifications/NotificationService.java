@@ -152,7 +152,7 @@ public class NotificationService extends JobIntentService {
         }
 
         for (Task task : mNotificationTasks) {
-            manager.notify((int) task.getId(), buildTaskNotification(task));
+            manager.notify(task.getId().hashCode(), buildTaskNotification(task));
         }
 
         if (useGrouping()) {
@@ -220,13 +220,13 @@ public class NotificationService extends JobIntentService {
      * @param id Task ID
      * @return   PendingIntent to launch a Task detail view
      */
-    private PendingIntent buildClickPendingIntent(long id) {
+    private PendingIntent buildClickPendingIntent(String id) {
         Intent clickIntent = new Intent(this, TaskActivity.class);
         clickIntent.putExtra(TaskActivity.EXTRA_MODE, TaskActivity.MODE_TASK_DETAIL);
         clickIntent.putExtra(TaskActivity.EXTRA_TASK_ID, id);
 
         return PendingIntent.getActivity(this,
-                (int) id, // so intents for other tasks aren't updated
+                id.hashCode(), // so intents for other tasks aren't updated
                 clickIntent,
                 0);
     }
@@ -237,13 +237,13 @@ public class NotificationService extends JobIntentService {
      * @param id Task ID
      * @return   PendingIntent to complete a Task
      */
-    private PendingIntent buildCompletePendingIntent(long id) {
+    private PendingIntent buildCompletePendingIntent(String id) {
         Intent completeIntent = new Intent(this, TaskActionReceiver.class);
         completeIntent.setAction(TaskActionReceiver.ACTION_COMPLETE);
         completeIntent.putExtra(TaskActionReceiver.EXTRA_TASK_ID, id);
 
         return PendingIntent.getBroadcast(this,
-                (int) id, // so intents for other tasks aren't updated
+                id.hashCode(), // so intents for other tasks aren't updated
                 completeIntent,
                 0);
     }

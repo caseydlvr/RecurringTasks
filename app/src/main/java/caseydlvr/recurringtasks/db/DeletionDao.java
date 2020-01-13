@@ -13,10 +13,10 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface DeletionDao {
 
-    @Query("SELECT * FROM deletions WHERE task_server_id > 0 AND tag_server_id = 0")
+    @Query("SELECT * FROM deletions WHERE task_id != '' AND tag_id = ''")
     List<Deletion> loadTaskDeletions();
 
-    @Query("SELECT * FROM deletions WHERE task_server_id = 0 AND tag_server_id > 0")
+    @Query("SELECT * FROM deletions WHERE task_id = '' AND tag_id != ''")
     List<Deletion> loadTagDeletions();
 
     @Insert(onConflict = REPLACE)

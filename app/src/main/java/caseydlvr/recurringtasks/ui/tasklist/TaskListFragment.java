@@ -45,6 +45,7 @@ import caseydlvr.recurringtasks.sync.SyncActions;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
+import timber.log.Timber;
 
 public class TaskListFragment extends Fragment
         implements TaskActivity.BackPressedListener,
@@ -144,7 +145,7 @@ public class TaskListFragment extends Fragment
 
     @OnClick(R.id.fab)
     public void fabClick() {
-        ((TaskActivity) getActivity()).showTaskDetailFragment(0);
+        ((TaskActivity) getActivity()).showTaskDetailFragment(null);
     }
 
     @Override
@@ -168,14 +169,14 @@ public class TaskListFragment extends Fragment
      */
     private void setMode() {
         // if ViewModel already has a filter set, use that
-        if (mViewModel.getFilterTagId() > 0) {
+        if (mViewModel.getFilterTagId() != null) {
             mFilterMode = true;
         } else {
             if (getArguments() == null) return;
 
-            int tagId = getArguments().getInt(KEY_TAG_ID, 0);
+            String tagId = getArguments().getString(KEY_TAG_ID, null);
 
-            if (tagId > 0) {
+            if (tagId != null) {
                 mFilterMode = true;
                 mViewModel.setFilterTagId(tagId);
             }
@@ -247,7 +248,7 @@ public class TaskListFragment extends Fragment
                 default: // assumed to be a tag filter
                     if (mFilterMode) checkNavMenuItem(menuItem);
                     Tag tag = new Tag(menuItem.getIntent().getStringExtra(EXTRA_TAG_NAME));
-                    tag.setId(menuItem.getIntent().getIntExtra(EXTRA_TAG_ID, 0));
+                    tag.setId(menuItem.getIntent().getStringExtra(EXTRA_TAG_ID));
 
                     navigateToFilterView(tag);
                     return true;

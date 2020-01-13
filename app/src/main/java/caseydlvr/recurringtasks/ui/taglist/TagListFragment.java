@@ -72,7 +72,7 @@ public class TagListFragment extends Fragment
         mViewModel = ViewModelProviders.of(this).get(TagListViewModel.class);
 
         if (mTaskMode) {
-            long taskId = getArguments().getLong(KEY_TASK_ID, 0);
+            String taskId = getArguments().getString(KEY_TASK_ID, null);
             mViewModel.initTaskMode(taskId);
         }
 

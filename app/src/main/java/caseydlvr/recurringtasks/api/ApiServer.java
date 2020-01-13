@@ -52,26 +52,6 @@ public class ApiServer {
 
     /************* Task methods *************/
 
-    public void getAllTasks() {
-        mService.getTasks().enqueue(new Callback<List<Task>>() {
-
-            @Override
-            public void onResponse(Call<List<Task>> call, Response<List<Task>> response) {
-                if (response.isSuccessful()) {
-                    List<Task> tasks = response.body();
-                    Timber.d("%s", tasks);
-                } else {
-                    handleErrorResponse(response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Task>> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
-    }
-
     public void getAllTasksWithTags() {
         mService.getTasksWithTags().enqueue(new Callback<List<TaskWithTags>>() {
 
@@ -92,28 +72,8 @@ public class ApiServer {
         });
     }
 
-    public void getTask(int id) {
-        mService.getTask(id).enqueue(new Callback<Task>() {
-
-            @Override
-            public void onResponse(Call<Task> call, Response<Task> response) {
-                if (response.isSuccessful()) {
-                    Task task = response.body();
-                    Timber.d("%s", task);
-                } else {
-                    handleErrorResponse(response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Task> call, Throwable t) {
-                handleFailure(t);
-            }
-        });
-    }
-
-    public void getTaskWithTags(int id) {
-        mService.getTaskWithTags(id).enqueue(new Callback<TaskWithTags>() {
+    public void getTaskWithTags(String uuid) {
+        mService.getTaskWithTags(uuid).enqueue(new Callback<TaskWithTags>() {
             @Override
             public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
                 if (response.isSuccessful()) {
@@ -133,7 +93,7 @@ public class ApiServer {
 
     public void createTask(TaskWithTags task) {
         try {
-            Response<TaskWithTags> response = mService.createTask(task).execute();
+            Response<TaskWithTags> response = mService.createTask(task.getId(), task).execute();
 
             if (response.isSuccessful()) {
                 Task responseTask = response.body();
@@ -154,9 +114,9 @@ public class ApiServer {
         }
     }
 
-    public void updateTask(int id, TaskWithTags task) {
+    public void updateTask(TaskWithTags task) {
         try {
-            Response<TaskWithTags> response = mService.updateTask(id, task).execute();
+            Response<TaskWithTags> response = mService.updateTask(task.getId(), task).execute();
 
             if (response.isSuccessful()) {
                 Task responseTask = response.body();
@@ -177,32 +137,32 @@ public class ApiServer {
         }
     }
 
-    public void deleteTask(int id) {
+    public void deleteTask(String uuid) {
         try {
-            Response<Void> response = mService.deleteTask(id).execute();
+            Response<Void> response = mService.deleteTask(uuid).execute();
 
             if (response.isSuccessful()) {
-                Timber.d("task %d delete successful", id);
+                Timber.d("task %s delete successful", uuid);
             } else {
                 handleErrorResponse(response);
             }
 
-            mRepository.deleteDeletion(Deletion.taskDeletion(id));
+            mRepository.deleteDeletion(Deletion.taskDeletion(uuid));
         } catch (IOException e) {
             handleFailure(e);
         }
     }
 
-    public void completeTask(int id) {
-        mService.completeTask(id).enqueue(new Callback<Task>() {
+    public void completeTask(String uuid) {
+        mService.completeTask(uuid).enqueue(new Callback<TaskWithTags>() {
             @Override
-            public void onResponse(Call<Task> call, Response<Task> response) {
+            public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
                 Task task = response.body();
                 Timber.d("task completed, new task: %s", task);
             }
 
             @Override
-            public void onFailure(Call<Task> call, Throwable t) {
+            public void onFailure(Call<TaskWithTags> call, Throwable t) {
                 handleFailure(t);
             }
         });
@@ -232,7 +192,7 @@ public class ApiServer {
 
     public void createTag(Tag tag) {
         try {
-            Response<Tag> response = mService.createTag(tag).execute();
+            Response<Tag> response = mService.createTag(tag.getId(),tag).execute();
 
             if (response.isSuccessful()) {
                 Tag responseTag = response.body();
@@ -255,9 +215,9 @@ public class ApiServer {
         }
     }
 
-    public void updateTag(int id, Tag tag) {
+    public void updateTag(Tag tag) {
         try {
-            Response<Tag> response = mService.updateTag(id, tag).execute();
+            Response<Tag> response = mService.updateTag(tag.getId(), tag).execute();
 
             if (response.isSuccessful()) {
                 Tag responseTag = response.body();
@@ -280,17 +240,17 @@ public class ApiServer {
         }
     }
 
-    public void deleteTag(int id) {
+    public void deleteTag(String uuid) {
         try {
-            Response<Void> response = mService.deleteTag(id).execute();
+            Response<Void> response = mService.deleteTag(uuid).execute();
 
             if (response.isSuccessful()) {
-                Timber.d("tag %d delete successful", id);
+                Timber.d("tag %s delete successful", uuid);
             } else {
                 handleErrorResponse(response);
             }
 
-            mRepository.deleteDeletion(Deletion.tagDeletion(id));
+            mRepository.deleteDeletion(Deletion.tagDeletion(uuid));
         } catch (IOException e) {
             handleFailure(e);
         }

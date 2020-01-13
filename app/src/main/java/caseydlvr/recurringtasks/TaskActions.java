@@ -29,7 +29,7 @@ public class TaskActions {
                 .getRepository()
                 .complete(task);
 
-        NotificationUtils.dismissNotification(context, (int) task.getId());
+        NotificationUtils.dismissNotification(context, task.getId().hashCode());
     }
 
     /**
@@ -60,6 +60,6 @@ public class TaskActions {
                 .getRepository()
                 .deleteTask(task);
 
-        NotificationUtils.dismissNotification(context, (int) task.getId());
+        NotificationUtils.dismissNotification(context, task.getId().hashCode());
     }
 }

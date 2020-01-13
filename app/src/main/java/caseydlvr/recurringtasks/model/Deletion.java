@@ -1,64 +1,66 @@
 package caseydlvr.recurringtasks.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
 
 @Entity(tableName = "deletions",
-        primaryKeys = { "task_server_id", "tag_server_id" })
+        primaryKeys = { "task_id", "tag_id" })
 public class Deletion {
 
-    @ColumnInfo(name = "task_server_id")
-    private int mTaskServerId;
+    @ColumnInfo(name = "task_id")
+    @NonNull
+    private String mTaskId = "";
 
-    @ColumnInfo(name = "tag_server_id")
-    private int mTagServerId;
+    @ColumnInfo(name = "tag_id")
+    @NonNull
+    private String mTagId = "";
 
-    public static Deletion taskDeletion(int taskServerId) {
+    public static Deletion taskDeletion(String taskId) {
         Deletion deletion = new Deletion();
-        deletion.setTaskServerId(taskServerId);
+        deletion.setTaskId(taskId);
 
         return deletion;
     }
 
     public static Deletion taskDeletion(Task task) {
-        return taskDeletion(task.getServerId());
+        return taskDeletion(task.getId());
     }
 
-    public static Deletion tagDeletion(int tagServerId) {
+    public static Deletion tagDeletion(String tagId) {
         Deletion deletion = new Deletion();
-        deletion.setTagServerId(tagServerId);
+        deletion.setTagId(tagId);
 
         return deletion;
     }
 
     public static Deletion tagDeletion(Tag tag) {
-        return tagDeletion(tag.getServerId());
+        return tagDeletion(tag.getId());
     }
 
-    // TODO: TaskTag doesn't work here because it holds DB IDs rather than server IDs
-//    public static Deletion taskTagDeletion(TaskTag taskTag) {
-//        Deletion deletion = new Deletion();
-//        deletion.setTaskServerId(taskTag.getTaskId());
-//        deletion.setTagServerId(taskTag.getTagId());
-//
-//        return deletion;
-//    }
+    public static Deletion taskTagDeletion(TaskTag taskTag) {
+        Deletion deletion = new Deletion();
+        deletion.setTaskId(taskTag.getTaskId());
+        deletion.setTagId(taskTag.getTagId());
 
-    public int getTaskServerId() {
-        return mTaskServerId;
+        return deletion;
     }
 
-    public void setTaskServerId(int taskServerId) {
-        mTaskServerId = taskServerId;
+    public String getTaskId() {
+        return mTaskId;
     }
 
-    public int getTagServerId() {
-        return mTagServerId;
+    public void setTaskId(String taskId) {
+        mTaskId = taskId;
     }
 
-    public void setTagServerId(int tagServerId) {
-        mTagServerId = tagServerId;
+    public String getTagId() {
+        return mTagId;
+    }
+
+    public void setTagId(String tagId) {
+        mTagId = tagId;
     }
 
     @Override
@@ -66,15 +68,15 @@ public class Deletion {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Deletion deletion = (Deletion) o;
-        return getTaskServerId() == deletion.getTaskServerId() &&
-                getTagServerId() == deletion.getTagServerId();
+        return getTaskId().equals(deletion.getTaskId()) &&
+                getTagId().equals(deletion.getTagId());
     }
 
     @Override
     public String toString() {
         return "Deletion{" +
-                "mTaskServerId=" + mTaskServerId +
-                ", mTagServerId=" + mTagServerId +
+                "mTaskId=" + mTaskId +
+                ", mTagId=" + mTagId +
                 '}';
     }
 }

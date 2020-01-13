@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Comparator;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -18,24 +19,22 @@ public class Tag {
 
     public static final int NAME_MAX_LENGTH = 20;
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     @ColumnInfo(name = "id")
-    private int mId;
+    @NonNull
+    @SerializedName("id")
+    @Expose
+    private String mId;
 
     @ColumnInfo(name = "name")
     @SerializedName("name")
     @Expose
     private String mName;
 
-    @ColumnInfo(name = "server_id")
-    @SerializedName("id")
-    @Expose
-    private int mServerId;
-
     @ColumnInfo(name = "synced")
     private boolean mSynced;
 
-    public Tag(int id, String name) {
+    public Tag(String id, String name) {
         mId = id;
         mName = name;
     }
@@ -59,15 +58,14 @@ public class Tag {
     public Tag(Tag tag) {
         mId = tag.getId();
         mName = tag.getName();
-        mServerId = tag.getServerId();
         mSynced = tag.isSynced();
     }
 
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         mId = id;
     }
 
@@ -77,14 +75,6 @@ public class Tag {
 
     public void setName(String name) {
         mName = name.trim();
-    }
-
-    public int getServerId() {
-        return mServerId;
-    }
-
-    public void setServerId(int serverId) {
-        mServerId = serverId;
     }
 
     public boolean isSynced() {
@@ -102,7 +92,7 @@ public class Tag {
 
         final Tag other = (Tag) obj;
 
-        return (other.getId() == mId
+        return (other.getId().equals(mId)
             && other.getName().equals(mName));
     }
 
@@ -111,7 +101,6 @@ public class Tag {
         return "Tag{" +
                 "mId=" + mId +
                 ", mName='" + mName + '\'' +
-                ", mServerId=" + mServerId +
                 ", mSynced=" + mSynced +
                 '}';
     }

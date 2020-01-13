@@ -32,10 +32,10 @@ public interface TaskDao {
     @Query("SELECT tasks.* FROM tasks " +
             "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
             "WHERE tasks_tags.tag_id = :tagId ")
-    LiveData<List<TaskWithTagIds>> observeByTagWithTagIds(int tagId);
+    LiveData<List<TaskWithTagIds>> observeByTagWithTagIds(String tagId);
 
     @Query("SELECT * FROM tasks WHERE id = :id")
-    LiveData<Task> observeById(long id);
+    LiveData<Task> observeById(String id);
 
     @Query("SELECT * FROM tasks")
     List<Task> loadAll();
@@ -50,7 +50,7 @@ public interface TaskDao {
     Task loadById(long id);
 
     @Insert(onConflict = REPLACE)
-    long[] insert(Task... tasks);
+    void insert(Task... tasks);
 
     @Update
     void update(Task... tasks);

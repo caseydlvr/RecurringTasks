@@ -1,5 +1,6 @@
 package caseydlvr.recurringtasks.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -29,32 +30,34 @@ import static androidx.room.ForeignKey.CASCADE;
 public class TaskTag {
 
     @ColumnInfo(name = "task_id")
-    private long mTaskId;
+    @NonNull
+    private String mTaskId;
 
     @ColumnInfo(name = "tag_id")
-    private int mTagId;
+    @NonNull
+    private String mTagId;
 
     @ColumnInfo(name = "synced")
     private boolean mSynced;
 
-    public TaskTag(long taskId, int tagId) {
+    public TaskTag(String taskId, String tagId) {
         mTaskId = taskId;
         mTagId = tagId;
     }
 
-    public long getTaskId() {
+    public String getTaskId() {
         return mTaskId;
     }
 
-    public void setTaskId(long taskId) {
+    public void setTaskId(String taskId) {
         this.mTaskId = taskId;
     }
 
-    public int getTagId() {
+    public String getTagId() {
         return mTagId;
     }
 
-    public void setTagId(int tagId) {
+    public void setTagId(String tagId) {
         this.mTagId = tagId;
     }
 

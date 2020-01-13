@@ -296,9 +296,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             List<Tag> taskTags = new ArrayList<>();
 
             // build List<Tag> from the TaskWithTag's taskIds
-            for (int tagId : mTask.getTagIds()) {
+            for (String tagId : mTask.getTagIds()) {
                 for (Tag tag : mTags) {
-                    if (tag.getId() == tagId) {
+                    if (tag.getId().equals(tagId)) {
                         taskTags.add(tag);
                         break;
                     }

@@ -17,12 +17,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import caseydlvr.recurringtasks.db.AppDatabase;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class Migration_3_4Test {
     private static final String TEST_DB = "migration_3_4-test";
+    private static final String UUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
 
     @Rule
     public MigrationTestHelper mHelper;
@@ -56,7 +58,8 @@ public class Migration_3_4Test {
 
         // verify Task 1
         tasks.moveToFirst();
-        assertEquals("id not equal", 1, tasks.getInt(tasks.getColumnIndex("id")));
+        String task1Id = tasks.getString(tasks.getColumnIndex("id"));
+        assertTrue(task1Id.matches(UUID_REGEX));
         assertEquals("name not equal", "Test 1", tasks.getString(tasks.getColumnIndex("name")));
         assertEquals("duration not equal", 1, tasks.getInt(tasks.getColumnIndex("duration")));
         assertEquals("duration_unit not equal", "week", tasks.getString(tasks.getColumnIndex("duration_unit")));
@@ -65,12 +68,12 @@ public class Migration_3_4Test {
         assertEquals("repeating not equal", 1, tasks.getInt(tasks.getColumnIndex("repeating")));
         assertEquals("notification_option not equal", "overdue", tasks.getString(tasks.getColumnIndex("notification_option")));
         // verify new columns
-        assertEquals("server_id not 0", 0, tasks.getInt(tasks.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tasks.getInt(tasks.getColumnIndex("synced")));
 
         // verify Task 2
         tasks.moveToNext();
-        assertEquals("id not equal", 2, tasks.getInt(tasks.getColumnIndex("id")));
+        String task2Id = tasks.getString(tasks.getColumnIndex("id"));
+        assertTrue(task2Id.matches(UUID_REGEX));
         assertEquals("name not equal", "Test 2", tasks.getString(tasks.getColumnIndex("name")));
         assertEquals("duration not equal", 10, tasks.getInt(tasks.getColumnIndex("duration")));
         assertEquals("duration_unit not equal", "day", tasks.getString(tasks.getColumnIndex("duration_unit")));
@@ -79,7 +82,6 @@ public class Migration_3_4Test {
         assertEquals("repeating not equal", 0, tasks.getInt(tasks.getColumnIndex("repeating")));
         assertEquals("notification_option not equal", "never", tasks.getString(tasks.getColumnIndex("notification_option")));
         // verify new columns
-        assertEquals("server_id not 0", 0, tasks.getInt(tasks.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tasks.getInt(tasks.getColumnIndex("synced")));
 
         /* ---- verify tag data ---- */
@@ -89,18 +91,18 @@ public class Migration_3_4Test {
 
         // verify Tag 1
         tags.moveToFirst();
-        assertEquals("id not equal", 1, tags.getInt(tags.getColumnIndex("id")));
+        String tag1Id = tags.getString(tags.getColumnIndex("id"));
+        assertTrue(tag1Id.matches(UUID_REGEX));
         assertEquals("name not equal", "Tag 1", tags.getString(tags.getColumnIndex("name")));
         // verify new columns
-        assertEquals("server_id not 0", 0, tags.getInt(tags.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tags.getInt(tags.getColumnIndex("synced")));
 
         // verify Tag 2
         tags.moveToNext();
-        assertEquals("id not equal", 2, tags.getInt(tags.getColumnIndex("id")));
+        String tag2Id = tags.getString(tags.getColumnIndex("id"));
+        assertTrue(tag2Id.matches(UUID_REGEX));
         assertEquals("name not equal", "Tag 2", tags.getString(tags.getColumnIndex("name")));
         // verify new columns
-        assertEquals("server_id not 0", 0, tags.getInt(tags.getColumnIndex("server_id")));
         assertEquals("synced not 0", 0, tags.getInt(tags.getColumnIndex("synced")));
 
         /* ---- verify task_tag data ---- */
@@ -110,22 +112,22 @@ public class Migration_3_4Test {
 
         // verify TaskTag 1
         tasksTags.moveToFirst();
-        assertEquals("task_id not equal", 1, tasksTags.getInt(tasksTags.getColumnIndex("task_id")));
-        assertEquals("tag_id not equal", 1, tasksTags.getInt(tasksTags.getColumnIndex("tag_id")));
+        assertEquals("task_id not equal", task1Id, tasksTags.getString(tasksTags.getColumnIndex("task_id")));
+        assertEquals("tag_id not equal", tag1Id, tasksTags.getString(tasksTags.getColumnIndex("tag_id")));
         // verify new columns
         assertEquals("synced not 0", 0, tasksTags.getInt(tasksTags.getColumnIndex("synced")));
 
         // verify TaskTag 2
         tasksTags.moveToNext();
-        assertEquals("task_id not equal", 1, tasksTags.getInt(tasksTags.getColumnIndex("task_id")));
-        assertEquals("tag_id not equal", 2, tasksTags.getInt(tasksTags.getColumnIndex("tag_id")));
+        assertEquals("task_id not equal", task1Id, tasksTags.getString(tasksTags.getColumnIndex("task_id")));
+        assertEquals("tag_id not equal", tag2Id, tasksTags.getString(tasksTags.getColumnIndex("tag_id")));
         // verify new columns
         assertEquals("synced not 0", 0, tasksTags.getInt(tasksTags.getColumnIndex("synced")));
 
         /* ---- verify deletions table created ---- */
         assertEquals("deletions should be empty", 0, deletions.getCount());
-        assertNotEquals("task_server_id column missing", -1, deletions.getColumnIndex("task_server_id"));
-        assertNotEquals("tag_server_id column missing", -1, deletions.getColumnIndex("tag_server_id"));
+        assertNotEquals("task_id column missing", -1, deletions.getColumnIndex("task_id"));
+        assertNotEquals("tag_id column missing", -1, deletions.getColumnIndex("tag_id"));
     }
 
     private void populateTestTasks(SupportSQLiteDatabase db) {

@@ -110,10 +110,10 @@ public class TaskDetailFragment extends Fragment
         mTask = new Task();
         setCleanValues(mTask);
 
-        long taskId = getArguments().getLong(KEY_TASK_ID);
+        String taskId = getArguments().getString(KEY_TASK_ID);
         mViewModel = ViewModelProviders.of(this).get(TaskDetailViewModel.class);
 
-        if (taskId > 0) {
+        if (taskId != null) {
             actionBar.setTitle(R.string.editTask);
             mCreateMode = false;
             mViewModel.init(taskId);
