@@ -17,14 +17,9 @@ android {
     }
     buildTypes {
         release {
-            // shrink & minify disabled due to crashing on launch in 0.4.0 release APK.
-            // Major changes in 0.4.0:
-            //     compile/targetSdk > 28, migration to androidx, new tagging features,
-            //     refactor to single activity for list, detail and tagging
-            shrinkResources false
-            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
