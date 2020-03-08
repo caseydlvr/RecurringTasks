@@ -44,37 +44,35 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.jakewharton:butterknife:10.0.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
     // Room
-    implementation 'androidx.room:room-runtime:2.2.3'
-    annotationProcessor 'androidx.room:room-compiler:2.2.3'
-    testImplementation 'androidx.room:room-testing:2.2.3'
+    implementation 'androidx.room:room-runtime:2.2.4'
+    annotationProcessor 'androidx.room:room-compiler:2.2.4'
+    testImplementation 'androidx.room:room-testing:2.2.4'
     // ViewModel and LiveData
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     // WorkManager
-    implementation 'androidx.work:work-runtime:2.2.0'
-    androidTestImplementation 'androidx.work:work-testing:2.2.0'
+    implementation 'androidx.work:work-runtime:2.3.3'
+    androidTestImplementation 'androidx.work:work-testing:2.3.3'
     // ButterKnife
-    implementation 'com.jakewharton:butterknife:10.0.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     // ThreeTen Android Backport
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
     // Firebase
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
     // Gson
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
     // OkHttp
-    implementation 'com.squareup.okhttp3:okhttp:3.14.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
     // Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
 }
