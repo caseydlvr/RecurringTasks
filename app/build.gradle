@@ -6,8 +6,8 @@ android {
         applicationId "caseydlvr.recurringtasks"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 22
-        versionName "0.4.9"
+        versionCode 23
+        versionName "0.4.10"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -17,14 +17,9 @@ android {
     }
     buildTypes {
         release {
-            // shrink & minify disabled due to crashing on launch in 0.4.0 release APK.
-            // Major changes in 0.4.0:
-            //     compile/targetSdk > 28, migration to androidx, new tagging features,
-            //     refactor to single activity for list, detail and tagging
-            shrinkResources false
-            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders = [usesCleartextTraffic:"false"]
             buildConfigField "String", "SERVER_URL", '"https://rt-api.herokuapp.com/"'
         }
@@ -50,13 +45,14 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha03'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
     // Room
     implementation 'androidx.room:room-runtime:2.2.3'
     annotationProcessor 'androidx.room:room-compiler:2.2.3'
     testImplementation 'androidx.room:room-testing:2.2.3'
-    androidTestImplementation 'androidx.room:room-testing:2.2.3'
     // ViewModel and LiveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
