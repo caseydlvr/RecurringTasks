@@ -1,21 +1,20 @@
 package caseydlvr.recurringtasks;
 
-import androidx.lifecycle.LiveData;
 import android.os.AsyncTask;
-
-import androidx.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import androidx.annotation.WorkerThread;
+import androidx.lifecycle.LiveData;
 import caseydlvr.recurringtasks.db.AppDatabase;
 import caseydlvr.recurringtasks.model.Deletion;
 import caseydlvr.recurringtasks.model.Tag;
 import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskTag;
-import caseydlvr.recurringtasks.model.TaskWithTagIds;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.sync.SyncActions;
 
 /**
@@ -68,8 +67,8 @@ public class DataRepository {
      *
      * @return LiveData holding a List of TaskWithTagIds
      */
-    public LiveData<List<TaskWithTagIds>> observeAllTasksWithTagIds() {
-        return mDb.taskDao().observeAllWithTagIds();
+    public LiveData<List<TaskWithTags>> observeAllTasksWithTags() {
+        return mDb.taskDao().observeAllWithTags();
     }
 
     /**
@@ -83,14 +82,15 @@ public class DataRepository {
     }
 
     /**
-     * Loads Tasks (as TaskWithTagIds) that are tagged with the Tag represented by the given tagId
+     * Loads Tasks (as TaskWithTags) that are tagged with the Tag represented by the given tagId
      *
      * @param tagId id of Tag to load Tasks for
-     * @return      LiveData holding a List of TaskWithTagIds
+     * @return      LiveData holding a List of TaskWithTags
      */
-    public LiveData<List<TaskWithTagIds>> observeTasksByTagWithTagIds(String tagId) {
-        return mDb.taskDao().observeByTagWithTagIds(tagId);
+    public LiveData<List<TaskWithTags>> observeTasksByTagWithTags(String tagId) {
+        return mDb.taskDao().observeByTagWithTags(tagId);
     }
+
 
     /**
      * Loads a single Task with the provided ID from persistent storage. Task returned is returned

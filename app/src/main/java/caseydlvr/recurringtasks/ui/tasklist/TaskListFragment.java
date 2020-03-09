@@ -1,22 +1,8 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,17 +21,28 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.TaskWithTagIds;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.sync.SyncActions;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.ui.settings.SettingsActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
-import timber.log.Timber;
 
 public class TaskListFragment extends Fragment
         implements TaskActivity.BackPressedListener,
@@ -270,7 +267,7 @@ public class TaskListFragment extends Fragment
                     .setTitle(tag.getName());
             mViewModel.getFilteredTasksWithTags().removeObservers(this);
             mViewModel.setFilterTagId(tag.getId());
-            mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
+            mViewModel.getFilteredTasksWithTags().observe(getViewLifecycleOwner(), this::handleTasksChanged);
         } else {
             ((TaskActivity) getActivity()).showTaskListFragmentWithTagFilter(tag);
         }
@@ -280,17 +277,17 @@ public class TaskListFragment extends Fragment
      * Start observing ViewModel LiveData with appropriate onChange handling
      */
     private void subscribeUi() {
-        mViewModel.getAllTags().observe(this, this::handleTagsChanged);
+        mViewModel.getAllTags().observe(getViewLifecycleOwner(), this::handleTagsChanged);
 
         if (mFilterMode) {
-            mViewModel.getFilteredTasksWithTags().observe(this, this::handleTasksChanged);
-            mViewModel.getFilterTag().observe(this, tag -> {
+            mViewModel.getFilteredTasksWithTags().observe(getViewLifecycleOwner(), this::handleTasksChanged);
+            mViewModel.getFilterTag().observe(getViewLifecycleOwner(), tag -> {
                 if (tag != null) {
                     ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tag.getName());
                 }
             });
         } else {
-            mViewModel.getAllTasksWithTags().observe(this, this::handleTasksChanged);
+            mViewModel.getAllTasksWithTags().observe(getViewLifecycleOwner(), this::handleTasksChanged);
         }
     }
 
@@ -300,12 +297,12 @@ public class TaskListFragment extends Fragment
      *
      * @param tasks new list of Tasks
      */
-    private void handleTasksChanged(List<TaskWithTagIds> tasks) {
+    private void handleTasksChanged(List<TaskWithTags> tasks) {
         if (tasks == null || tasks.size() == 0) {
             mRecyclerView.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
-            Collections.sort(tasks, new TaskWithTagIds.TaskWithTagsComparator());
+            Collections.sort(tasks, new TaskWithTags.TaskWithTagsComparator());
             mRecyclerView.setVisibility(View.VISIBLE);
             mEmptyView.setVisibility(View.GONE);
         }
@@ -319,7 +316,6 @@ public class TaskListFragment extends Fragment
      * @param tags new list of Tags
      */
     private void handleTagsChanged(List<Tag> tags) {
-        mTaskAdapter.setTags(tags);
         populateNavViewTagSubMenu(tags);
     }
 

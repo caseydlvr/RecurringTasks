@@ -35,7 +35,7 @@ public class Sync {
         List<TaskWithTags> unsyncedTasksWithTags = buildTasksWithTags(unsyncedTasks);
 
         for (TaskWithTags task : unsyncedTasksWithTags) {
-            if (task.getId() != null) {
+            if (task.task.getId() != null) {
                 mServer.updateTask(task);
             } else {
                 mServer.createTask(task);
@@ -90,7 +90,7 @@ public class Sync {
         }
 
         for (TaskWithTags task : tasks) {
-            mDr.syncTask(task);
+            mDr.syncTask(task.task);
         }
     }
 

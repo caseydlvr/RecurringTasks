@@ -21,7 +21,7 @@ public interface TaskDao {
 
     @Transaction
     @Query("SELECT * FROM tasks")
-    LiveData<List<TaskWithTagIds>> observeAllWithTagIds();
+    LiveData<List<TaskWithTags>> observeAllWithTags();
 
     @Query("SELECT tasks.* FROM tasks " +
             "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
@@ -32,7 +32,7 @@ public interface TaskDao {
     @Query("SELECT tasks.* FROM tasks " +
             "JOIN tasks_tags ON tasks.id = tasks_tags.task_id " +
             "WHERE tasks_tags.tag_id = :tagId ")
-    LiveData<List<TaskWithTagIds>> observeByTagWithTagIds(String tagId);
+    LiveData<List<TaskWithTags>> observeByTagWithTags(String tagId);
 
     @Query("SELECT * FROM tasks WHERE id = :id")
     LiveData<Task> observeById(String id);

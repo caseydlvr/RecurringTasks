@@ -12,7 +12,6 @@ import caseydlvr.recurringtasks.BuildConfig;
 import caseydlvr.recurringtasks.DataRepository;
 import caseydlvr.recurringtasks.model.Deletion;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.Task;
 import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.model.TasksAndTags;
 import okhttp3.OkHttpClient;
@@ -93,16 +92,16 @@ public class ApiServer {
 
     public void createTask(TaskWithTags task) {
         try {
-            Response<TaskWithTags> response = mService.createTask(task.getId(), task).execute();
+            Response<TaskWithTags> response = mService.createTask(task.getTask().getId(), task).execute();
 
             if (response.isSuccessful()) {
-                Task responseTask = response.body();
+                TaskWithTags responseTask = response.body();
 
                 if (responseTask != null) {
-                    responseTask.setId(task.getId());
-                    responseTask.setSynced(true);
+                    responseTask.getTask().setId(task.getTask().getId());
+                    responseTask.getTask().setSynced(true);
 
-                    mRepository.syncTask(responseTask);
+                    mRepository.syncTask(responseTask.getTask());
 
                     Timber.d("task created: %s", responseTask);
                 }
@@ -116,16 +115,16 @@ public class ApiServer {
 
     public void updateTask(TaskWithTags task) {
         try {
-            Response<TaskWithTags> response = mService.updateTask(task.getId(), task).execute();
+            Response<TaskWithTags> response = mService.updateTask(task.getTask().getId(), task).execute();
 
             if (response.isSuccessful()) {
-                Task responseTask = response.body();
+                TaskWithTags responseTask = response.body();
 
                 if (responseTask != null) {
-                    responseTask.setId(task.getId());
-                    responseTask.setSynced(true);
+                    responseTask.getTask().setId(task.getTask().getId());
+                    responseTask.getTask().setSynced(true);
 
-                    mRepository.syncTask(responseTask);
+                    mRepository.syncTask(responseTask.getTask());
 
                     Timber.d("task updated: %s", responseTask);
                 }
@@ -157,7 +156,7 @@ public class ApiServer {
         mService.completeTask(uuid).enqueue(new Callback<TaskWithTags>() {
             @Override
             public void onResponse(Call<TaskWithTags> call, Response<TaskWithTags> response) {
-                Task task = response.body();
+                TaskWithTags task = response.body();
                 Timber.d("task completed, new task: %s", task);
             }
 
@@ -273,9 +272,9 @@ public class ApiServer {
             }
 
             for (TaskWithTags task : responseTasksAndTags.getTaskWithTags()) {
-                task.setId(tasksAndTags.getTaskWithTags()
+                task.getTask().setId(tasksAndTags.getTaskWithTags()
                         .get(responseTasksAndTags.getTaskWithTags().indexOf(task))
-                        .getId());
+                        .getTask().getId());
             }
 
             return responseTasksAndTags;

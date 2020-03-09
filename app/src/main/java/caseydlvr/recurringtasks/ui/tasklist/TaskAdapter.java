@@ -1,17 +1,6 @@
 package caseydlvr.recurringtasks.ui.tasklist;
 
 import android.content.Context;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
-
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +11,11 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 
@@ -29,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -37,7 +35,7 @@ import caseydlvr.recurringtasks.R;
 import caseydlvr.recurringtasks.model.DueStatus;
 import caseydlvr.recurringtasks.model.DurationUnit;
 import caseydlvr.recurringtasks.model.Tag;
-import caseydlvr.recurringtasks.model.TaskWithTagIds;
+import caseydlvr.recurringtasks.model.TaskWithTags;
 import caseydlvr.recurringtasks.ui.TaskActivity;
 import caseydlvr.recurringtasks.viewmodel.TaskListViewModel;
 
@@ -49,8 +47,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         void onTagChipClick(Tag tag);
     }
 
-    private List<TaskWithTagIds> mTasks;
-    private List<Tag> mTags;
+    private List<TaskWithTags> mTasks;
     private TaskListViewModel mViewModel;
     private TagChipClickListener mTagChipClickListener;
 
@@ -75,7 +72,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onItemSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getAdapterPosition();
-        final TaskWithTagIds task = mTasks.get(position);
+        final TaskWithTags task = mTasks.get(position);
 
         if (direction == ItemTouchHelper.LEFT) {
             delete(task, position, viewHolder.itemView);
@@ -91,8 +88,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      *
      * @param newTasks List of Tasks to display
      */
-    public void setTasks(List<TaskWithTagIds> newTasks) {
-        List<TaskWithTagIds> oldTasks = mTasks;
+    public void setTasks(List<TaskWithTags> newTasks) {
+        List<TaskWithTags> oldTasks = mTasks;
         mTasks = newTasks;
         if (oldTasks == null) {
             notifyItemRangeChanged(0, newTasks.size());
@@ -100,15 +97,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             DiffUtil.calculateDiff(new TaskListDiffCallback(oldTasks, newTasks))
                     .dispatchUpdatesTo(this);
         }
-    }
-
-    /**
-     * Master list of Tags to use when Tags are displayed in the list.
-     *
-     * @param tags List of all available Tags
-     */
-    public void setTags(List<Tag> tags) {
-        mTags = tags;
     }
 
     /**
@@ -143,7 +131,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in the Task list to add the item
      * @param task     Task to add to the list
      */
-    private void addItem(int position, TaskWithTagIds task) {
+    private void addItem(int position, TaskWithTags task) {
         mTasks.add(position, task);
         notifyItemInserted(position);
     }
@@ -160,7 +148,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to complete
      */
-    private void complete(TaskWithTagIds task, int position, View v) {
+    private void complete(TaskWithTags task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskCompleteSuccess, Snackbar.LENGTH_SHORT)
@@ -184,7 +172,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * @param position index in mTasks of the Task to complete
      * @param v        View that represents the Task to delete
      */
-    private void delete(TaskWithTagIds task, int position, View v) {
+    private void delete(TaskWithTags task, int position, View v) {
         removeItem(position);
 
         Snackbar.make(v, R.string.taskDeleteSuccess, Snackbar.LENGTH_LONG)
@@ -200,7 +188,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public class TaskViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, ItemTouchSwipeTarget {
 
-        private TaskWithTagIds mTask;
+        private TaskWithTags mTask;
         private Context mContext;
 
         @BindView(R.id.listItemLayout) FrameLayout mListItemLayout;
@@ -225,7 +213,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
          *
          * @param task Task to bind to this ViewHolder
          */
-        void bindTask(TaskWithTagIds task) {
+        void bindTask(TaskWithTags task) {
             mTask = task;
             DueStatus dueStatus = new DueStatus(mContext, mTask.getTask().getDuePriority());
 
@@ -291,19 +279,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private void buildTagChips() {
             mTagsChipGroup.removeAllViews();
 
-            if (mTask.getTagIds() == null) return;
+            if (mTask.getTags() == null) return;
 
-            List<Tag> taskTags = new ArrayList<>();
-
-            // build List<Tag> from the TaskWithTag's taskIds
-            for (String tagId : mTask.getTagIds()) {
-                for (Tag tag : mTags) {
-                    if (tag.getId().equals(tagId)) {
-                        taskTags.add(tag);
-                        break;
-                    }
-                }
-            }
+            List<Tag> taskTags = new ArrayList<>(mTask.getTags());
 
             Collections.sort(taskTags, new Tag.TagComparator());
 
@@ -345,10 +323,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public class TaskListDiffCallback extends DiffUtil.Callback {
 
-        private final List<TaskWithTagIds> mOldTaskList;
-        private final List<TaskWithTagIds> mNewTaskList;
+        private final List<TaskWithTags> mOldTaskList;
+        private final List<TaskWithTags> mNewTaskList;
 
-        TaskListDiffCallback(List<TaskWithTagIds> oldTaskList, List<TaskWithTagIds> newTaskList) {
+        TaskListDiffCallback(List<TaskWithTags> oldTaskList, List<TaskWithTags> newTaskList) {
             mOldTaskList = oldTaskList;
             mNewTaskList = newTaskList;
         }
